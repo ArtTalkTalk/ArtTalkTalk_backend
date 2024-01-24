@@ -43,6 +43,7 @@ jobs:
 
       - name: Build and Push Docker Image
         run: |
+          time=$(date -d "-9 hours" "+%Y.%m.%s.%H.%M.%S")
           docker build -t youth-be-ecr .
-          docker tag youth-be-ecr:latest 000043565917.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:latest
-          docker push 000043565917.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:latest
+          docker tag youth-be-ecr:latest 000043565917.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:$time
+          docker push 000043565917.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:$time
