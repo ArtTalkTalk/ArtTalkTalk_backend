@@ -54,6 +54,7 @@ jobs:
           docker build -t youth-be-ecr .
           docker tag youth-be-ecr:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/youth-be-ecr:$time
           docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/youth-be-ecr:$time
+          echo "::set-output name=image::$ECR_IMAGE"
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
