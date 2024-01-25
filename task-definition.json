@@ -1,5 +1,5 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:637423263275:task-definition/youth-be-task:2",
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:637423263275:task-definition/youth-be-task:3",
   "containerDefinitions": [
     {
       "name": "youth-be-springboot-app",
@@ -25,7 +25,7 @@
   "family": "youth-be-task",
   "executionRoleArn": "arn:aws:iam::637423263275:role/ecsTaskExecutionRole",
   "networkMode": "awsvpc",
-  "revision": 2,
+  "revision": 3,
   "volumes": [],
   "status": "ACTIVE",
   "requiresAttributes": [
@@ -48,7 +48,7 @@
     "FARGATE"
   ],
   "requiresCompatibilities": [
-    "FARGATE"
+    "EC2"
   ],
   "cpu": "1024",
   "memory": "2048",
@@ -56,7 +56,7 @@
     "cpuArchitecture": "X86_64",
     "operatingSystemFamily": "LINUX"
   },
-  "registeredAt": "2024-01-25T12:05:10.594Z",
+  "registeredAt": "2024-01-25T13:00:21.781Z",
   "registeredBy": "arn:aws:iam::637423263275:root",
   "tags": [
     {
