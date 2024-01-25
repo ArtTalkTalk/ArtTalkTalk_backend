@@ -3,7 +3,7 @@
   "containerDefinitions": [
     {
       "name": "youth-be-springboot-app",
-      "image": "637423263275.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:2024.01.1706132587.21.43.07",
+      "image": "637423263275.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:latest",
       "cpu": 0,
       "portMappings": [
         {
