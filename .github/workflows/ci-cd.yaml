@@ -52,5 +52,5 @@ jobs:
         run: |
           time=$(date -d "-9 hours" "+%Y.%m.%s.%H.%M.%S")
           docker build -t youth-be-ecr .
-          docker tag youth-be-ecr:latest 637423263275.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:$time
-          docker push 637423263275.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:$time
+          docker tag youth-be-ecr:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/youth-be-ecr:$time
+          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/youth-be-ecr:$time
