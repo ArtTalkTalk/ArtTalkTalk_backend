@@ -1,0 +1,67 @@
+{
+  "taskDefinitionArn": "arn:aws:ecs:ap-northeast-2:637423263275:task-definition/youth-be-task:2",
+  "containerDefinitions": [
+    {
+      "name": "youth-be-springboot-app",
+      "image": "637423263275.dkr.ecr.ap-northeast-2.amazonaws.com/youth-be-ecr:2024.01.1706132587.21.43.07",
+      "cpu": 0,
+      "portMappings": [
+        {
+          "name": "youth-be-app-port",
+          "containerPort": 8080,
+          "hostPort": 8080,
+          "protocol": "tcp",
+          "appProtocol": "http"
+        }
+      ],
+      "essential": true,
+      "environment": [],
+      "environmentFiles": [],
+      "mountPoints": [],
+      "volumesFrom": [],
+      "ulimits": []
+    }
+  ],
+  "family": "youth-be-task",
+  "executionRoleArn": "arn:aws:iam::637423263275:role/ecsTaskExecutionRole",
+  "networkMode": "awsvpc",
+  "revision": 2,
+  "volumes": [],
+  "status": "ACTIVE",
+  "requiresAttributes": [
+    {
+      "name": "com.amazonaws.ecs.capability.ecr-auth"
+    },
+    {
+      "name": "ecs.capability.execution-role-ecr-pull"
+    },
+    {
+      "name": "com.amazonaws.ecs.capability.docker-remote-api.1.18"
+    },
+    {
+      "name": "ecs.capability.task-eni"
+    }
+  ],
+  "placementConstraints": [],
+  "compatibilities": [
+    "EC2",
+    "FARGATE"
+  ],
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "1024",
+  "memory": "2048",
+  "runtimePlatform": {
+    "cpuArchitecture": "X86_64",
+    "operatingSystemFamily": "LINUX"
+  },
+  "registeredAt": "2024-01-25T12:05:10.594Z",
+  "registeredBy": "arn:aws:iam::637423263275:root",
+  "tags": [
+    {
+      "key": "youth",
+      "value": ""
+    }
+  ]
+}
