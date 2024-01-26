@@ -17,9 +17,7 @@ public class ImageService {
     public UploadImageResponse uploadImage(MultipartFile multipartFile) {
         try {
             String imageUrl = s3UploadService.uploadFile(multipartFile, "images");
-            return UploadImageResponse.builder()
-                    .imageUrl(imageUrl)
-                    .build();
+            return UploadImageResponse.of(imageUrl);
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
