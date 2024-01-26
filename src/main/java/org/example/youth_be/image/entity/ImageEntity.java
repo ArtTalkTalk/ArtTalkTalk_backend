@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
-public class Image {
+public class ImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
