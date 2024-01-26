@@ -13,7 +13,7 @@ public class ImageController {
 
     private final ImageService imageService;
 
-    @PostMapping("/upload")
+    @PostMapping("/profile")
     public ResponseEntity<?> uploadImage(@RequestParam MultipartFile multipartFile) {
         return ResponseEntity.ok(imageService.uploadImage(multipartFile));
     }
