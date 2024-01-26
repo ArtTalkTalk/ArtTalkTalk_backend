@@ -6,30 +6,32 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.example.youth_be.common.s3.FileNameBuildUtils;
-import org.springframework.beans.factory.annotation.Value;
+import org.example.youth_be.common.s3.FileNameGenerator;
+import org.example.youth_be.common.s3.S3Properties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class S3UploadService {
+public class S3FileUploader implements FileUploader {
 
+    private final FileNameGenerator fileNameGenerator;
     private final AmazonS3Client amazonS3Client;
+    private final S3Properties s3Properties;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String bucket;
+    @Override
     public String uploadFile(MultipartFile multipartFile, String dirName) throws Exception {
         validateFileExists(multipartFile);
 
-        String fileName = FileNameBuildUtils.buildFileName(multipartFile.getOriginalFilename(), dirName);
+        String fileName = fileNameGenerator.generateName(multipartFile.getOriginalFilename(), dirName);
         upload(multipartFile, fileName);
 
-        return amazonS3Client.getUrl(bucket, fileName).toString();
+        return amazonS3Client.getUrl(s3Properties.getS3().getBucket(), fileName).toString();
     }
 
     // 업로드
@@ -38,7 +40,8 @@ public class S3UploadService {
         objectMetadata.setContentType(multipartFile.getContentType());
 
         try (InputStream inputStream = multipartFile.getInputStream()) {
-            amazonS3Client.putObject(new PutObjectRequest(bucket, fileName, inputStream, objectMetadata)
+            BufferedInputStream bis = new BufferedInputStream(inputStream);
+            amazonS3Client.putObject(new PutObjectRequest(s3Properties.getS3().getBucket(), fileName, bis, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
             throw new Exception("파일 업로드에 실패했습니다.");
