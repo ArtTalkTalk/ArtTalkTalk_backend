@@ -1,15 +1,20 @@
 package org.example.youth_be.common.s3;
 
-public class FileNameBuildUtils {
+import org.springframework.stereotype.Service;
+
+import java.util.UUID;
+
+@Service
+public class FileNameBuildUtils implements FileNameGenerator{
     private static final String FILE_EXTENSION_SEPARATOR = ".";
 
-    public static String buildFileName(String originalFileName, String dirName) {
+    @Override
+    public String generateName(String originalFileName, String dirName) {
         int fileExtensionIndex = originalFileName.lastIndexOf(FILE_EXTENSION_SEPARATOR);
         String fileExtension = originalFileName.substring(fileExtensionIndex);
-        String fileName = originalFileName.substring(0, fileExtensionIndex);
-        String now = String.valueOf(System.currentTimeMillis());
+//        String fileName = originalFileName.substring(0, fileExtensionIndex);
+        String fileName = UUID.randomUUID().toString();
 
-        return dirName + "/" + fileName + "_" + now + fileExtension;
+        return dirName + "/" + fileName + fileExtension;
     }
-
 }
