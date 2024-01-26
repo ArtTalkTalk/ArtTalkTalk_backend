@@ -1,6 +1,7 @@
 package org.example.youth_be.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.dto.DevUserProfileCreateRequest;
 import org.example.youth_be.user.service.dto.UserProfileDto;
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-public class UserController {
+public class UserController implements UserSpec {
     private final UserService userService;
 
     @PostMapping
