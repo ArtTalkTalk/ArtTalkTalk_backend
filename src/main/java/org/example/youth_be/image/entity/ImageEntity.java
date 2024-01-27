@@ -6,6 +6,7 @@ import lombok.*;
 @Getter
 @Entity
 @AllArgsConstructor
+@Table(name = "image")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 public class ImageEntity {
