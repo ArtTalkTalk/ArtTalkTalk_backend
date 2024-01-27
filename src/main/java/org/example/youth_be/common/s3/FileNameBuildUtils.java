@@ -12,7 +12,6 @@ public class FileNameBuildUtils implements FileNameGenerator{
     public String generateName(String originalFileName, String dirName) {
         int fileExtensionIndex = originalFileName.lastIndexOf(FILE_EXTENSION_SEPARATOR);
         String fileExtension = originalFileName.substring(fileExtensionIndex);
-//        String fileName = originalFileName.substring(0, fileExtensionIndex);
         String fileName = UUID.randomUUID().toString();
 
         return dirName + "/" + fileName + fileExtension;
