@@ -29,12 +29,12 @@ public class UserEntity {
     @Column(length = 50, nullable = false)
     private String nickname;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50)
     private String major;
 
     private String description;
 
-    @Column(nullable = false)
+    @Column(length = 1000)
     private String link;
 
     @Enumerated(EnumType.STRING)
@@ -58,5 +58,20 @@ public class UserEntity {
         this.userRole = userRole;
         this.totalLikeCount = totalLikeCount;
         this.followerCount = followerCount;
+    }
+
+    public void updateProfile(String profileImageUrl, String nickname, String major, String description, String link) {
+        this.profileImageUrl = profileImageUrl;
+        this.nickname = nickname;
+        this.major = major;
+        this.description = description;
+        this.link = link;
+    }
+
+    public void updateProfile(String nickname, String major, String description, String link) {
+        this.nickname = nickname;
+        this.major = major;
+        this.description = description;
+        this.link = link;
     }
 }
