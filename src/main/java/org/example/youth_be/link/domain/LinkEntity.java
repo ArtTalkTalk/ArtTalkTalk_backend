@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "Link")
+@Table(name = "link")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class LinkEntity {
