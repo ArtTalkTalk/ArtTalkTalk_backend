@@ -1,4 +1,4 @@
-package org.example.youth_be.user.service.dto;
+package org.example.youth_be.user.service.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

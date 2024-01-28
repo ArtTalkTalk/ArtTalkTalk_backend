@@ -3,8 +3,8 @@ package org.example.youth_be.user.service;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.repository.UserRepository;
-import org.example.youth_be.user.service.dto.DevUserProfileCreateRequest;
-import org.example.youth_be.user.service.dto.UserProfileDto;
+import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.response.UserProfileDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

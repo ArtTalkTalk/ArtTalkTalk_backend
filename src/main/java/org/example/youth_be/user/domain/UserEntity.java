@@ -21,6 +21,7 @@ public class UserEntity {
     @Column(nullable = false)
     private SocialTypeEnum socialType;
 
+    @Column(length = 1000)
     private String profileImageUrl;
 
     private String socialId;

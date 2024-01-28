@@ -1,4 +1,4 @@
-package org.example.youth_be.user.service.dto;
+package org.example.youth_be.user.service.request;
 
 import lombok.Getter;
 import org.example.youth_be.user.enums.SocialTypeEnum;

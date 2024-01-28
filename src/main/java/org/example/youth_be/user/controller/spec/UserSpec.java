@@ -3,8 +3,8 @@ package org.example.youth_be.user.controller.spec;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.youth_be.common.ApiTags;
-import org.example.youth_be.user.service.dto.DevUserProfileCreateRequest;
-import org.example.youth_be.user.service.dto.UserProfileDto;
+import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.response.UserProfileDto;
 
 @Tag(name = ApiTags.USER)
 public interface UserSpec {
