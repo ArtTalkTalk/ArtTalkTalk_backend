@@ -1,0 +1,7 @@
+spring.config.activate.on-profile: dev
+
+spring:
+  config:
+    import:
+      - application-secret-aws.yml
+      - application-secret-datasource.yml
