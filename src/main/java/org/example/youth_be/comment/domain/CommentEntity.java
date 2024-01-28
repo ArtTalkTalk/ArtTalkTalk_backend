@@ -2,6 +2,7 @@ package org.example.youth_be.comment.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,4 +24,12 @@ public class CommentEntity {
 
     @Column(nullable = false)
     private Long artworkId;
+
+    @Builder
+    public CommentEntity(Long commentId, String content, Long userId, Long artworkId) {
+        this.commentId = commentId;
+        this.content = content;
+        this.userId = userId;
+        this.artworkId = artworkId;
+    }
 }
