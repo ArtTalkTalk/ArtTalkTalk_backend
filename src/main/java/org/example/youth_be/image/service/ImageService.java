@@ -12,12 +12,8 @@ public class ImageService {
 
     private final FileUploader fileUploader;
 
-    public UploadImageResponse uploadImage(ImageUploadRequest request) {
-        try {
+    public UploadImageResponse uploadImage(ImageUploadRequest request) throws Exception {
             String imageUrl = fileUploader.uploadProfileImage(request.getFile());
             return UploadImageResponse.of(imageUrl);
-        } catch (Exception e) {
-            throw new RuntimeException(e.getMessage());
-        }
     }
 }
