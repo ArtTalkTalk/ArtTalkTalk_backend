@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.user.service.response.UserProfileDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,5 +38,11 @@ public class UserService {
     public UserProfileDto getUserProfile(Long userId) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("해당 ID의 유저를 찾을 수 없습니다."));
         return UserProfileDto.of(userEntity);
+    }
+
+    @Transactional
+    public void updateUserProfile(Long userId, UserProfileUpdateRequest request){
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("해당 ID의 유저를 찾을 수 없습니다."));
+        userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(), request.getMajor(), request.getDescription(), request.getLink());
     }
 }
