@@ -11,11 +11,13 @@ public class S3Properties {
         private final S3 s3;
         private final Credentials credentials;
         private final Region region;
+        private final UploadDirs uploadDirs;
 
-        public S3Properties(S3 s3, Credentials credentials, Region region) {
+        public S3Properties(S3 s3, Credentials credentials, Region region, UploadDirs uploadDirs) {
             this.s3 = s3;
             this.credentials = credentials;
             this.region = region;
+            this.uploadDirs = uploadDirs;
         }
 
         @Getter
@@ -36,5 +38,11 @@ public class S3Properties {
         @Setter
         public static class Region {
             private String static_;
+        }
+
+        @Getter
+        @Setter
+        public static class UploadDirs {
+            private String profileDirName;
         }
 }
