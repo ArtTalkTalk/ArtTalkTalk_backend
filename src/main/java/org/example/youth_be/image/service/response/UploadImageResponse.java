@@ -1,4 +1,4 @@
-package org.example.youth_be.image.service.dto;
+package org.example.youth_be.image.service.response;
 
 import lombok.Builder;
 import lombok.Getter;
