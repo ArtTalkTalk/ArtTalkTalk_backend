@@ -1,20 +1,22 @@
 package org.example.youth_be.image.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.image.controller.spec.ImageSpec;
 import org.example.youth_be.image.service.ImageService;
+import org.example.youth_be.image.service.request.ImageUploadRequest;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/images")
-public class ImageController {
+public class ImageController implements ImageSpec {
 
     private final ImageService imageService;
 
-    @PostMapping("/profile")
-    public ResponseEntity<?> uploadImage(@RequestParam MultipartFile multipartFile) {
-        return ResponseEntity.ok(imageService.uploadImage(multipartFile));
+    @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImage(@ModelAttribute ImageUploadRequest request) {
+        return ResponseEntity.ok(imageService.uploadImage(request));
     }
 }
