@@ -67,11 +67,4 @@ public class UserEntity {
         this.description = description;
         this.link = link;
     }
-
-    public void updateProfile(String nickname, String major, String description, String link) {
-        this.nickname = nickname;
-        this.major = major;
-        this.description = description;
-        this.link = link;
-    }
 }

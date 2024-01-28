@@ -27,7 +27,7 @@ public class UserController implements UserSpec {
         return userService.getUserProfile(userId);
     }
 
-    @PatchMapping("/{userId}")
+    @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileUpdateRequest request) {
         userService.updateUserProfile(userId, request);

@@ -43,17 +43,6 @@ public class UserService {
     @Transactional
     public void updateUserProfile(Long userId, UserProfileUpdateRequest request){
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new IllegalStateException("해당 ID의 유저를 찾을 수 없습니다."));
-
-        String profileImageUrl = request.getProfileImageUrl().orElse(null);// 추후 기본 프로필 url로 설정
-        String major = request.getMajor().orElse(null);
-        String description = request.getDescription().orElse(null);
-        String link = request.getLink().orElse(null);
-
-        if (profileImageUrl != null) {
-            userEntity.updateProfile(profileImageUrl, request.getNickname(), major, description, link);
-            return;
-        }
-
-        userEntity.updateProfile(request.getNickname(), major, description, link);
+        userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(), request.getMajor(), request.getDescription(), request.getLink());
     }
 }

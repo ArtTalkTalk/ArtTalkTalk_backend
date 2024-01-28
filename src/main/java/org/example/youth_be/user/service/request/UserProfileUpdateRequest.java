@@ -8,9 +8,9 @@ import java.util.Optional;
 @Getter
 @AllArgsConstructor
 public class UserProfileUpdateRequest {
-    private Optional<String> profileImageUrl;
+    private String profileImageUrl;
     private String nickname;
-    private Optional<String> major;
-    private Optional<String> description;
-    private Optional<String> link;
+    private String major;
+    private String description;
+    private String link;
 }
