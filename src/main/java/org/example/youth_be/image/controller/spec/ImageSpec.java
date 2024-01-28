@@ -9,5 +9,5 @@ import org.springframework.http.ResponseEntity;
 @Tag(name = ApiTags.IMAGE)
 public interface ImageSpec {
     @Operation(description = "프로필 이미지 업로드 API입니다.")
-    ResponseEntity<?> uploadImage(ImageUploadRequest request);
+    ResponseEntity<?> uploadImage(ImageUploadRequest request) throws Exception;
 }

@@ -6,6 +6,9 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.youth_be.common.exceptions.YouthBadRequestException;
+import org.example.youth_be.common.exceptions.YouthException;
+import org.example.youth_be.common.exceptions.YouthInternalException;
 import org.example.youth_be.common.s3.FileNameGenerator;
 import org.example.youth_be.common.s3.S3Properties;
 import org.slf4j.Logger;
@@ -48,14 +51,14 @@ public class S3FileUploader implements FileUploader {
             amazonS3Client.putObject(new PutObjectRequest(s3Properties.getS3().getBucket(), fileName, bis, objectMetadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead));
         } catch (IOException e) {
-            throw new Exception("파일 업로드에 실패했습니다.");
+            throw new YouthInternalException("파일 업로드에 실패했습니다.", null);
         }
     }
 
     // MultipartFile이 비어있는지 확인
     private void validateFileExists(MultipartFile multipartFile) throws Exception {
         if (multipartFile.isEmpty()) {
-            throw new Exception("업로드할 파일이 없습니다.");
+            throw new YouthBadRequestException("업로드할 파일이 없습니다.", null);
         }
     }
 }

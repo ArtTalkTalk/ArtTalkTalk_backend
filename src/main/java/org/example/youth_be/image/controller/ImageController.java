@@ -16,7 +16,7 @@ public class ImageController implements ImageSpec {
     private final ImageService imageService;
 
     @PostMapping(value = "/profile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> uploadImage(@ModelAttribute ImageUploadRequest request) {
+    public ResponseEntity<?> uploadImage(@ModelAttribute ImageUploadRequest request) throws Exception {
         return ResponseEntity.ok(imageService.uploadImage(request));
     }
 }
