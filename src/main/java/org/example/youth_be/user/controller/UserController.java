@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.user.service.response.UserProfileDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +25,11 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public UserProfileDto getUserProfile(@PathVariable Long userId) {
         return userService.getUserProfile(userId);
+    }
+
+    @PutMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileUpdateRequest request) {
+        userService.updateUserProfile(userId, request);
     }
 }
