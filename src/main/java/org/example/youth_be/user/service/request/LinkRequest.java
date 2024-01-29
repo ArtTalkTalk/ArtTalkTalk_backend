@@ -5,7 +5,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class LinkRequest {
-    private Long id;
     private String title;
     private String url;
 }

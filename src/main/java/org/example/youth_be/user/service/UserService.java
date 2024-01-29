@@ -35,13 +35,14 @@ public class UserService {
                 .totalLikeCount(request.getTotalLikeCount())
                 .nickname(request.getNickname())
                 .build();
+        userRepository.save(userEntity);
+
         List<UserLinkEntity> userLinkEntities = request.getLinkRequestList().stream().map(linkRequest ->
                 UserLinkEntity.builder()
                         .userId(userEntity.getUserId())
                         .title(linkRequest.getTitle())
                         .linkUrl(linkRequest.getUrl()).build()).toList();
         userLinkRepository.saveAll(userLinkEntities);
-        userRepository.save(userEntity);
         return userEntity.getUserId();
     }
 
