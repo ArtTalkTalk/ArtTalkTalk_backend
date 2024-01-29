@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
-import org.example.youth_be.user.service.response.UserProfileDto;
+import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,13 +18,13 @@ public class UserController implements UserSpec {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUserForDev(@RequestBody DevUserProfileCreateRequest request) {
-        userService.createUserForDev(request);
+    public Long createUserForDev(@RequestBody DevUserProfileCreateRequest request) {
+        return userService.createUserForDev(request);
     }
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserProfileDto getUserProfile(@PathVariable Long userId) {
+    public UserProfileResponse getUserProfile(@PathVariable Long userId) {
         return userService.getUserProfile(userId);
     }
 
@@ -31,5 +32,17 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public void updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileUpdateRequest request) {
         userService.updateUserProfile(userId, request);
+    }
+
+    @PostMapping("/{userId}/links")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long createUserLink(@PathVariable Long userId, @RequestBody LinkRequest request) {
+        return userService.createUserLink(userId, request);
+    }
+
+    @DeleteMapping("/{userId}/links/{linkId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUserLink(@PathVariable Long userId, @PathVariable Long linkId) {
+        userService.deleteUserLink(userId, linkId);
     }
 }
