@@ -2,7 +2,9 @@ package org.example.youth_be.user.controller.spec;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.common.ApiTags;
+import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.user.service.response.UserProfileDto;
@@ -17,4 +19,7 @@ public interface UserSpec {
 
     @Operation(description = "유저 프로필 수정 API")
     void updateUserProfile(Long userId, UserProfileUpdateRequest request);
+
+    @Operation(description = "유저의 작품 조회 API")
+    PageResponse<ArtworkEntity> getUserArtworks(Long userId, Long artworkId);
 }
