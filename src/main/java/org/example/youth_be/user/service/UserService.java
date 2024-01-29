@@ -7,6 +7,7 @@ import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.stereotype.Service;
@@ -57,5 +58,23 @@ public class UserService {
     public void updateUserProfile(Long userId, UserProfileUpdateRequest request) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(), request.getMajor(), request.getDescription());
+    }
+
+    @Transactional
+    public Long createUserLink(Long userId, LinkRequest request) {
+        userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        UserLinkEntity newUserLinkEntity = UserLinkEntity.builder()
+                .userId(userId)
+                .title(request.getTitle())
+                .linkUrl(request.getUrl())
+                .build();
+        userLinkRepository.save(newUserLinkEntity);
+        return newUserLinkEntity.getUserId();
+    }
+
+    @Transactional
+    public void deleteUserLink(Long userId, Long linkId) {
+        userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        userLinkRepository.deleteById(linkId);
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.http.HttpStatus;
@@ -31,5 +32,17 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public void updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileUpdateRequest request) {
         userService.updateUserProfile(userId, request);
+    }
+
+    @PostMapping("/{userId}/links")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Long createUserLink(@PathVariable Long userId, @RequestBody LinkRequest request) {
+        return userService.createUserLink(userId, request);
+    }
+
+    @DeleteMapping("/{userId}/links/{linkId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteUserLink(@PathVariable Long userId, @PathVariable Long linkId) {
+        userService.deleteUserLink(userId, linkId);
     }
 }

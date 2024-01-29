@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 
@@ -17,4 +18,10 @@ public interface UserSpec {
 
     @Operation(description = "유저 프로필 수정 API")
     void updateUserProfile(Long userId, UserProfileUpdateRequest request);
+
+    @Operation(description = "유저 링크 생성 API")
+    Long createUserLink(Long userId, LinkRequest request);
+
+    @Operation(description = "유저 링크 삭제 API")
+    void deleteUserLink(Long userId, Long linkId);
 }
