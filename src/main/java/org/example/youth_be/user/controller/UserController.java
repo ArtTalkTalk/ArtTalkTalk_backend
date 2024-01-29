@@ -1,6 +1,8 @@
 package org.example.youth_be.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.artwork.domain.ArtworkEntity;
+import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
@@ -31,5 +33,11 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public void updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileUpdateRequest request) {
         userService.updateUserProfile(userId, request);
+    }
+
+    @GetMapping("/{userId}/artworks")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<ArtworkEntity> getUserArtworks(@PathVariable Long userId, @RequestParam(required = false) Long artworkId) {
+        return userService.getUserArtworks(userId, artworkId);
     }
 }
