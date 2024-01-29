@@ -5,15 +5,15 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
-import org.example.youth_be.user.service.response.UserProfileDto;
+import org.example.youth_be.user.service.response.UserProfileResponse;
 
 @Tag(name = ApiTags.USER)
 public interface UserSpec {
     @Operation(description = "개발용 유저 생성 API [값을 넣지 않으면 서버에서 임의로 넣습니다.]")
-    void createUserForDev(DevUserProfileCreateRequest request);
+    Long createUserForDev(DevUserProfileCreateRequest request);
 
     @Operation(description = "유저 프로필 조회 API")
-    UserProfileDto getUserProfile(Long userId);
+    UserProfileResponse getUserProfile(Long userId);
 
     @Operation(description = "유저 프로필 수정 API")
     void updateUserProfile(Long userId, UserProfileUpdateRequest request);

@@ -3,6 +3,7 @@ package org.example.youth_be.user.service.request;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Optional;
 
 @Getter
@@ -12,5 +13,4 @@ public class UserProfileUpdateRequest {
     private String nickname;
     private String major;
     private String description;
-    private String link;
 }

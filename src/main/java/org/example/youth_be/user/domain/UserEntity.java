@@ -34,19 +34,12 @@ public class UserEntity {
 
     private String description;
 
-    @Column(length = 1000)
-    private String link;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private UserRoleEnum userRole;
-
     private Long totalLikeCount;
 
     private Long followerCount;
 
     @Builder
-    public UserEntity(Long userId, SocialTypeEnum socialType, String profileImageUrl, String socialId, String nickname, String major, String description, String link, UserRoleEnum userRole, Long totalLikeCount, Long followerCount) {
+    public UserEntity(Long userId, SocialTypeEnum socialType, String profileImageUrl, String socialId, String nickname, String major, String description, Long totalLikeCount, Long followerCount) {
         this.userId = userId;
         this.socialType = socialType;
         this.profileImageUrl = profileImageUrl;
@@ -54,17 +47,14 @@ public class UserEntity {
         this.nickname = nickname;
         this.major = major;
         this.description = description;
-        this.link = link;
-        this.userRole = userRole;
         this.totalLikeCount = totalLikeCount;
         this.followerCount = followerCount;
     }
 
-    public void updateProfile(String profileImageUrl, String nickname, String major, String description, String link) {
+    public void updateProfile(String profileImageUrl, String nickname, String major, String description) {
         this.profileImageUrl = profileImageUrl;
         this.nickname = nickname;
         this.major = major;
         this.description = description;
-        this.link = link;
     }
 }
