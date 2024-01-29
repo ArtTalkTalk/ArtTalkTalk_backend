@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.example.youth_be.common.entity.BaseEntity;
 import org.example.youth_be.user.enums.SocialTypeEnum;
 import org.example.youth_be.user.enums.UserRoleEnum;
 
@@ -12,7 +13,7 @@ import org.example.youth_be.user.enums.UserRoleEnum;
 @Table(name = "users")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity {
+public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;

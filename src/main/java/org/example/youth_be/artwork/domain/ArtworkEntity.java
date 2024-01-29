@@ -6,12 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.youth_be.artwork.enums.ArtworkStatus;
+import org.example.youth_be.common.entity.BaseEntity;
 
 @Entity
 @Table(name = "Artwork")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ArtworkEntity {
+public class ArtworkEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long artworkId;
