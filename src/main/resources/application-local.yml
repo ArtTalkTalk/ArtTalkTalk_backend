@@ -3,13 +3,12 @@ spring.config.activate.on-profile: local
 spring:
   config:
     import:
-        - application-secret-aws.yml
+      - application-secret-aws.yml
 
-  # H2 Setting Info (H2 Console에 접속하기 위한 설정정보 입력)
   h2:
     console:
-      enabled: true  # H2 Console을 사용할지 여부 (H2 Console은 H2 Database를 UI로 제공해주는 기능)
-      path: /h2-console  # H2 Console의 Path
+      enabled: true
+      path: /h2-console
 
   datasource:
     driver-class-name: org.h2.Driver
