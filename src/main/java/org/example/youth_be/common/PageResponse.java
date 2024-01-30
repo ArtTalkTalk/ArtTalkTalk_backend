@@ -11,9 +11,8 @@ import java.util.List;
 public class PageResponse<T> {
     private List<T> contents;
     private boolean hasNext;
-    private Long cursorId;
 
-    public static <T> PageResponse<T> of(Slice<T> slice, Long cursorId) {
-        return new PageResponse<>(slice.getContent(), slice.hasNext(), cursorId);
+    public static <T> PageResponse<T> of(Slice<T> slice) {
+        return new PageResponse<>(slice.getContent(), slice.hasNext());
     }
 }
