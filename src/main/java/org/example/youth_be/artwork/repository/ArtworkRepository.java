@@ -7,9 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ArtworkRepository extends JpaRepository<ArtworkEntity, Long> {
+public interface ArtworkRepository extends JpaRepository<ArtworkEntity, Long>, ArtworkRepositoryCustom {
 
-    Slice<ArtworkEntity> findAllByUserIdOrderByArtworkIdDesc(Long userId, Pageable pageable);
-
-    Slice<ArtworkEntity> findByUserIdAndArtworkIdLessThanOrderByArtworkIdDesc(Long userId, Long artworkId, Pageable page);
 }
