@@ -32,10 +32,12 @@ public class ArtworkEntity extends BaseEntity {
 
     private Long commentCount;
 
+    private String thumbnailImageUrl;
+
     private Long userId;
 
     @Builder
-    public ArtworkEntity(Long artworkId, String title, String description, ArtworkStatus artworkStatus, Long viewCount, Long likeCount, Long commentCount, Long userId) {
+    public ArtworkEntity(Long artworkId, String title, String description, ArtworkStatus artworkStatus, Long viewCount, Long likeCount, Long commentCount, String thumbnailImageUrl, Long userId) {
         this.artworkId = artworkId;
         this.title = title;
         this.description = description;
@@ -43,6 +45,7 @@ public class ArtworkEntity extends BaseEntity {
         this.viewCount = viewCount;
         this.likeCount = likeCount;
         this.commentCount = commentCount;
+        this.thumbnailImageUrl = thumbnailImageUrl;
         this.userId = userId;
     }
 
