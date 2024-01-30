@@ -1,15 +1,21 @@
 package org.example.youth_be.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.artwork.repository.ArtworkRepositoryCustom;
+import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
+import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
+import org.example.youth_be.user.enums.ArtworkType;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
+import org.example.youth_be.user.service.response.UserArtworkResponse;
 import org.example.youth_be.user.service.response.UserProfileResponse;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +26,8 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserLinkRepository userLinkRepository;
+    private final ArtworkRepositoryCustom artworkRepositoryCustom;
+
 
     /**
      * 개발용입니다.
@@ -76,5 +84,22 @@ public class UserService {
     public void deleteUserLink(Long userId, Long linkId) {
         userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         userLinkRepository.deleteById(linkId);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<UserArtworkResponse> getUserArtworks(Long userId, ArtworkType type, ArtworkPaginationRequest request) {
+        Integer size = request.getSize();
+        Long cursorId = request.getLastIdxId();
+
+        Slice<UserArtworkResponse> response = null;
+        if (type == ArtworkType.ALL){
+            response = artworkRepositoryCustom.findAllByCondition(userId, cursorId, size);
+        } else if (type == ArtworkType.SELLING) {
+            response = artworkRepositoryCustom.findSellingsByCondition(userId, cursorId, size);
+        } else {
+            response = artworkRepositoryCustom.findLikedByCondition(userId, cursorId, size);
+        }
+
+        return PageResponse.of(response);
     }
 }

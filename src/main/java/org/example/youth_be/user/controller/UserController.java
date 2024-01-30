@@ -1,11 +1,15 @@
 package org.example.youth_be.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
+import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.user.controller.spec.UserSpec;
+import org.example.youth_be.user.enums.ArtworkType;
 import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
+import org.example.youth_be.user.service.response.UserArtworkResponse;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -44,5 +48,11 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public void deleteUserLink(@PathVariable Long userId, @PathVariable Long linkId) {
         userService.deleteUserLink(userId, linkId);
+    }
+
+    @GetMapping("/{userId}/artworks")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<UserArtworkResponse> getUserArtworks(@PathVariable Long userId, @RequestParam ArtworkType type, @ModelAttribute ArtworkPaginationRequest request) {
+        return userService.getUserArtworks(userId, type, request);
     }
 }
