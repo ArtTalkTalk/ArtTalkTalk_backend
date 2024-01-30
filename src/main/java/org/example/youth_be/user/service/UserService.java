@@ -1,7 +1,7 @@
 package org.example.youth_be.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.youth_be.artwork.repository.ArtworkRepositoryCustom;
+import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
@@ -26,8 +26,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final UserLinkRepository userLinkRepository;
-    private final ArtworkRepositoryCustom artworkRepositoryCustom;
-
+    private final ArtworkRepository artworkRepository;
 
     /**
      * 개발용입니다.
@@ -93,11 +92,11 @@ public class UserService {
 
         Slice<UserArtworkResponse> response = null;
         if (type == ArtworkType.ALL){
-            response = artworkRepositoryCustom.findAllByCondition(userId, cursorId, size);
+            response = artworkRepository.findAllByCondition(userId, cursorId, size);
         } else if (type == ArtworkType.SELLING) {
-            response = artworkRepositoryCustom.findSellingsByCondition(userId, cursorId, size);
+            response = artworkRepository.findSellingsByCondition(userId, cursorId, size);
         } else {
-            response = artworkRepositoryCustom.findLikedByCondition(userId, cursorId, size);
+            response = artworkRepository.findLikedByCondition(userId, cursorId, size);
         }
 
         return PageResponse.of(response);
