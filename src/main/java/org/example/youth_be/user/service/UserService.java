@@ -1,16 +1,15 @@
 package org.example.youth_be.user.service;
 
 import lombok.RequiredArgsConstructor;
-import org.example.youth_be.artwork.domain.ArtworkEntity;
-import org.example.youth_be.artwork.repository.ArtworkRepository;
-import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.user.domain.UserEntity;
+import org.example.youth_be.user.domain.UserLinkEntity;
+import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
-import org.example.youth_be.user.service.response.UserProfileDto;
-import org.springframework.data.domain.*;
+import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,23 +18,18 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
-    final int COUNT_PER_SCROLL = 15;
-
     private final UserRepository userRepository;
-    private final ArtworkRepository artworkRepository;
+    private final UserLinkRepository userLinkRepository;
 
     /**
      * 개발용입니다.
      */
     @Transactional
-    public void createUserForDev(DevUserProfileCreateRequest request) {
+    public Long createUserForDev(DevUserProfileCreateRequest request) {
         UserEntity userEntity = UserEntity.builder()
                 .profileImageUrl(request.getProfileImageUrl())
                 .major(request.getMajor())
-                .userRole(request.getUserRole())
                 .description(request.getDescription())
-                .link(request.getLink())
                 .followerCount(request.getFollowerCount())
                 .socialId(request.getSocialId())
                 .socialType(request.getSocialType())
@@ -43,42 +37,44 @@ public class UserService {
                 .nickname(request.getNickname())
                 .build();
         userRepository.save(userEntity);
+
+        List<UserLinkEntity> userLinkEntities = request.getLinkRequestList().stream().map(linkRequest ->
+                UserLinkEntity.builder()
+                        .userId(userEntity.getUserId())
+                        .title(linkRequest.getTitle())
+                        .linkUrl(linkRequest.getUrl()).build()).toList();
+        userLinkRepository.saveAll(userLinkEntities);
+        return userEntity.getUserId();
     }
 
     @Transactional(readOnly = true)
-    public UserProfileDto getUserProfile(Long userId) {
+    public UserProfileResponse getUserProfile(Long userId) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
-        return UserProfileDto.of(userEntity);
+        List<UserLinkEntity> userLinkEntities = userLinkRepository.findAllByUserId(userId);
+        return UserProfileResponse.of(userEntity, userLinkEntities);
     }
 
     @Transactional
     public void updateUserProfile(Long userId, UserProfileUpdateRequest request) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
-        userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(), request.getMajor(), request.getDescription(), request.getLink());
+        userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(), request.getMajor(), request.getDescription());
     }
 
-    @Transactional(readOnly = true)
-    public PageResponse<ArtworkEntity> getUserArtworks(Long userId, Long artworkId) {
-        PageRequest pageable = PageRequest.of(0, COUNT_PER_SCROLL);
-        Slice<ArtworkEntity> artworks = getArtwork(userId, artworkId, pageable);
-
-        Long lastArtworkId = null;
-        if (!artworks.isEmpty()) {
-            List<ArtworkEntity> content = artworks.getContent();
-            lastArtworkId = content.get(content.size() - 1).getArtworkId(); // 마지막 artwork의 ID
-        }
-
-        return PageResponse.of(artworks, lastArtworkId);
+    @Transactional
+    public Long createUserLink(Long userId, LinkRequest request) {
+        userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        UserLinkEntity newUserLinkEntity = UserLinkEntity.builder()
+                .userId(userId)
+                .title(request.getTitle())
+                .linkUrl(request.getUrl())
+                .build();
+        userLinkRepository.save(newUserLinkEntity);
+        return newUserLinkEntity.getUserId();
     }
 
-    private Slice<ArtworkEntity> getArtwork(Long userId, Long artworkId, Pageable page) {
-
-        if (artworkId == null) {
-            // 첫 번째 페이지 요청 시 가장 최신의 데이터부터 시작
-            return this.artworkRepository.findAllByUserIdOrderByArtworkIdDesc(userId, page);
-        } else {
-            // 커서 기반 페이징: 주어진 artworkId보다 작은 데이터 조회
-            return this.artworkRepository.findByUserIdAndArtworkIdLessThanOrderByArtworkIdDesc(userId, artworkId, page);
-        }
+    @Transactional
+    public void deleteUserLink(Long userId, Long linkId) {
+        userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        userLinkRepository.deleteById(linkId);
     }
 }
