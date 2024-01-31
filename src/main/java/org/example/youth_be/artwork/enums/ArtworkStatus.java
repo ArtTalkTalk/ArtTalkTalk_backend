@@ -7,10 +7,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ArtworkStatus {
 
-    PUBLIC("공개"),
-    SELLING("판매중"),
-    FREE("무료나눔"),
-    PRIVATE("나만 보기");
+    PUBLIC("게시용"),
+    SELLING("판매"),
+    FREE("무료나눔");
 
     private final String description;
 }
