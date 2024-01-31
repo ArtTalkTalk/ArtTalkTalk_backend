@@ -7,7 +7,6 @@ import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
-import org.example.youth_be.user.enums.ArtworkType;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
@@ -86,7 +85,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkType type, ArtworkPaginationRequest request) {
+    public PageResponse<ArtworkResponse> getUserArtworks(Long userId, String type, ArtworkPaginationRequest request) {
         Integer size = request.getSize();
         Long cursorId = request.getLastIdxId();
 
