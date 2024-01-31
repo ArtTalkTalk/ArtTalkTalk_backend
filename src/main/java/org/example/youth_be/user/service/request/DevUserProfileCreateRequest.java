@@ -4,21 +4,18 @@ import lombok.Getter;
 import org.example.youth_be.user.enums.SocialTypeEnum;
 import org.example.youth_be.user.enums.UserRoleEnum;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.random.RandomGenerator;
 
 @Getter
 public class DevUserProfileCreateRequest {
-    private String profileImageUrl = null;
-    private SocialTypeEnum socialType = SocialTypeEnum.GOOGLE;
-    private UserRoleEnum userRole = UserRoleEnum.REGULAR;
-    private String socialId = "social";
-    private String nickname = UUID.randomUUID().toString();
-    private String major = "아무런학과";
-    private String description = "아무런설명";
-    private List<LinkRequest> linkRequestList = new ArrayList<>();
-    private Long totalLikeCount = Math.abs(RandomGenerator.getDefault().nextLong() % 100);
-    private Long followerCount = Math.abs(RandomGenerator.getDefault().nextLong() % 100);
+    private String profileImageUrl;
+    private SocialTypeEnum socialType;
+    private UserRoleEnum userRole;
+    private String socialId;
+    private String nickname;
+    private String major;
+    private String description;
+    private List<LinkRequest> linkRequestList;
+    private Long totalLikeCount;
+    private Long followerCount;
 }

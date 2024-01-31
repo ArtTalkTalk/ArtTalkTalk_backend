@@ -17,8 +17,8 @@ public class ArtworkService {
      * 개발용입니다.
      */
     @Transactional
-    public void createArtworkForDev(DevArtworkCreateRequest request) {
+    public Long createArtworkForDev(DevArtworkCreateRequest request) {
         ArtworkEntity entity = request.toEntity();
-        artworkRepository.save(entity);
+        return artworkRepository.save(entity).getArtworkId();
     }
 }

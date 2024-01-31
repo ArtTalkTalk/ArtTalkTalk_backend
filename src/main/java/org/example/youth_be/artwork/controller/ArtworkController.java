@@ -16,7 +16,7 @@ public class ArtworkController implements ArtworkSpec {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createArtworkForDev(@RequestBody DevArtworkCreateRequest request) {
-        artworkService.createArtworkForDev(request);
+    public Long createArtworkForDev(@RequestBody DevArtworkCreateRequest request) {
+        return artworkService.createArtworkForDev(request);
     }
 }
