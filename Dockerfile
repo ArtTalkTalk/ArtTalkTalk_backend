@@ -11,4 +11,4 @@ COPY build/libs/youth_be-0.0.1-SNAPSHOT.jar /app/
 EXPOSE 8080
 
 # Define the command to run your application
-CMD ["java", "-jar", "-Dspring.profiles.active=dev", "-Duser.timezone=Asia/Seoul", "/app/youth_be-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "-Dspring.profiles.active=prod", "-Duser.timezone=Asia/Seoul", "/app/youth_be-0.0.1-SNAPSHOT.jar"]
