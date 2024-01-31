@@ -49,4 +49,9 @@ public class ArtworkEntity extends BaseEntity {
         this.userId = userId;
     }
 
+    public void setCount(){
+        this.viewCount = 0L;
+        this.likeCount = 0L;
+        this.commentCount = 0L;
+    }
 }
