@@ -1,7 +1,9 @@
-spring.config.activate.on-profile: dev
+spring.config.activate.on-profile: dev, prod
 
 spring:
   config:
     import:
       - application-secret-aws.yml
       - application-secret-datasource.yml
+logging:
+  config: classpath:logback-spring.xml
