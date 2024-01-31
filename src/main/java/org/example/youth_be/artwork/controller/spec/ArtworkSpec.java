@@ -8,5 +8,5 @@ import org.example.youth_be.common.ApiTags;
 @Tag(name = ApiTags.ARTWORK)
 public interface ArtworkSpec {
     @Operation(description = "mock 데이터 용 작품 업로드 API입니다.")
-    void createArtworkForDev(DevArtworkCreateRequest request);
+    Long createArtworkForDev(DevArtworkCreateRequest request);
 }
