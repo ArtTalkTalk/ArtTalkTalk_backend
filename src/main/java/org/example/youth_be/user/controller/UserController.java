@@ -9,7 +9,7 @@ import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
-import org.example.youth_be.user.service.response.UserArtworkResponse;
+import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -52,7 +52,7 @@ public class UserController implements UserSpec {
 
     @GetMapping("/{userId}/artworks")
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<UserArtworkResponse> getUserArtworks(@PathVariable Long userId, @RequestParam ArtworkType type, @ModelAttribute ArtworkPaginationRequest request) {
+    public PageResponse<ArtworkResponse> getUserArtworks(@PathVariable Long userId, @RequestParam ArtworkType type, @ModelAttribute ArtworkPaginationRequest request) {
         return userService.getUserArtworks(userId, type, request);
     }
 }

@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.artwork.domain.QArtworkEntity;
 import org.example.youth_be.artwork.enums.ArtworkStatus;
+import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.like.domain.QLikeEntity;
 import org.example.youth_be.user.domain.QUserEntity;
 import org.example.youth_be.user.domain.UserEntity;
-import org.example.youth_be.user.service.response.UserArtworkResponse;
+import org.example.youth_be.user.enums.ArtworkType;
+import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -28,7 +30,20 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
     QLikeEntity like = QLikeEntity.likeEntity;
 
     @Override
-    public Slice<UserArtworkResponse> findAllByCondition(Long userId, Long cursorId, Integer size) {
+    public Slice<ArtworkResponse> findByUserAndArtworkType(Long userId, Long cursorId, Integer size, ArtworkType type) {
+        switch (type) {
+            case ALL:
+                return findAllByCondition(userId, cursorId, size);
+            case SELLING:
+                return findSellingsByCondition(userId, cursorId, size);
+            case COLLECTION:
+                return findCollectionByCondition(userId, cursorId, size);
+            default:
+                throw new YouthNotFoundException("작품을 찾을 수 없습니다.", null);
+        }
+    }
+
+    private Slice<ArtworkResponse> findAllByCondition(Long userId, Long cursorId, Integer size) {
 
         UserEntity artist = jpaQueryFactory
                 .selectFrom(user)
@@ -45,8 +60,8 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                 .fetch();
 
         // UserArtworkResponse로 변환 (작가 정보 조회 생략)
-        List<UserArtworkResponse> responses = artworks.stream().limit(size).map(a ->
-                UserArtworkResponse.of(a.getArtworkId(), a.getTitle(), a.getDescription(), a.getArtworkStatus(),
+        List<ArtworkResponse> responses = artworks.stream().limit(size).map(a ->
+                ArtworkResponse.of(a.getArtworkId(), a.getTitle(), a.getDescription(), a.getArtworkStatus(),
                         a.getViewCount(), a.getLikeCount(), a.getCommentCount(), a.getThumbnailImageUrl(), userId,
                         artist.getNickname(), artist.getProfileImageUrl(), a.getCreatedAt(), a.getUpdatedAt())).collect(Collectors.toList());
 
@@ -59,8 +74,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
         return new SliceImpl<>(responses, pageable, hasNext);
     }
 
-    @Override
-    public Slice<UserArtworkResponse> findSellingsByCondition(Long userId, Long cursorId, Integer size) {
+    private Slice<ArtworkResponse> findSellingsByCondition(Long userId, Long cursorId, Integer size) {
         UserEntity artist = jpaQueryFactory
                 .selectFrom(user)
                 .where(user.userId.eq(userId))
@@ -77,8 +91,8 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                 .fetch();
 
         // UserArtworkResponse로 변환
-        List<UserArtworkResponse> responses = artworks.stream().limit(size).map(a ->
-                UserArtworkResponse.of(a.getArtworkId(), a.getTitle(), a.getDescription(), a.getArtworkStatus(),
+        List<ArtworkResponse> responses = artworks.stream().limit(size).map(a ->
+                ArtworkResponse.of(a.getArtworkId(), a.getTitle(), a.getDescription(), a.getArtworkStatus(),
                         a.getViewCount(), a.getLikeCount(), a.getCommentCount(), a.getThumbnailImageUrl(), userId,
                         artist.getNickname(), artist.getProfileImageUrl(), a.getCreatedAt(), a.getUpdatedAt())
         ).collect(Collectors.toList());
@@ -93,8 +107,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
     }
 
 
-    @Override
-    public Slice<UserArtworkResponse> findLikedByCondition(Long userId, Long cursorId, Integer size) {
+    private Slice<ArtworkResponse> findCollectionByCondition(Long userId, Long cursorId, Integer size) {
 
         // Step 1: 사용자가 좋아요한 Artwork의 ID 목록 조회
         List<Long> likedArtworkIds = jpaQueryFactory
@@ -113,14 +126,14 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                 .fetch();
 
         // UserArtworkResponse로 변환
-        List<UserArtworkResponse> responses = artworks.stream().limit(size).map(a -> {
+        List<ArtworkResponse> responses = artworks.stream().limit(size).map(a -> {
             // UserEntity 조회
             UserEntity artist = jpaQueryFactory
                     .selectFrom(user)
                     .where(user.userId.eq(a.getUserId()))
                     .fetchOne();
 
-            return UserArtworkResponse.of(a.getArtworkId(), a.getTitle(), a.getDescription(), a.getArtworkStatus(),
+            return ArtworkResponse.of(a.getArtworkId(), a.getTitle(), a.getDescription(), a.getArtworkStatus(),
                     a.getViewCount(), a.getLikeCount(), a.getCommentCount(), a.getThumbnailImageUrl(), a.getUserId(),
                     artist.getNickname(), artist.getProfileImageUrl(), a.getCreatedAt(), a.getUpdatedAt());
         }).collect(Collectors.toList());

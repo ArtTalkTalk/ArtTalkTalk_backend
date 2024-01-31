@@ -9,7 +9,7 @@ import org.example.youth_be.user.enums.ArtworkType;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
-import org.example.youth_be.user.service.response.UserArtworkResponse;
+import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 
 @Tag(name = ApiTags.USER)
@@ -30,6 +30,6 @@ public interface UserSpec {
     void deleteUserLink(Long userId, Long linkId);
 
     @Operation(description = "유저의 작품 조회 API")
-    PageResponse<UserArtworkResponse> getUserArtworks(Long userId, ArtworkType type, ArtworkPaginationRequest request);
+    PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkType type, ArtworkPaginationRequest request);
 
 }

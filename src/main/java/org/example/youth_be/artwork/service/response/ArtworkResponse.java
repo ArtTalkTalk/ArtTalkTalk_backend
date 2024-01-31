@@ -1,4 +1,4 @@
-package org.example.youth_be.user.service.response;
+package org.example.youth_be.artwork.service.response;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class UserArtworkResponse {
+public class ArtworkResponse {
     private Long artworkId;
     private String title;
     private String description;
@@ -23,8 +23,8 @@ public class UserArtworkResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static UserArtworkResponse of(Long artworkId, String title, String description, ArtworkStatus artworkStatus, Long viewCount, Long likeCount, Long commentCount, String thumbnailImageUrl, Long artistId, String artistName, String artistProfileImageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
-        return UserArtworkResponse.builder()
+    public static ArtworkResponse of(Long artworkId, String title, String description, ArtworkStatus artworkStatus, Long viewCount, Long likeCount, Long commentCount, String thumbnailImageUrl, Long artistId, String artistName, String artistProfileImageUrl, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        return ArtworkResponse.builder()
                 .artworkId(artworkId)
                 .title(title)
                 .description(description)

@@ -13,7 +13,7 @@ import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
-import org.example.youth_be.user.service.response.UserArtworkResponse;
+import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -86,19 +86,11 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<UserArtworkResponse> getUserArtworks(Long userId, ArtworkType type, ArtworkPaginationRequest request) {
+    public PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkType type, ArtworkPaginationRequest request) {
         Integer size = request.getSize();
         Long cursorId = request.getLastIdxId();
 
-        Slice<UserArtworkResponse> response = null;
-        if (type == ArtworkType.ALL){
-            response = artworkRepository.findAllByCondition(userId, cursorId, size);
-        } else if (type == ArtworkType.SELLING) {
-            response = artworkRepository.findSellingsByCondition(userId, cursorId, size);
-        } else {
-            response = artworkRepository.findLikedByCondition(userId, cursorId, size);
-        }
-
+        Slice<ArtworkResponse> response = artworkRepository.findByUserAndArtworkType(userId, cursorId, size, type);
         return PageResponse.of(response);
     }
 }
