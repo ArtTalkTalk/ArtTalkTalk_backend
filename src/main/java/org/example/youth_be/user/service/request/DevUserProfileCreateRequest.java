@@ -13,7 +13,8 @@ public class DevUserProfileCreateRequest {
     private UserRoleEnum userRole;
     private String socialId;
     private String nickname;
-    private String major;
+    private String activityField;
+    private String activityArea;
     private String description;
     private List<LinkRequest> linkRequestList;
     private Long totalLikeCount;

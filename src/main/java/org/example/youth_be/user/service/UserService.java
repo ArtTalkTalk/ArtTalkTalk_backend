@@ -35,7 +35,8 @@ public class UserService {
     public Long createUserForDev(DevUserProfileCreateRequest request) {
         UserEntity userEntity = UserEntity.builder()
                 .profileImageUrl(request.getProfileImageUrl())
-                .major(request.getMajor())
+                .activityField(request.getActivityField())
+                .activityArea(request.getActivityArea())
                 .description(request.getDescription())
                 .followerCount(request.getFollowerCount())
                 .socialId(request.getSocialId())
@@ -64,7 +65,8 @@ public class UserService {
     @Transactional
     public void updateUserProfile(Long userId, UserProfileUpdateRequest request) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
-        userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(), request.getMajor(), request.getDescription());
+        userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(),
+                request.getActivityField(), request.getActivityArea(), request.getDescription());
     }
 
     @Transactional
@@ -91,7 +93,7 @@ public class UserService {
         Long cursorId = request.getLastIdxId();
 
         Slice<UserArtworkResponse> response = null;
-        if (type == ArtworkType.ALL){
+        if (type == ArtworkType.ALL) {
             response = artworkRepository.findAllByCondition(userId, cursorId, size);
         } else if (type == ArtworkType.SELLING) {
             response = artworkRepository.findSellingsByCondition(userId, cursorId, size);

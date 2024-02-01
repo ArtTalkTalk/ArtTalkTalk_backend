@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.youth_be.common.entity.BaseEntity;
 import org.example.youth_be.user.enums.SocialTypeEnum;
-import org.example.youth_be.user.enums.UserRoleEnum;
 
 @Entity
 @Table(name = "users")
@@ -31,7 +30,10 @@ public class UserEntity extends BaseEntity {
     private String nickname;
 
     @Column(length = 50)
-    private String major;
+    private String activityField;
+
+    @Column(length = 255)
+    private String activityArea;
 
     private String description;
 
@@ -40,22 +42,24 @@ public class UserEntity extends BaseEntity {
     private Long followerCount;
 
     @Builder
-    public UserEntity(Long userId, SocialTypeEnum socialType, String profileImageUrl, String socialId, String nickname, String major, String description, Long totalLikeCount, Long followerCount) {
+    public UserEntity(Long userId, SocialTypeEnum socialType, String profileImageUrl, String socialId, String nickname, String activityField, String activityArea, String description, Long totalLikeCount, Long followerCount) {
         this.userId = userId;
         this.socialType = socialType;
         this.profileImageUrl = profileImageUrl;
         this.socialId = socialId;
         this.nickname = nickname;
-        this.major = major;
+        this.activityField = activityField;
+        this.activityArea = activityArea;
         this.description = description;
         this.totalLikeCount = totalLikeCount;
         this.followerCount = followerCount;
     }
 
-    public void updateProfile(String profileImageUrl, String nickname, String major, String description) {
+    public void updateProfile(String profileImageUrl, String nickname, String activityField, String activityArea, String description) {
         this.profileImageUrl = profileImageUrl;
         this.nickname = nickname;
-        this.major = major;
+        this.activityField = activityField;
+        this.activityArea = activityArea;
         this.description = description;
     }
 }
