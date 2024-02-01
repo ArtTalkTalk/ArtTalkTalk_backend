@@ -1,6 +1,7 @@
 package org.example.youth_be.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.PageResponse;
@@ -85,7 +86,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<ArtworkResponse> getUserArtworks(Long userId, String type, ArtworkPaginationRequest request) {
+    public PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request) {
         Integer size = request.getSize();
         Long cursorId = request.getLastIdxId();
 

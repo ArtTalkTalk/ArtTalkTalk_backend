@@ -2,6 +2,7 @@ package org.example.youth_be.artwork.controller.spec;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.youth_be.artwork.enums.ArtworkFeedType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.artwork.service.request.DevArtworkCreateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -14,5 +15,5 @@ public interface ArtworkSpec {
     Long createArtworkForDev(DevArtworkCreateRequest request);
 
     @Operation(description = "홈화면 피드 조회 API입니다.")
-    PageResponse<ArtworkResponse> getArtworks(Long userId, String type, ArtworkPaginationRequest request);
+    PageResponse<ArtworkResponse> getArtworks(Long userId, ArtworkFeedType type, ArtworkPaginationRequest request);
 }

@@ -2,6 +2,7 @@ package org.example.youth_be.user.controller.spec;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.common.PageResponse;
@@ -29,6 +30,6 @@ public interface UserSpec {
     void deleteUserLink(Long userId, Long linkId);
 
     @Operation(description = "유저의 작품 조회 API")
-    PageResponse<ArtworkResponse> getUserArtworks(Long userId, String type, ArtworkPaginationRequest request);
+    PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request);
 
 }

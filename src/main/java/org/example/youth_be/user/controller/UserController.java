@@ -1,6 +1,7 @@
 package org.example.youth_be.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.user.controller.spec.UserSpec;
@@ -51,7 +52,7 @@ public class UserController implements UserSpec {
 
     @GetMapping("/{userId}/artworks")
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<ArtworkResponse> getUserArtworks(@PathVariable Long userId, @RequestParam String type, @ModelAttribute ArtworkPaginationRequest request) {
+    public PageResponse<ArtworkResponse> getUserArtworks(@PathVariable Long userId, @RequestParam ArtworkMyPageType type, @ModelAttribute ArtworkPaginationRequest request) {
         return userService.getUserArtworks(userId, type, request);
     }
 }
