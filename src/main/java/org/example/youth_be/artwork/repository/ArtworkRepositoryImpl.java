@@ -4,17 +4,17 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.artwork.domain.QArtworkEntity;
+import org.example.youth_be.artwork.enums.ArtworkFeedType;
+import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.enums.ArtworkStatus;
-import org.example.youth_be.common.exceptions.YouthNotFoundException;
+import org.example.youth_be.common.CursorPagingCommon;
+import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.follow.domain.QFollowEntity;
 import org.example.youth_be.like.domain.QLikeEntity;
 import org.example.youth_be.user.domain.QUserEntity;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,28 +31,28 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
     QFollowEntity follow = QFollowEntity.followEntity;
 
     @Override
-    public Slice<ArtworkResponse> findByUserAndArtworkType(Long userId, Long cursorId, Integer size, String type) {
+    public Slice<ArtworkResponse> findByUserAndArtworkType(Long userId, Long cursorId, Integer size, ArtworkMyPageType type) {
         switch (type) {
-            case "ALL":
+            case ALL:
                 return findAllByCondition(userId, cursorId, size);
-            case "SELLING":
+            case SELLING:
                 return findSellingsByCondition(userId, cursorId, size);
-            case "COLLECTION":
+            case COLLECTION:
                 return findCollectionByCondition(userId, cursorId, size);
             default:
-                throw new YouthNotFoundException("작품을 찾을 수 없습니다.", null);
+                throw new YouthBadRequestException("지원하지 않는 파라미터 type 입니다.", null);
         }
     }
 
     @Override
-    public Slice<ArtworkResponse> findByFeedType(Long userId, Long cursorId, Integer size, String type) {
+    public Slice<ArtworkResponse> findByFeedType(Long userId, Long cursorId, Integer size, ArtworkFeedType type) {
         switch (type) {
-            case "ALL":
+            case ALL:
                 return findAllByCondition(cursorId, size);
-            case "FOLLOWING":
+            case FOLLOW:
                 return findFollowingByCondition(userId, cursorId, size);
             default:
-                throw new YouthNotFoundException("작품을 찾을 수 없습니다.", null);
+                throw new YouthBadRequestException("지원하지 않는 파라미터 type 입니다.", null);
         }
     }
 
@@ -79,13 +79,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
         }).collect(Collectors.toList());
 
 
-        boolean hasNext = artworks.size() > size;
-
-        // Pageable 객체 생성
-        Pageable pageable = PageRequest.of(0, size);
-
-        // SliceImpl 객체로 반환
-        return new SliceImpl<>(responses, pageable, hasNext);
+        return (Slice<ArtworkResponse>) CursorPagingCommon.getSlice(artworks, responses, size);
     }
 
     private Slice<ArtworkResponse> findFollowingByCondition(Long userId, Long cursorId, Integer size) {
@@ -119,18 +113,10 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
         }).collect(Collectors.toList());
 
 
-        boolean hasNext = artworks.size() > size;
-
-        // Pageable 객체 생성
-        Pageable pageable = PageRequest.of(0, size);
-
-        // SliceImpl 객체로 반환
-        return new SliceImpl<>(responses, pageable, hasNext);
+        return (Slice<ArtworkResponse>) CursorPagingCommon.getSlice(artworks, responses, size);
     }
 
-
-
-        private Slice<ArtworkResponse> findAllByCondition(Long userId, Long cursorId, Integer size) {
+    private Slice<ArtworkResponse> findAllByCondition(Long userId, Long cursorId, Integer size) {
 
         UserEntity artist = jpaQueryFactory
                 .selectFrom(user)
@@ -152,13 +138,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                         a.getViewCount(), a.getLikeCount(), a.getCommentCount(), a.getThumbnailImageUrl(), userId,
                         artist.getNickname(), artist.getProfileImageUrl(), a.getCreatedAt(), a.getUpdatedAt())).collect(Collectors.toList());
 
-        boolean hasNext = artworks.size() > size;
-
-        // Pageable 객체 생성
-        Pageable pageable = PageRequest.of(0, size);
-
-        // SliceImpl 객체로 반환
-        return new SliceImpl<>(responses, pageable, hasNext);
+        return (Slice<ArtworkResponse>) CursorPagingCommon.getSlice(artworks, responses, size);
     }
 
     private Slice<ArtworkResponse> findSellingsByCondition(Long userId, Long cursorId, Integer size) {
@@ -184,13 +164,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                         artist.getNickname(), artist.getProfileImageUrl(), a.getCreatedAt(), a.getUpdatedAt())
         ).collect(Collectors.toList());
 
-        boolean hasNext = artworks.size() > size; // 조회된 목록의 크기가 요청된 size보다 크면 다음 페이지가 존재
-
-        // Pageable 객체 생성
-        Pageable pageable = PageRequest.of(0, size);
-
-        // SliceImpl 객체로 반환
-        return new SliceImpl<>(responses, pageable, hasNext);
+        return (Slice<ArtworkResponse>) CursorPagingCommon.getSlice(artworks, responses, size);
     }
 
 
@@ -226,12 +200,6 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
         }).collect(Collectors.toList());
 
 
-        boolean hasNext = artworks.size() > size;
-
-        // Pageable 객체 생성
-        Pageable pageable = PageRequest.of(0, size);
-
-        // SliceImpl 객체로 반환
-        return new SliceImpl<>(responses, pageable, hasNext);
+        return (Slice<ArtworkResponse>) CursorPagingCommon.getSlice(artworks, responses, size);
     }
 }
