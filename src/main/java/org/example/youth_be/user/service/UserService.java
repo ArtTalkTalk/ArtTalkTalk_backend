@@ -83,7 +83,7 @@ public class UserService {
 
     @Transactional
     public void deleteUserLink(Long userId, Long linkId) {
-        userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        userLinkRepository.findByIdAndUserId(linkId, userId).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
         userLinkRepository.deleteById(linkId);
     }
 
