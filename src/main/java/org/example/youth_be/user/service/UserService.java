@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
+import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.user.domain.UserEntity;
@@ -90,7 +91,9 @@ public class UserService {
         Integer size = request.getSize();
         Long cursorId = request.getLastIdxId();
 
-        Slice<ArtworkResponse> response = artworkRepository.findByUserAndArtworkType(userId, cursorId, size, type);
-        return PageResponse.of(response);
+        List<ArtworkResponse> responses = artworkRepository.findByUserAndArtworkType(userId, cursorId, size, type);
+
+        Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
+        return PageResponse.of(artworkResponses);
     }
 }

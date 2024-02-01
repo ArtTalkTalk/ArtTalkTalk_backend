@@ -1,5 +1,6 @@
 package org.example.youth_be.artwork.service.response;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.youth_be.artwork.enums.ArtworkStatus;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
+@AllArgsConstructor
 public class ArtworkResponse {
     private Long artworkId;
     private String title;
