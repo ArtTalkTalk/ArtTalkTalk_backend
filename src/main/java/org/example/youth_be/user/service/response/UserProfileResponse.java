@@ -16,8 +16,10 @@ public class UserProfileResponse {
     private Long userId;
     @Schema(description = "닉네임")
     private String nickname;
-    @Schema(description = "학과")
-    private String major;
+    @Schema(description = "활동 분야")
+    private String activityField;
+    @Schema(description = "활동 지역")
+    private String activityArea;
     @Schema(description = "한 줄 소개", nullable = true)
     private String description;
     @Schema(description = "프로필 이미지 URL", nullable = true)
@@ -33,7 +35,8 @@ public class UserProfileResponse {
         return new UserProfileResponse(
                 user.getUserId(),
                 user.getNickname(),
-                user.getMajor(),
+                user.getActivityField(),
+                user.getActivityArea(),
                 user.getDescription(),
                 user.getProfileImageUrl(),
                 user.getTotalLikeCount(),

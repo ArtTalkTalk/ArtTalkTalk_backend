@@ -36,7 +36,8 @@ public class UserService {
     public Long createUserForDev(DevUserProfileCreateRequest request) {
         UserEntity userEntity = UserEntity.builder()
                 .profileImageUrl(request.getProfileImageUrl())
-                .major(request.getMajor())
+                .activityField(request.getActivityField())
+                .activityArea(request.getActivityArea())
                 .description(request.getDescription())
                 .followerCount(request.getFollowerCount())
                 .socialId(request.getSocialId())
@@ -65,7 +66,8 @@ public class UserService {
     @Transactional
     public void updateUserProfile(Long userId, UserProfileUpdateRequest request) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
-        userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(), request.getMajor(), request.getDescription());
+        userEntity.updateProfile(request.getProfileImageUrl(), request.getNickname(),
+                request.getActivityField(), request.getActivityArea(), request.getDescription());
     }
 
     @Transactional
@@ -82,7 +84,7 @@ public class UserService {
 
     @Transactional
     public void deleteUserLink(Long userId, Long linkId) {
-        userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        userLinkRepository.findByIdAndUserId(linkId, userId).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
         userLinkRepository.deleteById(linkId);
     }
 
