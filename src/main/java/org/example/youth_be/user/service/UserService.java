@@ -6,6 +6,7 @@ import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
+import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
@@ -82,6 +83,9 @@ public class UserService {
         return newUserLinkEntity.getUserId();
     }
 
+    // 링크 수정
+    // 이미지 삭제
+
     @Transactional
     public void deleteUserLink(Long userId, Long linkId) {
         userLinkRepository.findByIdAndUserId(linkId, userId).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
@@ -97,5 +101,12 @@ public class UserService {
 
         Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
         return PageResponse.of(artworkResponses);
+    }
+
+    @Transactional(readOnly = true)
+    public void checkNicknameDuplicate(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new YouthDuplicateException("닉네임이 중복됩니다.", null);
+        }
     }
 }

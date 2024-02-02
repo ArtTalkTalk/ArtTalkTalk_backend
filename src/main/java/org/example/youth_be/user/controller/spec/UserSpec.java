@@ -17,6 +17,9 @@ public interface UserSpec {
     @Operation(description = "개발용 유저 생성 API [값을 넣지 않으면 서버에서 임의로 넣습니다.]")
     Long createUserForDev(DevUserProfileCreateRequest request);
 
+    @Operation(description = "닉네임 중복 체크 API")
+    void checkNicknameDuplicate(String nickname);
+
     @Operation(description = "유저 프로필 조회 API")
     UserProfileResponse getUserProfile(Long userId);
 
