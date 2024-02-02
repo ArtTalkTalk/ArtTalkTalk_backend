@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ArtworkStatus {
+public enum ArtworkMyPageType {
 
-    PUBLIC("게시용"),
+    ALL("전체"),
     SELLING("판매"),
-    FREE("무료나눔");
+    COLLECTION("컬렉션");
 
     private final String description;
 }

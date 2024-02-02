@@ -1,14 +1,14 @@
-package org.example.youth_be.user.enums;
+package org.example.youth_be.artwork.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum ArtworkType {
+public enum ArtworkFeedType {
 
-    ALL("전체"),SELLING("판매중"),COLLECTION("컬렉션");
+    ALL("전체"),
+    FOLLOW("팔로잉");
 
     private final String description;
-
 }
