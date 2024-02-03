@@ -6,7 +6,7 @@ import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
-import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.UserCreateRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -22,8 +22,8 @@ public class UserController implements UserSpec {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createUserForDev(@RequestBody DevUserProfileCreateRequest request) {
-        return userService.createUserForDev(request);
+    public Long createUser(@RequestBody UserCreateRequest request) {
+        return userService.createUser(request);
     }
 
     @GetMapping("/{userId}")

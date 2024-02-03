@@ -11,7 +11,7 @@ import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
-import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.UserCreateRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -29,30 +29,19 @@ public class UserService {
     private final UserLinkRepository userLinkRepository;
     private final ArtworkRepository artworkRepository;
 
-    /**
-     * 개발용입니다.
-     */
     @Transactional
-    public Long createUserForDev(DevUserProfileCreateRequest request) {
+    public Long createUser(UserCreateRequest request) {
         UserEntity userEntity = UserEntity.builder()
+                .userRole(request.getUserRole())
                 .profileImageUrl(request.getProfileImageUrl())
                 .activityField(request.getActivityField())
                 .activityArea(request.getActivityArea())
                 .description(request.getDescription())
-                .followerCount(request.getFollowerCount())
                 .socialId(request.getSocialId())
                 .socialType(request.getSocialType())
-                .totalLikeCount(request.getTotalLikeCount())
                 .nickname(request.getNickname())
                 .build();
         userRepository.save(userEntity);
-
-        List<UserLinkEntity> userLinkEntities = request.getLinkRequestList().stream().map(linkRequest ->
-                UserLinkEntity.builder()
-                        .userId(userEntity.getUserId())
-                        .title(linkRequest.getTitle())
-                        .linkUrl(linkRequest.getUrl()).build()).toList();
-        userLinkRepository.saveAll(userLinkEntities);
         return userEntity.getUserId();
     }
 
