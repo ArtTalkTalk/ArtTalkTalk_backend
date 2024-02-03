@@ -11,7 +11,7 @@ import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
-import org.example.youth_be.user.service.request.UserCreateRequest;
+import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -30,14 +30,15 @@ public class UserService {
     private final ArtworkRepository artworkRepository;
 
     @Transactional
-    public Long createUser(UserCreateRequest request) {
+    public Long signup(UserSignupRequest request) {
         UserEntity userEntity = UserEntity.builder()
                 .userRole(request.getUserRole())
                 .profileImageUrl(request.getProfileImageUrl())
                 .activityField(request.getActivityField())
                 .activityArea(request.getActivityArea())
                 .description(request.getDescription())
-                .socialId(request.getSocialId())
+//                .socialId(request.getSocialId())
+                .socialId(null)
                 .socialType(request.getSocialType())
                 .nickname(request.getNickname())
                 .build();

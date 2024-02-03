@@ -48,7 +48,7 @@ public class UserEntity extends BaseEntity {
     private Long followerCount;
 
     @Builder
-    public UserEntity(Long userId, SocialTypeEnum socialType, String profileImageUrl, String socialId, String nickname, String activityField, String activityArea, String description, UserRoleEnum userRole, Long totalLikeCount, Long followerCount) {
+    public UserEntity(Long userId, SocialTypeEnum socialType, String profileImageUrl,String socialId, String nickname, String activityField, String activityArea, String description, UserRoleEnum userRole, Long totalLikeCount, Long followerCount) {
         this.userId = userId;
         this.socialType = socialType;
         this.profileImageUrl = profileImageUrl;

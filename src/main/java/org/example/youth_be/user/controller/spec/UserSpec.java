@@ -6,7 +6,7 @@ import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.common.PageResponse;
-import org.example.youth_be.user.service.request.UserCreateRequest;
+import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -15,7 +15,7 @@ import org.example.youth_be.user.service.response.UserProfileResponse;
 @Tag(name = ApiTags.USER)
 public interface UserSpec {
     @Operation(description = "회원가입 API [값을 넣지 않으면 서버에서 임의로 넣습니다.]")
-    Long createUser(UserCreateRequest request);
+    Long signup(UserSignupRequest request);
 
     @Operation(description = "유저 프로필 조회 API")
     UserProfileResponse getUserProfile(Long userId);

@@ -1,12 +1,13 @@
 package org.example.youth_be.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
-import org.example.youth_be.user.service.request.UserCreateRequest;
+import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -22,8 +23,8 @@ public class UserController implements UserSpec {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createUser(@RequestBody UserCreateRequest request) {
-        return userService.createUser(request);
+    public Long signup(@Valid @RequestBody UserSignupRequest request) {
+        return userService.signup(request);
     }
 
     @GetMapping("/{userId}")
