@@ -31,7 +31,7 @@ public class GlobalExceptionHandler{
 
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(Exception.class)
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleExceptionHandler(HttpServletRequest request, Exception e) {
         log.error("defaultExceptionHandler", e);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
