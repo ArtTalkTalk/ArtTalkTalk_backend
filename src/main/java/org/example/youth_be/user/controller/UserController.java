@@ -26,6 +26,12 @@ public class UserController implements UserSpec {
         return userService.createUserForDev(request);
     }
 
+    @GetMapping("/check")
+    @ResponseStatus(HttpStatus.OK)
+    public void checkNicknameDuplicate(@RequestParam String nickname) {
+        userService.checkNicknameDuplicate(nickname);
+    }
+
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserProfileResponse getUserProfile(@PathVariable Long userId) {
