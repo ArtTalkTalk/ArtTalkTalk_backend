@@ -4,5 +4,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileUploader {
 
-    String uploadProfileImage(MultipartFile file) throws Exception;
+    String upload(MultipartFile file);
+
+    void delete(String fileName);
 }
