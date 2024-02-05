@@ -1,6 +1,7 @@
 package org.example.youth_be.image.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.image.enums.ImageType;
 import org.example.youth_be.image.service.request.ImageUploadRequest;
 import org.example.youth_be.image.service.response.UploadArtworkResponse;
 import org.example.youth_be.image.service.response.UploadImageResponse;
@@ -23,7 +24,7 @@ public class ImageService {
     private final FileUploader fileUploader;
 
     public UploadImageResponse uploadImage(ImageUploadRequest request) {
-            String imageUrl = fileUploader.upload(request.getFile());
+            String imageUrl = fileUploader.upload(request.getFile(), ImageType.PROFILE);
             return UploadImageResponse.of(imageUrl);
     }
 
@@ -32,7 +33,7 @@ public class ImageService {
         List<String> fileUrls = Arrays.stream(images)
                 .filter(multipartFile -> !multipartFile.isEmpty()) // 비어있지 않은 파일만 처리
                 .map(multipartFile -> {
-                    return fileUploader.upload(multipartFile);
+                    return fileUploader.upload(multipartFile, ImageType.ARTWORK);
                 })
                 .collect(Collectors.toList()); // 결과 URL을 리스트로 수집
 

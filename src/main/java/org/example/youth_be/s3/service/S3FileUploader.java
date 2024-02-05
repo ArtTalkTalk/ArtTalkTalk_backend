@@ -9,6 +9,7 @@ import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthInternalException;
 import org.example.youth_be.common.s3.FileNameGenerator;
 import org.example.youth_be.common.s3.S3Properties;
+import org.example.youth_be.image.enums.ImageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,14 +29,22 @@ public class S3FileUploader implements FileUploader {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, ImageType imageType) {
         try {
             validateFileExists(file);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        String fileName = fileNameGenerator.generateName(file.getOriginalFilename(), s3Properties.getUploadDirs().getProfileDirName());
+        String dirName;
+
+        if (imageType.equals(ImageType.PROFILE)) {
+            dirName = s3Properties.getUploadDirs().getProfileDirName();
+        } else {
+            dirName = s3Properties.getUploadDirs().getArtworkDirName();
+        }
+
+        String fileName = fileNameGenerator.generateName(file.getOriginalFilename(), dirName);
 
         try {
             log.info("[S3 File Upload] 시작 :{}", fileName);
