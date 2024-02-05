@@ -13,7 +13,7 @@ import org.example.youth_be.common.PageResponse;
 
 @Tag(name = ApiTags.ARTWORK)
 public interface ArtworkSpec {
-    @Operation(description = "mock 데이터 용 작품 업로드 API입니다.")
+    @Operation(description = "작품 업로드 API입니다.")
     Long createArtwork(ArtworkCreateRequest request);
 
     @Operation(description = "홈화면 피드 조회 API입니다.")

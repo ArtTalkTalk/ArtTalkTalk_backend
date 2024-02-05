@@ -11,6 +11,7 @@ import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.PageResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +21,7 @@ public class ArtworkController implements ArtworkSpec {
 
     private final ArtworkService artworkService;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public Long createArtwork(@ModelAttribute ArtworkCreateRequest request) {
         return artworkService.createArtwork(request);
