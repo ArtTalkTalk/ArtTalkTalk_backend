@@ -67,7 +67,7 @@ public class S3FileUploader implements FileUploader {
             log.info("[S3 File Delete] {}", fileName);
         } catch (SdkClientException e) {
             log.error("[S3 File Delete 실패]", e);
-            throw new YouthInternalException("[S3 File Upload 실패]", e.getMessage());
+            throw new YouthInternalException("[S3 File Delete 실패]", e.getMessage());
         }
     }
 
