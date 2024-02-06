@@ -44,5 +44,6 @@ public class S3Properties {
         @Setter
         public static class UploadDirs {
             private String profileDirName;
+            private String artworkDirName;
         }
 }

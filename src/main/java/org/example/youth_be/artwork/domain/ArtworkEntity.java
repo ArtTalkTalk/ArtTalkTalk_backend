@@ -54,4 +54,8 @@ public class ArtworkEntity extends BaseEntity {
         this.likeCount = 0L;
         this.commentCount = 0L;
     }
+
+    public void setThumbnailImageUrl(String thumbnailImageUrl){
+        this.thumbnailImageUrl = thumbnailImageUrl;
+    }
 }

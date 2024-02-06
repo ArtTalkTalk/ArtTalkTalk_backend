@@ -1,24 +1,22 @@
 package org.example.youth_be.s3.service;
 
+import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
-import org.example.youth_be.common.exceptions.YouthException;
 import org.example.youth_be.common.exceptions.YouthInternalException;
 import org.example.youth_be.common.s3.FileNameGenerator;
 import org.example.youth_be.common.s3.S3Properties;
+import org.example.youth_be.image.enums.ImageType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.URL;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,32 +29,57 @@ public class S3FileUploader implements FileUploader {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    public String uploadProfileImage(MultipartFile file) throws Exception {
-        validateFileExists(file);
+    public String upload(MultipartFile file, ImageType imageType) {
+        try {
+            validateFileExists(file);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
-        String fileName = fileNameGenerator.generateName(file.getOriginalFilename(), s3Properties.getUploadDirs().getProfileDirName());
-        logger.info("s3 image upload ok. file name: {}", fileName);
-        upload(file, fileName);
+        String dirName;
 
-        return amazonS3Client.getUrl(s3Properties.getS3().getBucket(), fileName).toString();
-    }
+        if (imageType.equals(ImageType.PROFILE)) {
+            dirName = s3Properties.getUploadDirs().getProfileDirName();
+        } else {
+            dirName = s3Properties.getUploadDirs().getArtworkDirName();
+        }
 
-    // 업로드
-    private void upload(MultipartFile multipartFile, String fileName) throws Exception {
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(multipartFile.getContentType());
+        String fileName = fileNameGenerator.generateName(file.getOriginalFilename(), dirName);
 
-        try (InputStream inputStream = multipartFile.getInputStream()) {
-            BufferedInputStream bis = new BufferedInputStream(inputStream);
-            amazonS3Client.putObject(new PutObjectRequest(s3Properties.getS3().getBucket(), fileName, bis, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
-        } catch (IOException e) {
-            throw new YouthInternalException("파일 업로드에 실패했습니다.", null);
+        try {
+            log.info("[S3 File Upload] 시작 :{}", fileName);
+            amazonS3Client.putObject(s3Properties.getS3().getBucket(), fileName, file.getInputStream(), getObjectMetadata(file));
+            log.info("[S3 File Upload] 완료 :{}", fileName);
+
+            URL fileUrl = amazonS3Client.getUrl(s3Properties.getS3().getBucket(), fileName);
+            return fileUrl.toString();
+
+        } catch (SdkClientException | IOException e) {
+            log.error("[S3 File Upload 실패]", e);
+            throw new YouthInternalException("[S3 File Upload 실패]", e.getMessage());
         }
     }
 
+    @Override
+    public void delete(String fileName) {
+        try {
+            amazonS3Client.deleteObject(s3Properties.getS3().getBucket(), fileName);
+            log.info("[S3 File Delete] {}", fileName);
+        } catch (SdkClientException e) {
+            log.error("[S3 File Delete 실패]", e);
+            throw new YouthInternalException("[S3 File Upload 실패]", e.getMessage());
+        }
+    }
+
+    private ObjectMetadata getObjectMetadata(MultipartFile file) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(file.getContentType());
+        objectMetadata.setContentLength(file.getSize());
+        return objectMetadata;
+    }
+
     // MultipartFile이 비어있는지 확인
-    private void validateFileExists(MultipartFile multipartFile) throws Exception {
+    private void validateFileExists(MultipartFile multipartFile){
         if (multipartFile.isEmpty()) {
             throw new YouthBadRequestException("업로드할 파일이 없습니다.", null);
         }
