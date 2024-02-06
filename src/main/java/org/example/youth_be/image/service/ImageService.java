@@ -1,11 +1,15 @@
 package org.example.youth_be.image.service;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.image.enums.ImageType;
+import org.example.youth_be.image.service.request.DeleteImageRequest;
 import org.example.youth_be.image.service.request.ImageUploadRequest;
 import org.example.youth_be.image.service.response.UploadArtworkResponse;
 import org.example.youth_be.image.service.response.UploadImageResponse;
 import org.example.youth_be.s3.service.FileUploader;
+import org.example.youth_be.user.domain.UserEntity;
+import org.example.youth_be.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +26,7 @@ import java.util.stream.Collectors;
 public class ImageService {
 
     private final FileUploader fileUploader;
+    private final UserRepository userRepository;
 
     public UploadImageResponse uploadImage(ImageUploadRequest request) {
             String imageUrl = fileUploader.upload(request.getFile(), ImageType.PROFILE);
@@ -58,5 +63,19 @@ public class ImageService {
             return Optional.of(file);
         }
         return Optional.empty();
+    }
+
+    public void deleteImage(DeleteImageRequest request) {
+
+        UserEntity userEntity = userRepository.findById(request.getUserId())
+                .orElseThrow(() -> new YouthNotFoundException("존재하지 않는 유저id 입니다.", null));
+
+        userEntity.deleteUserProfileImageUrl();
+        String url = request.getImageUrl();
+
+        int lastIndex = url.lastIndexOf('/');
+        int secondLastIndex = url.lastIndexOf('/', lastIndex - 1);
+        String fileName = url.substring(secondLastIndex + 1);
+        fileUploader.delete(fileName);
     }
 }
