@@ -62,4 +62,8 @@ public class UserEntity extends BaseEntity {
         this.activityArea = activityArea;
         this.description = description;
     }
+
+    public void deleteUserProfileImageUrl(){
+        this.profileImageUrl = null;
+    }
 }
