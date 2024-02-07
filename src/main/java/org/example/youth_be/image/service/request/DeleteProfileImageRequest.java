@@ -7,7 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 public class DeleteProfileImageRequest {
 
-
     private Long userId;
-    private String imageUrl;
 }

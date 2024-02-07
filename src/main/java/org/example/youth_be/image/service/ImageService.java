@@ -76,8 +76,8 @@ public class ImageService {
         UserEntity userEntity = userRepository.findById(request.getUserId())
                 .orElseThrow(() -> new YouthNotFoundException("존재하지 않는 유저id 입니다.", null));
 
+        String url = userEntity.getProfileImageUrl();
         userEntity.deleteUserProfileImageUrl();
-        String url = request.getImageUrl();
 
         int lastIndex = url.lastIndexOf('/');
         int secondLastIndex = url.lastIndexOf('/', lastIndex - 1);
@@ -87,7 +87,7 @@ public class ImageService {
 
     @Transactional
     public void deleteArtworkImage(DeleteArtworkImageRequest request) {
-        ImageEntity imageEntity = imageRepository.findById(request.getArtworkImageId())
+        ImageEntity imageEntity = imageRepository.findById(request.getImageId())
                 .orElseThrow(() -> new YouthNotFoundException("존재하지 않는 이미지id 입니다.", null));
 
         String imageUrl = imageEntity.getImageUrl();
