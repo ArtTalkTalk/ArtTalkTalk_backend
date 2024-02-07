@@ -37,8 +37,7 @@ public class UserService {
                 .activityField(request.getActivityField())
                 .activityArea(request.getActivityArea())
                 .description(request.getDescription())
-//                .socialId(request.getSocialId())
-                .socialId(null)
+                .socialId(request.getSocialId())
                 .socialType(request.getSocialType())
                 .nickname(request.getNickname())
                 .build();
