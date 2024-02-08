@@ -4,8 +4,8 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class YouthRefreshTokenExpireException extends YouthException{
-    public YouthRefreshTokenExpireException(String clientMessage, String debugMessage) {
+public class YouthForbiddenException extends YouthException{
+    public YouthForbiddenException(String clientMessage, String debugMessage) {
         super(HttpStatus.FORBIDDEN, clientMessage, debugMessage);
     }
 }
