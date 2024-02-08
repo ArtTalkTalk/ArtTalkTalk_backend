@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.youth_be.common.exceptions.YouthUnAuthorizationException;
 import org.example.youth_be.common.jwt.dto.ParsedTokenInfo;
 import org.example.youth_be.common.jwt.dto.UserInfo;
-import org.example.youth_be.common.security.dto.SecurityUserDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
