@@ -6,12 +6,13 @@ import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
+import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
-import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -29,30 +30,19 @@ public class UserService {
     private final UserLinkRepository userLinkRepository;
     private final ArtworkRepository artworkRepository;
 
-    /**
-     * 개발용입니다.
-     */
     @Transactional
-    public Long createUserForDev(DevUserProfileCreateRequest request) {
+    public Long signup(UserSignupRequest request) {
         UserEntity userEntity = UserEntity.builder()
+                .userRole(request.getUserRole())
                 .profileImageUrl(request.getProfileImageUrl())
                 .activityField(request.getActivityField())
                 .activityArea(request.getActivityArea())
                 .description(request.getDescription())
-                .followerCount(request.getFollowerCount())
                 .socialId(request.getSocialId())
                 .socialType(request.getSocialType())
-                .totalLikeCount(request.getTotalLikeCount())
                 .nickname(request.getNickname())
                 .build();
         userRepository.save(userEntity);
-
-        List<UserLinkEntity> userLinkEntities = request.getLinkRequestList().stream().map(linkRequest ->
-                UserLinkEntity.builder()
-                        .userId(userEntity.getUserId())
-                        .title(linkRequest.getTitle())
-                        .linkUrl(linkRequest.getUrl()).build()).toList();
-        userLinkRepository.saveAll(userLinkEntities);
         return userEntity.getUserId();
     }
 
@@ -82,6 +72,9 @@ public class UserService {
         return newUserLinkEntity.getUserId();
     }
 
+    // 링크 수정
+    // 이미지 삭제
+
     @Transactional
     public void deleteUserLink(Long userId, Long linkId) {
         userLinkRepository.findByIdAndUserId(linkId, userId).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
@@ -97,5 +90,12 @@ public class UserService {
 
         Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
         return PageResponse.of(artworkResponses);
+    }
+
+    @Transactional(readOnly = true)
+    public void checkNicknameDuplicate(String nickname) {
+        if (userRepository.existsByNickname(nickname)) {
+            throw new YouthDuplicateException("닉네임이 중복됩니다.", null);
+        }
     }
 }

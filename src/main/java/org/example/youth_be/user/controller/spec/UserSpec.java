@@ -6,7 +6,7 @@ import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.common.PageResponse;
-import org.example.youth_be.user.service.request.DevUserProfileCreateRequest;
+import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -14,8 +14,11 @@ import org.example.youth_be.user.service.response.UserProfileResponse;
 
 @Tag(name = ApiTags.USER)
 public interface UserSpec {
-    @Operation(description = "개발용 유저 생성 API [값을 넣지 않으면 서버에서 임의로 넣습니다.]")
-    Long createUserForDev(DevUserProfileCreateRequest request);
+    @Operation(description = "회원가입 API [값을 넣지 않으면 서버에서 임의로 넣습니다.]")
+    Long signup(UserSignupRequest request);
+
+    @Operation(description = "닉네임 중복 체크 API")
+    void checkNicknameDuplicate(String nickname);
 
     @Operation(description = "유저 프로필 조회 API")
     UserProfileResponse getUserProfile(Long userId);

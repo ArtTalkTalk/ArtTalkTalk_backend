@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.youth_be.common.entity.BaseEntity;
 import org.example.youth_be.user.enums.SocialTypeEnum;
+import org.example.youth_be.user.enums.UserRoleEnum;
 
 @Entity
 @Table(name = "users")
@@ -19,14 +20,19 @@ public class UserEntity extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
+    private UserRoleEnum userRole;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private SocialTypeEnum socialType;
 
     @Column(length = 1000)
     private String profileImageUrl;
 
+    @Column(nullable = false)
     private String socialId;
 
-    @Column(length = 50, nullable = false)
+    @Column(length = 50, unique = true)
     private String nickname;
 
     @Column(length = 50)
@@ -42,7 +48,7 @@ public class UserEntity extends BaseEntity {
     private Long followerCount;
 
     @Builder
-    public UserEntity(Long userId, SocialTypeEnum socialType, String profileImageUrl, String socialId, String nickname, String activityField, String activityArea, String description, Long totalLikeCount, Long followerCount) {
+    public UserEntity(Long userId, SocialTypeEnum socialType, String profileImageUrl,String socialId, String nickname, String activityField, String activityArea, String description, UserRoleEnum userRole, Long totalLikeCount, Long followerCount) {
         this.userId = userId;
         this.socialType = socialType;
         this.profileImageUrl = profileImageUrl;
@@ -51,6 +57,7 @@ public class UserEntity extends BaseEntity {
         this.activityField = activityField;
         this.activityArea = activityArea;
         this.description = description;
+        this.userRole = userRole;
         this.totalLikeCount = totalLikeCount;
         this.followerCount = followerCount;
     }
@@ -61,5 +68,9 @@ public class UserEntity extends BaseEntity {
         this.activityField = activityField;
         this.activityArea = activityArea;
         this.description = description;
+    }
+
+    public void deleteUserProfileImageUrl(){
+        this.profileImageUrl = null;
     }
 }
