@@ -4,6 +4,7 @@ spring:
   config:
     import:
       - application-secret-aws.yml
+      - application-secret-jwt.yml
 
   h2:
     console:
