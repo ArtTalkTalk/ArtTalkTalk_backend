@@ -26,7 +26,6 @@ import java.util.List;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final String AUTHORIZATION_HEADER = HttpHeaders.AUTHORIZATION;
-			;
 	private final TokenProvider tokenProvider;
 
 	// 토큰 검사 생략
