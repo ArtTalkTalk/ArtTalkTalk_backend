@@ -37,11 +37,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	// 토큰 검사 생략
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		return request.getRequestURI().contains("/"); // 재발급 앤드포인트
+		return request.getRequestURI().contains("/test"); // 재발급 앤드포인트
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+		log.info("JwtAuthenticationFilter.doFilterInternal");
+
 		// request Header에서 AccessToken을 가져온다.
 		String accessToken = request.getHeader(AUTHORIZATION_HEADER);
 
@@ -52,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		ParsedTokenInfo result = tokenProvider.parseToken(accessToken);
-
+		log.info("result.getThrowableType() : {}", result.getThrowableType());
 		switch (result.getThrowableType()) {
 			case EXPIRED:
 				throw new YouthUnAuthorizationException(result.getThrowableType().getDescription(), null);
