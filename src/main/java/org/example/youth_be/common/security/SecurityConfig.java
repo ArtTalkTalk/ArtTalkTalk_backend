@@ -83,17 +83,3 @@ public class SecurityConfig {
         return http.build();
     }
 }
-
-/*
-.authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
-                        .requestMatchers(Stream.of(PATTERNS).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new)).permitAll()
-                        .requestMatchers(
-                                new AntPathRequestMatcher("/artworks/**"),
-                                new AntPathRequestMatcher("/users/{userId}"),
-                                new AntPathRequestMatcher("/users/{userId}/artworks")).permitAll() // 회원이 아니어도 접근 가능
-                        .requestMatchers(new AntPathRequestMatcher("/추가회원가입")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE)) // 준회원은 추가 회원가입 가능
-                        .anyRequest().hasRole(String.valueOf(UserRoleEnum.REGULAR)) // 정회원은 모든 api 접근 가능
-                )
- */
-
