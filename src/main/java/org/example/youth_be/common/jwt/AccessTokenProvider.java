@@ -8,6 +8,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.StringUtils;
 import org.example.youth_be.user.enums.UserRoleEnum;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -17,6 +18,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Component
+@Qualifier("accessTokenProvider")
 public class AccessTokenProvider implements TokenProvider {
     private final JwtProperties jwtProperties;
     private final SecretKey key;
