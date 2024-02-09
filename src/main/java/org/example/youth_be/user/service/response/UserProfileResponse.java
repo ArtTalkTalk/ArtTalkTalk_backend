@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
+import org.example.youth_be.user.enums.UserRoleEnum;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +15,8 @@ import java.util.stream.Collectors;
 public class UserProfileResponse {
     @Schema(description = "유저 ID")
     private Long userId;
+    @Schema(description = "유저 권한", example = "ASSOCIATE, REGULAR")
+    private UserRoleEnum userRole;
     @Schema(description = "닉네임")
     private String nickname;
     @Schema(description = "활동 분야")
@@ -34,6 +37,7 @@ public class UserProfileResponse {
     static public UserProfileResponse of(UserEntity user, List<UserLinkEntity> userLinkEntities) {
         return new UserProfileResponse(
                 user.getUserId(),
+                user.getUserRole(),
                 user.getNickname(),
                 user.getActivityField(),
                 user.getActivityArea(),
