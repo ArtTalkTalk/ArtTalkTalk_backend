@@ -6,9 +6,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.youth_be.common.exceptions.YouthBadRequestException;
+import org.example.youth_be.common.exceptions.YouthInternalException;
 import org.example.youth_be.common.exceptions.YouthUnAuthorizationException;
-import org.example.youth_be.common.jwt.dto.ParsedTokenInfo;
-import org.example.youth_be.common.jwt.dto.UserInfo;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,7 @@ import java.util.List;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final String AUTHORIZATION_HEADER = HttpHeaders.AUTHORIZATION;
+	@Qualifier("accessTokenProvider")
 	private final TokenProvider tokenProvider;
 
 	// 토큰 검사 생략
@@ -47,29 +49,36 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		ParsedTokenInfo result = tokenProvider.parseToken(accessToken);
 
-		if (result.getType() != null) {
-			if (result.getType().equals("EXPIRED_EXCEPTION")) {
-				// 만료되었을경우 예외를 발생시킨다.
-				throw new YouthUnAuthorizationException("유효하지 않은 토큰입니다.", null);
-			} else if (result.getType().equals("MALFORM_EXCEPTION")) {
-				// 형식이 올바르지 않은 경우
-				throw new YouthUnAuthorizationException("형식에 맞지 않은 토큰입니다.", null); // 추후 변경
-				}
-			}
+		switch (result.getThrowableType()) {
+			case EXPIRED:
+				throw new YouthUnAuthorizationException(result.getThrowableType().getDescription(), null);
 
-		// SecurityContext에 등록할 UserInfo 객체를 생성한다.
-		UserInfo userInfo = result.getUserInfo();
+			case SIGNATURE_INVALID:
+			case UNSUPPORTED:
+			case MALFORMED:
+			case NULL_OR_EMPTY:
+				throw new YouthBadRequestException(result.getThrowableType().getDescription(), null);
+
+			case UNHANDLED_EXCEPTION:
+				throw new YouthInternalException(result.getThrowableType().getDescription(), null);
+
+			default:
+				break;
+		}
+
+		// SecurityContext에 등록할 객체
+		TokenClaim tokenClaim = result.getTokenClaim();
 
 		// SecurityContext에 인증 객체를 등록해준다.
-		Authentication auth = getAuthentication(userInfo);
+		Authentication auth = getAuthentication(tokenClaim);
 		SecurityContextHolder.getContext().setAuthentication(auth);
 
 		filterChain.doFilter(request, response);
 	}
 
-	public Authentication getAuthentication(UserInfo userInfo) {
-		return new UsernamePasswordAuthenticationToken(userInfo, "",
-				List.of(new SimpleGrantedAuthority(userInfo.getRole().getDescription())));
+	public Authentication getAuthentication(TokenClaim tokenClaim) {
+		return new UsernamePasswordAuthenticationToken(tokenClaim, "",
+				List.of(new SimpleGrantedAuthority(tokenClaim.getUserRole().toString())));
 	}
 }
 
