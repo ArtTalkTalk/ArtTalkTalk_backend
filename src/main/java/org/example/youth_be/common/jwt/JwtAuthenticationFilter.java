@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthInternalException;
 import org.example.youth_be.common.exceptions.YouthUnAuthorizationException;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,8 +27,12 @@ import java.util.List;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final String AUTHORIZATION_HEADER = HttpHeaders.AUTHORIZATION;
-	@Qualifier("accessTokenProvider")
-	private final TokenProvider tokenProvider;
+	private TokenProvider tokenProvider;
+
+	@Autowired
+	public JwtAuthenticationFilter(@MainAccessTokenProvider TokenProvider tokenProvider) {
+		this.tokenProvider = tokenProvider;
+	}
 
 	// 토큰 검사 생략
 	@Override
