@@ -1,6 +1,7 @@
 package org.example.youth_be.user.enums;
 
 import lombok.Getter;
+import java.util.Arrays;
 
 @Getter
 public enum UserRoleEnum{
@@ -13,4 +14,11 @@ public enum UserRoleEnum{
         this.description = description;
     }
 
+    public static UserRoleEnum fromValue(String value) {
+        return Arrays.stream(UserRoleEnum.values()).filter(role -> role.name().equals(value)).findFirst().get();
+    }
+
+    public String getDescription() {
+        return description;
+    }
 }
