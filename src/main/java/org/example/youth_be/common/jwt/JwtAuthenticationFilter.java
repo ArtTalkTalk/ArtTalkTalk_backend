@@ -48,36 +48,40 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String accessToken = request.getHeader(AUTHORIZATION_HEADER);
 
 		// 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
-		if (!StringUtils.hasText(accessToken)) {
+		if (!StringUtils.hasText(accessToken) && shouldNotFilter(request)) {
 			doFilter(request, response, filterChain);
 			return;
 		}
 
 		ParsedTokenInfo result = tokenProvider.parseToken(accessToken);
 		log.info("result.getThrowableType() : {}", result.getThrowableType());
-		switch (result.getThrowableType()) {
-			case EXPIRED:
-				throw new YouthUnAuthorizationException(result.getThrowableType().getDescription(), null);
+		try {
+			switch (result.getThrowableType()) {
+				case EXPIRED:
+					throw new YouthUnAuthorizationException(result.getThrowableType().getDescription(), null);
 
-			case SIGNATURE_INVALID:
-			case UNSUPPORTED:
-			case MALFORMED:
-			case NULL_OR_EMPTY:
-				throw new YouthBadRequestException(result.getThrowableType().getDescription(), null);
+				case SIGNATURE_INVALID:
+				case UNSUPPORTED:
+				case MALFORMED:
+				case NULL_OR_EMPTY:
+					throw new YouthBadRequestException(result.getThrowableType().getDescription(), null);
 
-			case UNHANDLED_EXCEPTION:
-				throw new YouthInternalException(result.getThrowableType().getDescription(), null);
+				case UNHANDLED_EXCEPTION:
+					throw new YouthInternalException(result.getThrowableType().getDescription(), null);
 
-			default:
-				break;
+				default:
+					break;
+			}
+
+			// SecurityContext에 등록할 객체
+			TokenClaim tokenClaim = result.getTokenClaim();
+
+			// SecurityContext에 인증 객체를 등록해준다.
+			Authentication auth = getAuthentication(tokenClaim);
+			SecurityContextHolder.getContext().setAuthentication(auth);
+		} catch (Exception ex) {
+			request.setAttribute("exception", ex);
 		}
-
-		// SecurityContext에 등록할 객체
-		TokenClaim tokenClaim = result.getTokenClaim();
-
-		// SecurityContext에 인증 객체를 등록해준다.
-		Authentication auth = getAuthentication(tokenClaim);
-		SecurityContextHolder.getContext().setAuthentication(auth);
 
 		filterChain.doFilter(request, response);
 	}
