@@ -79,7 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			TokenClaim tokenClaim = result.getTokenClaim();
 
 			// SecurityContext에 인증 객체를 등록해준다.
-			Authentication auth = getAuthentication(accessToken);
+			Authentication auth = getAuthentication(tokenClaim);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 		} catch (Exception ex) {
 			request.setAttribute("exception", ex);
@@ -88,10 +88,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	public Authentication getAuthentication(String accessToken) {
-		UserEntity userEntity = tokenProvider.getUserFromToken(accessToken);
-		return new UsernamePasswordAuthenticationToken(userEntity.getUserId(), "",
-				List.of(new SimpleGrantedAuthority(userEntity.getUserRole().toString())));
+	public Authentication getAuthentication(TokenClaim tokenClaim) {
+		return new UsernamePasswordAuthenticationToken(tokenClaim, "",
+				List.of(new SimpleGrantedAuthority(tokenClaim.getUserRole().toString())));
 	}
 }
 

@@ -8,6 +8,7 @@ import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
+import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
@@ -100,7 +101,7 @@ public class UserService {
         }
     }
 
-    public UserMyInformation getMyInformation(UserEntity userEntity) {
-        return UserMyInformation.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).build();
+    public UserMyInformation getMyInformation(TokenClaim tokenClaim) {
+        return UserMyInformation.builder().userId(tokenClaim.getUserId()).role(tokenClaim.getUserRole()).build();
     }
 }

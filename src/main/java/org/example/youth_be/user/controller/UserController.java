@@ -6,8 +6,8 @@ import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.PageResponse;
+import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.controller.spec.UserSpec;
-import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
@@ -68,7 +68,7 @@ public class UserController implements UserSpec {
 
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
-    public UserMyInformation getMyInformation(@CurrentUser UserEntity userEntity) {
-        return userService.getMyInformation(userEntity);
+    public UserMyInformation getMyInformation(@CurrentUser TokenClaim tokenClaim) {
+        return userService.getMyInformation(tokenClaim);
     }
 }
