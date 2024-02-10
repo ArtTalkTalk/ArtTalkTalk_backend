@@ -8,6 +8,7 @@ import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
+import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
@@ -16,6 +17,7 @@ import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -97,5 +99,9 @@ public class UserService {
         if (userRepository.existsByNickname(nickname)) {
             throw new YouthDuplicateException("닉네임이 중복됩니다.", null);
         }
+    }
+
+    public UserMyInformation getMyInformation(TokenClaim tokenClaim) {
+        return UserMyInformation.builder().userId(tokenClaim.getUserId()).role(tokenClaim.getUserRole()).build();
     }
 }
