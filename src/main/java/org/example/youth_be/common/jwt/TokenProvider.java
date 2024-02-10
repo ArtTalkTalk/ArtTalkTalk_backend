@@ -13,7 +13,6 @@ public interface TokenProvider {
     String KEY_USER_ROLE = "user_role";
     TokenClaim getClaim(String token);
     String generateToken(Long userId, UserRoleEnum userRole);
-    UserEntity getUserFromToken(String token);
     default ParsedTokenInfo parseToken(String token) {
         try {
             TokenClaim tokenClaim = getClaim(token);

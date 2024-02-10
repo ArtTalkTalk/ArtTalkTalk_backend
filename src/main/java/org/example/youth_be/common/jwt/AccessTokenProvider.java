@@ -56,25 +56,4 @@ public class AccessTokenProvider implements TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
-
-    @Override
-    public UserEntity getUserFromToken(String token) {
-        Claims claims = getClaims(token);
-        Long userId = claims.get("userId", Long.class);
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new YouthNotFoundException("존재하지 않는 사용자입니다.", null));
-        return user;
-    }
-
-    private Claims getClaims(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-        } catch (JwtException e) {
-            throw new YouthBadRequestException("토큰이 유효하지 않습니다.", null);
-        }
-    }
 }
