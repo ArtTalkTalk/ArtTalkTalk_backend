@@ -16,6 +16,7 @@ import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -97,5 +98,9 @@ public class UserService {
         if (userRepository.existsByNickname(nickname)) {
             throw new YouthDuplicateException("닉네임이 중복됩니다.", null);
         }
+    }
+
+    public UserMyInformation getMyInformation(UserEntity userEntity) {
+        return UserMyInformation.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).build();
     }
 }
