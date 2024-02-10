@@ -22,13 +22,11 @@ public class RefreshTokenProvider implements TokenProvider {
     private final JwtProperties jwtProperties;
     private final SecretKey key;
     private final JwtParser parser;
-    private final UserRepository userRepository;
 
-    public RefreshTokenProvider(JwtProperties jwtProperties, UserRepository userRepository) {
+    public RefreshTokenProvider(JwtProperties jwtProperties) {
         this.jwtProperties = jwtProperties;
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey()));
         this.parser = Jwts.parserBuilder().setSigningKey(key).build();
-        this.userRepository = userRepository;
     }
 
     @Override

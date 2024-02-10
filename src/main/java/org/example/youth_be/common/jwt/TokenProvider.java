@@ -3,7 +3,6 @@ package org.example.youth_be.common.jwt;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.enums.UserRoleEnum;
 
 public interface TokenProvider {
