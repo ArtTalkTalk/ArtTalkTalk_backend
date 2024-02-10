@@ -1,5 +1,6 @@
 package org.example.youth_be.common.jwt;
 
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthInternalException;
 import org.example.youth_be.common.exceptions.YouthUnAuthorizationException;
+import org.example.youth_be.user.domain.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -77,7 +79,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			TokenClaim tokenClaim = result.getTokenClaim();
 
 			// SecurityContext에 인증 객체를 등록해준다.
-			Authentication auth = getAuthentication(tokenClaim);
+			Authentication auth = getAuthentication(accessToken);
 			SecurityContextHolder.getContext().setAuthentication(auth);
 		} catch (Exception ex) {
 			request.setAttribute("exception", ex);
@@ -86,9 +88,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
-	public Authentication getAuthentication(TokenClaim tokenClaim) {
-		return new UsernamePasswordAuthenticationToken(tokenClaim, "",
-				List.of(new SimpleGrantedAuthority(tokenClaim.getUserRole().toString())));
+	public Authentication getAuthentication(String accessToken) {
+		UserEntity userEntity = tokenProvider.getUserFromToken(accessToken);
+		return new UsernamePasswordAuthenticationToken(userEntity.getUserId(), "",
+				List.of(new SimpleGrantedAuthority(userEntity.getUserRole().toString())));
 	}
 }
 

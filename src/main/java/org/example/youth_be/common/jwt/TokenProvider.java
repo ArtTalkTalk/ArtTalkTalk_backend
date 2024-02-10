@@ -3,6 +3,7 @@ package org.example.youth_be.common.jwt;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.enums.UserRoleEnum;
 
 public interface TokenProvider {
@@ -12,6 +13,7 @@ public interface TokenProvider {
     String KEY_USER_ROLE = "user_role";
     TokenClaim getClaim(String token);
     String generateToken(Long userId, UserRoleEnum userRole);
+    UserEntity getUserFromToken(String token);
     default ParsedTokenInfo parseToken(String token) {
         try {
             TokenClaim tokenClaim = getClaim(token);

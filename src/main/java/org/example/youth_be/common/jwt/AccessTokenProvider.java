@@ -1,13 +1,14 @@
 package org.example.youth_be.common.jwt;
 
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.StringUtils;
+import org.example.youth_be.common.exceptions.YouthBadRequestException;
+import org.example.youth_be.common.exceptions.YouthNotFoundException;
+import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.enums.UserRoleEnum;
+import org.example.youth_be.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -23,11 +24,13 @@ public class AccessTokenProvider implements TokenProvider {
     private final JwtProperties jwtProperties;
     private final SecretKey key;
     private final JwtParser parser;
+    private final UserRepository userRepository;
 
-    public AccessTokenProvider(JwtProperties jwtProperties) {
+    public AccessTokenProvider(JwtProperties jwtProperties, UserRepository userRepository) {
         this.jwtProperties = jwtProperties;
         this.key = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey()));
         this.parser = Jwts.parserBuilder().setSigningKey(key).build();
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -52,5 +55,26 @@ public class AccessTokenProvider implements TokenProvider {
                 .setExpiration(Date.from(expiration.toInstant()))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    @Override
+    public UserEntity getUserFromToken(String token) {
+        Claims claims = getClaims(token);
+        Long userId = claims.get("userId", Long.class);
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new YouthNotFoundException("존재하지 않는 사용자입니다.", null));
+        return user;
+    }
+
+    private Claims getClaims(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (JwtException e) {
+            throw new YouthBadRequestException("토큰이 유효하지 않습니다.", null);
+        }
     }
 }
