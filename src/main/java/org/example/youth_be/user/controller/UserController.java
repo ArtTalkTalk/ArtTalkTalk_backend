@@ -14,6 +14,7 @@ import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
+import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -70,5 +71,10 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public UserMyInformation getMyInformation(@CurrentUser TokenClaim tokenClaim) {
         return userService.getMyInformation(tokenClaim);
+    }
+
+    @GetMapping("/mypage")
+    public UserMyPage getMyPage(@CurrentUser TokenClaim tokenClaim) {
+        return userService.getMyPage(tokenClaim);
     }
 }
