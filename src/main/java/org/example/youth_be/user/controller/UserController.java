@@ -9,6 +9,7 @@ import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
+import org.example.youth_be.user.service.request.UserAdditionSignupRequest;
 import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
@@ -70,5 +71,10 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public UserMyInformation getMyInformation(@CurrentUser TokenClaim tokenClaim) {
         return userService.getMyInformation(tokenClaim);
+    }
+
+    @PutMapping("/sign-up")
+    public UserMyInformation signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody UserAdditionSignupRequest request) {
+        return userService.signUp(tokenClaim, request);
     }
 }

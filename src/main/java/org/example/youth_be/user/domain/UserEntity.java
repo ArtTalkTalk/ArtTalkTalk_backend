@@ -10,7 +10,9 @@ import org.example.youth_be.user.enums.SocialTypeEnum;
 import org.example.youth_be.user.enums.UserRoleEnum;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {"nickname"})
+})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserEntity extends BaseEntity {
@@ -68,6 +70,15 @@ public class UserEntity extends BaseEntity {
         this.activityField = activityField;
         this.activityArea = activityArea;
         this.description = description;
+    }
+
+    public void signUp(String profileImageUrl, String nickname, String activityField, String activityArea, String description) {
+        this.profileImageUrl = profileImageUrl;
+        this.nickname = nickname;
+        this.activityField = activityField;
+        this.activityArea = activityArea;
+        this.description = description;
+        this.userRole = UserRoleEnum.REGULAR;
     }
 
     public void deleteUserProfileImageUrl(){

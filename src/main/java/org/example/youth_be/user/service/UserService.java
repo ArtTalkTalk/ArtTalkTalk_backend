@@ -13,6 +13,7 @@ import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
+import org.example.youth_be.user.service.request.UserAdditionSignupRequest;
 import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
@@ -103,5 +104,17 @@ public class UserService {
 
     public UserMyInformation getMyInformation(TokenClaim tokenClaim) {
         return UserMyInformation.builder().userId(tokenClaim.getUserId()).role(tokenClaim.getUserRole()).build();
+    }
+
+    @Transactional
+    public UserMyInformation signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request) {
+        Long userId = tokenClaim.getUserId();
+
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        userEntity.signUp(request.getProfileImageUrl(), request.getNickname(),
+                request.getActivityField(), request.getActivityArea(), request.getDescription());
+
+        // user role 업데이트 및 request 기반 업데이트/ 중복 닉네임 확인
+        return UserMyInformation.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).build();
     }
 }

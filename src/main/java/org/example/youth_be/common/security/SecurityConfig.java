@@ -77,7 +77,7 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}/artworks")).permitAll() // 회원이 아니어도 접근 가능
                         .requestMatchers(antMatcher(HttpMethod.GET, "/error")).permitAll()
-                        .requestMatchers(antMatcher(HttpMethod.GET, "/추가회원가입")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE)) // 준회원은 추가 회원가입 가능
+                        .requestMatchers(antMatcher(HttpMethod.PUT, "/sign-up")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE)) // 준회원은 추가 회원가입 가능
                         .anyRequest().hasRole(String.valueOf(UserRoleEnum.REGULAR)) // 정회원은 모든 api 접근 가능
                 )
                 .exceptionHandling(exceptionHandling ->
