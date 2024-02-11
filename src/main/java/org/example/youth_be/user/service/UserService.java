@@ -106,6 +106,7 @@ public class UserService {
         return UserMyInformation.builder().userId(tokenClaim.getUserId()).role(tokenClaim.getUserRole()).build();
     }
 
+    @Transactional(readOnly = true)
     public UserMyPage getMyPage(TokenClaim tokenClaim) {
 
         Long userId = tokenClaim.getUserId();
