@@ -16,6 +16,7 @@ import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserProfileResponse;
+import org.example.youth_be.user.service.response.UserSignUpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -74,7 +75,7 @@ public class UserController implements UserSpec {
     }
 
     @PutMapping("/sign-up")
-    public UserMyInformation signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody UserAdditionSignupRequest request) {
+    public UserSignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody UserAdditionSignupRequest request) {
         return userService.signUp(tokenClaim, request);
     }
 }

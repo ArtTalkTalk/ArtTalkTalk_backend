@@ -9,8 +9,10 @@ import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
+import org.example.youth_be.common.jwt.TokenProvider;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
+import org.example.youth_be.user.enums.UserRoleEnum;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.UserAdditionSignupRequest;
@@ -20,6 +22,8 @@ import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserProfileResponse;
+import org.example.youth_be.user.service.response.UserSignUpResponse;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,8 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserLinkRepository userLinkRepository;
     private final ArtworkRepository artworkRepository;
+    @Qualifier("accessTokenProvider")
+    private final TokenProvider tokenProvider;
 
     @Transactional
     public Long signup(UserSignupRequest request) {
@@ -107,14 +113,19 @@ public class UserService {
     }
 
     @Transactional
-    public UserMyInformation signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request) {
+    public UserSignUpResponse signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request) {
         Long userId = tokenClaim.getUserId();
+
+        // 기존 토큰 무효화
+
+        // 정회원 토큰 생성
+        String accessToken = tokenProvider.generateToken(userId, UserRoleEnum.REGULAR);
 
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         userEntity.signUp(request.getProfileImageUrl(), request.getNickname(),
                 request.getActivityField(), request.getActivityArea(), request.getDescription());
 
         // user role 업데이트 및 request 기반 업데이트/ 중복 닉네임 확인
-        return UserMyInformation.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).build();
+        return UserSignUpResponse.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).accessToken(accessToken).build();
     }
 }

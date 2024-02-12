@@ -14,6 +14,7 @@ import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserProfileResponse;
+import org.example.youth_be.user.service.response.UserSignUpResponse;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = ApiTags.USER)
@@ -40,5 +41,5 @@ public interface UserSpec {
     PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request);
 
     @Operation(description = "유저 추가 회원 가입 api")
-    UserMyInformation signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request);
+    UserSignUpResponse signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request);
 }
