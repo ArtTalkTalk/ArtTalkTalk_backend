@@ -16,7 +16,7 @@ public class ArtworkDetailResponse {
     private String title;
     private String description;
     private ArtworkStatus artworkStatus;
-    private List<String> imageUrls;
+    private List<ArtworkImageResponse> artworkImageResponse;
     private Long viewCount;
     private Long likeCount;
     private Long commentCount;
@@ -27,13 +27,13 @@ public class ArtworkDetailResponse {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public static ArtworkDetailResponse of(UserEntity userEntity, ArtworkEntity artworkEntity, List<String> imageUrls) {
+    public static ArtworkDetailResponse of(UserEntity userEntity, ArtworkEntity artworkEntity, List<ArtworkImageResponse> artworkImageResponse) {
         return ArtworkDetailResponse.builder()
                 .artworkId(artworkEntity.getArtworkId())
                 .title(artworkEntity.getTitle())
                 .description(artworkEntity.getDescription())
                 .artworkStatus(artworkEntity.getArtworkStatus())
-                .imageUrls(imageUrls)
+                .artworkImageResponse(artworkImageResponse)
                 .viewCount(artworkEntity.getViewCount())
                 .likeCount(artworkEntity.getLikeCount())
                 .commentCount(artworkEntity.getCommentCount())

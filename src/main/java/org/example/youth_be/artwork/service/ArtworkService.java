@@ -7,6 +7,7 @@ import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
+import org.example.youth_be.artwork.service.response.ArtworkImageResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
@@ -21,6 +22,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,7 +84,11 @@ public class ArtworkService {
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 작품를 찾을 수 없습니다.", null));
         UserEntity userEntity = userRepository.findById(artworkEntity.getUserId()).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         List<ImageEntity> images = imageRepository.findByArtworkId(artworkId);
-        List<String> imageUrls = images.stream().map(ImageEntity::getImageUrl).toList();
-        return ArtworkDetailResponse.of(userEntity, artworkEntity, imageUrls);
+
+        List<ArtworkImageResponse> artworkImageResponses = images.stream()
+                .map(image -> ArtworkImageResponse.of(image.getImageId(), image.getImageUrl()))
+                .collect(Collectors.toList());
+
+        return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses);
     }
 }
