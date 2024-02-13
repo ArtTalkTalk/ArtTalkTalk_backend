@@ -8,4 +8,16 @@ import lombok.Getter;
 public class ParsedTokenInfo {
     private TokenClaim tokenClaim;
     private JwtThrowableType throwableType;
+
+    public boolean isExpired() {
+        return throwableType == JwtThrowableType.EXPIRED;
+    }
+
+    public boolean isSameUserId(ParsedTokenInfo tokenInfo) {
+        return tokenInfo.tokenClaim.getUserId().equals(this.tokenClaim.getUserId());
+    }
+
+    public boolean isNormalToken() {
+        return throwableType == null;
+    }
 }
