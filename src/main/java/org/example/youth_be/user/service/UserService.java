@@ -21,6 +21,7 @@ import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
+import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.example.youth_be.user.service.response.UserSignUpResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -112,6 +113,7 @@ public class UserService {
         return UserMyInformation.builder().userId(tokenClaim.getUserId()).role(tokenClaim.getUserRole()).build();
     }
 
+
     @Transactional
     public UserSignUpResponse signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request) {
         Long userId = tokenClaim.getUserId();
@@ -127,5 +129,29 @@ public class UserService {
 
         // user role 업데이트 및 request 기반 업데이트/ 중복 닉네임 확인
         return UserSignUpResponse.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).accessToken(accessToken).build();
+
+    @Transactional(readOnly = true)
+    public UserMyPage getMyPage(TokenClaim tokenClaim) {
+
+        Long userId = tokenClaim.getUserId();
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        List<UserLinkEntity> userLinkEntities = userLinkRepository.findAllByUserId(userId);
+        UserProfileResponse userProfileResponse = UserProfileResponse.of(userEntity, userLinkEntities);
+
+        Long artworkSize = artworkRepository.countByUserId(userId);
+
+        Integer size = 15;
+        Long cursorId = 0L;
+        if (artworkSize > size) {
+            cursorId = artworkSize - size;
+        }
+
+        List<ArtworkResponse> responses = artworkRepository.findByUserAndArtworkType(userId, cursorId, size, ArtworkMyPageType.ALL);
+
+        Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
+        PageResponse<ArtworkResponse> artworkResponse = PageResponse.of(artworkResponses);
+
+        return UserMyPage.builder().userProfileResponse(userProfileResponse).artworkResponsePageResponse(artworkResponse).build();
+
     }
 }

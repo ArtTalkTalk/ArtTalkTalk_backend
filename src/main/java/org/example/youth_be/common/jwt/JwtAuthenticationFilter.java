@@ -37,18 +37,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	// 토큰 검사 생략
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		return request.getRequestURI().contains("/test"); // 재발급 앤드포인트
+		return request.getRequestURI().contains("/h2-console/") || request.getRequestURI().contains("/v1/health-check")
+				|| request.getRequestURI().contains("/swagger-ui/"); // 재발급 앤드포인트
 	}
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 		log.info("JwtAuthenticationFilter.doFilterInternal");
+		log.info("request.getRequestURI() : {}", request.getRequestURI());
 
 		// request Header에서 AccessToken을 가져온다.
 		String accessToken = request.getHeader(AUTHORIZATION_HEADER);
 
 		// 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
 		if (!StringUtils.hasText(accessToken) && shouldNotFilter(request)) {
+			log.info("검사 통과");
 			doFilter(request, response, filterChain);
 			return;
 		}

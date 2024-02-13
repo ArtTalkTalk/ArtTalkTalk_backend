@@ -36,7 +36,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationEntryPoint entryPoint;
     private static final String[] PATTERNS = {
-            "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**"
+            "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/v1/health-check", "/swagger-ui/**",
+            "/swagger-resources/**", "/v3/api-docs/**"
     };
 
 
@@ -64,15 +65,16 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) //csrf 비활성
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .headers(HeadersConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable) //폼 로그인 비활성
                 .httpBasic(AbstractHttpConfigurer::disable) //HTTP 기본인증 비활성
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
+//                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(Stream.of(PATTERNS).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new)).permitAll()
+                        .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/artworks/**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}/artworks")).permitAll() // 회원이 아니어도 접근 가능

@@ -23,7 +23,7 @@ public class ImageEntity extends BaseEntity {
     @Column(nullable = false)
     private String imageUploadName;
 
-    @Column(nullable = false)
+    @Column
     private Long artworkId;
 
     @Builder
@@ -31,6 +31,10 @@ public class ImageEntity extends BaseEntity {
         this.imageId = imageId;
         this.imageUrl = imageUrl;
         this.imageUploadName = imageUploadName;
+        this.artworkId = artworkId;
+    }
+
+    public void setArtworkId(Long artworkId) {
         this.artworkId = artworkId;
     }
 }
