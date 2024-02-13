@@ -23,7 +23,7 @@ public class ImageEntity extends BaseEntity {
     @Column(nullable = false)
     private String imageUploadName;
 
-    @Column(nullable = false)
+    @Column
     private Long artworkId;
 
     @Builder

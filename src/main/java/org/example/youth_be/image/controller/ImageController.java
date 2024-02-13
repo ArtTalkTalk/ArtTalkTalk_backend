@@ -5,6 +5,7 @@ import org.example.youth_be.image.controller.spec.ImageSpec;
 import org.example.youth_be.image.service.ImageService;
 import org.example.youth_be.image.service.request.DeleteImageRequest;
 import org.example.youth_be.image.service.request.ImageUploadRequest;
+import org.example.youth_be.image.service.response.UploadArtworkImageResponse;
 import org.example.youth_be.image.service.response.UploadImageResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -24,5 +25,10 @@ public class ImageController implements ImageSpec {
     @DeleteMapping("/profile")
     public void deleteImage(@RequestBody DeleteImageRequest request){
         imageService.deleteImage(request);
+    }
+
+    @PostMapping(value = "/artwork", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public UploadArtworkImageResponse uploadArtworkImage(@ModelAttribute ImageUploadRequest request){
+        return imageService.uploadArtworkImage(request);
     }
 }
