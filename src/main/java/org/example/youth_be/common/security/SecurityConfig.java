@@ -36,7 +36,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final AuthenticationEntryPoint entryPoint;
     private static final String[] PATTERNS = {
-            "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/v1/health-check"
+            "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/v1/health-check", "/swagger-ui/**",
+            "/swagger-resources/**", "/v3/api-docs/**"
     };
 
 
