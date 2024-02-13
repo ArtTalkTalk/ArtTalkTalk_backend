@@ -8,5 +8,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ArtworkRepository extends JpaRepository<ArtworkEntity, Long>, ArtworkRepositoryCustom {
-
+    Long countByUserId(Long userId);
 }
