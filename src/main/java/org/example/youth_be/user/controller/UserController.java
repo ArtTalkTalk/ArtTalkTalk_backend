@@ -9,6 +9,7 @@ import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
+import org.example.youth_be.user.service.request.UserAdditionSignupRequest;
 import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
@@ -16,6 +17,7 @@ import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
+import org.example.youth_be.user.service.response.UserSignUpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,8 +75,13 @@ public class UserController implements UserSpec {
         return userService.getMyInformation(tokenClaim);
     }
 
-    @GetMapping("/mypage")
+    @PutMapping("/sign-up")
+    public UserSignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody UserAdditionSignupRequest request) {
+        return userService.signUp(tokenClaim, request);
+
+      @GetMapping("/mypage")
     public UserMyPage getMyPage(@CurrentUser TokenClaim tokenClaim) {
         return userService.getMyPage(tokenClaim);
+
     }
 }

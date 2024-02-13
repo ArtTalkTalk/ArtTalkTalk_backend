@@ -7,6 +7,7 @@ import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
+import org.example.youth_be.user.service.request.UserAdditionSignupRequest;
 import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
@@ -14,6 +15,8 @@ import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
+import org.example.youth_be.user.service.response.UserSignUpResponse;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = ApiTags.USER)
 public interface UserSpec {
@@ -38,10 +41,12 @@ public interface UserSpec {
     @Operation(description = "유저의 작품 조회 API")
     PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request);
 
+    @Operation(description = "유저 추가 회원 가입 api")
+    UserSignUpResponse signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request);
+
     @Operation(description = "유저 Id, Role API")
     UserMyInformation getMyInformation(TokenClaim tokenClaim);
 
     @Operation(description = "유저 마이페이지 조회 API")
     UserMyPage getMyPage(TokenClaim tokenClaim);
-
 }
