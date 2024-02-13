@@ -4,19 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
+import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
-import org.example.youth_be.user.service.request.UserAdditionSignupRequest;
-import org.example.youth_be.user.service.request.UserSignupRequest;
-import org.example.youth_be.user.service.request.LinkRequest;
-import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
-import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.user.service.request.*;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.example.youth_be.user.service.response.UserSignUpResponse;
-import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = ApiTags.USER)
 public interface UserSpec {
@@ -37,6 +33,9 @@ public interface UserSpec {
 
     @Operation(description = "유저 링크 삭제 API")
     void deleteUserLink(Long userId, Long linkId);
+
+    @Operation(description = "유저 링크 수정 API \n\nNote: 수정된 링크 ID를 반환합니다")
+    Long updateUserLink(Long userId, Long linkId, UserLinkUpdateRequest request);
 
     @Operation(description = "유저의 작품 조회 API")
     PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request);

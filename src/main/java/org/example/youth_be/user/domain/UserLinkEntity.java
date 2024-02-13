@@ -29,4 +29,9 @@ public class UserLinkEntity {
         this.title = title;
         this.linkUrl = linkUrl;
     }
+
+    public void updateLink(String title, String linkUrl) {
+        this.title = title;
+        this.linkUrl = linkUrl;
+    }
 }

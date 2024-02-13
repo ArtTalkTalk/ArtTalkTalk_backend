@@ -9,10 +9,7 @@ import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
-import org.example.youth_be.user.service.request.UserAdditionSignupRequest;
-import org.example.youth_be.user.service.request.UserSignupRequest;
-import org.example.youth_be.user.service.request.LinkRequest;
-import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
+import org.example.youth_be.user.service.request.*;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
@@ -61,6 +58,13 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public void deleteUserLink(@PathVariable Long userId, @PathVariable Long linkId) {
         userService.deleteUserLink(userId, linkId);
+    }
+
+    @Override
+    @PutMapping("/{userId}/links/{linkId}")
+    @ResponseStatus(HttpStatus.OK)
+    public Long updateUserLink(@PathVariable Long userId, @PathVariable Long linkId, @RequestBody UserLinkUpdateRequest request) {
+        return userService.updateUserLink(userId, linkId, request);
     }
 
     @GetMapping("/{userId}/artworks")

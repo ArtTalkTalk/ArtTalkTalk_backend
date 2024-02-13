@@ -15,10 +15,7 @@ import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.enums.UserRoleEnum;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
-import org.example.youth_be.user.service.request.UserAdditionSignupRequest;
-import org.example.youth_be.user.service.request.UserSignupRequest;
-import org.example.youth_be.user.service.request.LinkRequest;
-import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
+import org.example.youth_be.user.service.request.*;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
@@ -89,6 +86,13 @@ public class UserService {
     }
 
     // 링크 수정
+    @Transactional
+    public Long updateUserLink(Long userId, Long linkId, UserLinkUpdateRequest request) {
+        UserLinkEntity userLinkEntity = userLinkRepository.findByIdAndUserId(linkId, userId).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
+        userLinkEntity.updateLink(request.getTitle(), request.getUrl());
+        return userLinkEntity.getId();
+    }
+
     // 이미지 삭제
 
     @Transactional
