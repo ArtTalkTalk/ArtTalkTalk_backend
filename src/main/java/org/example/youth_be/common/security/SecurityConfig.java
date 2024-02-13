@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
@@ -33,8 +34,10 @@ public class SecurityConfig {
 
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationEntryPoint entryPoint;
     private static final String[] PATTERNS = {
-            "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**"
+            "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/v1/health-check", "/swagger-ui/**",
+            "/swagger-resources/**", "/v3/api-docs/**"
     };
 
 
@@ -62,24 +65,27 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) //csrf 비활성
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .headers(HeadersConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable) //폼 로그인 비활성
                 .httpBasic(AbstractHttpConfigurer::disable) //HTTP 기본인증 비활성
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
+//                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(Stream.of(PATTERNS).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new)).permitAll()
+                        .requestMatchers(antMatcher("/swagger-ui/**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/artworks/**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}/artworks")).permitAll() // 회원이 아니어도 접근 가능
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/error")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/추가회원가입")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE)) // 준회원은 추가 회원가입 가능
                         .anyRequest().hasRole(String.valueOf(UserRoleEnum.REGULAR)) // 정회원은 모든 api 접근 가능
                 )
                 .exceptionHandling(exceptionHandling ->
                         exceptionHandling
                                 .accessDeniedHandler(jwtAccessDeniedHandler) // 406
+                                .authenticationEntryPoint(entryPoint)
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

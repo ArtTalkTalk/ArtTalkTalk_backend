@@ -14,7 +14,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
-@RestControllerAdvice(annotations = {RestController.class})
+@RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler{
     private Logger logger = LoggerFactory.getLogger(this.getClass());

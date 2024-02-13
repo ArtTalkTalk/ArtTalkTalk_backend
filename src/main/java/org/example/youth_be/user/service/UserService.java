@@ -8,6 +8,7 @@ import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
+import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
@@ -16,6 +17,8 @@ import org.example.youth_be.user.service.request.UserSignupRequest;
 import org.example.youth_be.user.service.request.LinkRequest;
 import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.user.service.response.UserMyInformation;
+import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -97,5 +100,33 @@ public class UserService {
         if (userRepository.existsByNickname(nickname)) {
             throw new YouthDuplicateException("닉네임이 중복됩니다.", null);
         }
+    }
+
+    public UserMyInformation getMyInformation(TokenClaim tokenClaim) {
+        return UserMyInformation.builder().userId(tokenClaim.getUserId()).role(tokenClaim.getUserRole()).build();
+    }
+
+    @Transactional(readOnly = true)
+    public UserMyPage getMyPage(TokenClaim tokenClaim) {
+
+        Long userId = tokenClaim.getUserId();
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        List<UserLinkEntity> userLinkEntities = userLinkRepository.findAllByUserId(userId);
+        UserProfileResponse userProfileResponse = UserProfileResponse.of(userEntity, userLinkEntities);
+
+        Long artworkSize = artworkRepository.countByUserId(userId);
+
+        Integer size = 15;
+        Long cursorId = 0L;
+        if (artworkSize > size) {
+            cursorId = artworkSize - size;
+        }
+
+        List<ArtworkResponse> responses = artworkRepository.findByUserAndArtworkType(userId, cursorId, size, ArtworkMyPageType.ALL);
+
+        Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
+        PageResponse<ArtworkResponse> artworkResponse = PageResponse.of(artworkResponses);
+
+        return UserMyPage.builder().userProfileResponse(userProfileResponse).artworkResponsePageResponse(artworkResponse).build();
     }
 }

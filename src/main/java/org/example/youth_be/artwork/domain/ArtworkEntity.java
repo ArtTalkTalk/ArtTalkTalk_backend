@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.youth_be.artwork.enums.ArtworkStatus;
+import org.example.youth_be.common.converter.LongListConverter;
 import org.example.youth_be.common.entity.BaseEntity;
+
+import java.util.List;
 
 @Entity
 @Table(name = "Artwork")
@@ -36,8 +39,11 @@ public class ArtworkEntity extends BaseEntity {
 
     private Long userId;
 
+    @Convert(converter = LongListConverter.class)
+    private List<Long> imageIdList;
+
     @Builder
-    public ArtworkEntity(Long artworkId, String title, String description, ArtworkStatus artworkStatus, Long viewCount, Long likeCount, Long commentCount, String thumbnailImageUrl, Long userId) {
+    public ArtworkEntity(Long artworkId, String title, String description, ArtworkStatus artworkStatus, Long viewCount, Long likeCount, Long commentCount, String thumbnailImageUrl, Long userId, List<Long> imageIdList) {
         this.artworkId = artworkId;
         this.title = title;
         this.description = description;
@@ -47,6 +53,7 @@ public class ArtworkEntity extends BaseEntity {
         this.commentCount = commentCount;
         this.thumbnailImageUrl = thumbnailImageUrl;
         this.userId = userId;
+        this.imageIdList = imageIdList;
     }
 
     public void setCount(){
