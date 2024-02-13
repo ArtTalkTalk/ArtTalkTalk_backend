@@ -64,13 +64,14 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable) //csrf 비활성
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .headers(HeadersConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable) //폼 로그인 비활성
                 .httpBasic(AbstractHttpConfigurer::disable) //HTTP 기본인증 비활성
                 .sessionManagement((sessionManagement) ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(Stream.of(PATTERNS).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new)).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/artworks/**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}")).permitAll()
