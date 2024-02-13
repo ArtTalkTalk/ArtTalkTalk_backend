@@ -10,11 +10,12 @@ import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.common.PageResponse;
+import org.example.youth_be.common.jwt.TokenClaim;
 
 @Tag(name = ApiTags.ARTWORK)
 public interface ArtworkSpec {
     @Operation(description = "작품 업로드 API입니다.")
-    Long createArtwork(ArtworkCreateRequest request);
+    Long createArtwork(TokenClaim tokenClaim, ArtworkCreateRequest request);
 
     @Operation(description = "홈화면 피드 조회 API입니다.")
     PageResponse<ArtworkResponse> getArtworks(Long userId, ArtworkFeedType type, ArtworkPaginationRequest request);

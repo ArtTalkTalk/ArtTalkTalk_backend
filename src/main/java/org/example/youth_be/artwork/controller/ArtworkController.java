@@ -6,12 +6,12 @@ import org.example.youth_be.artwork.enums.ArtworkFeedType;
 import org.example.youth_be.artwork.service.ArtworkService;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
-import org.example.youth_be.artwork.service.request.DevArtworkCreateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.PageResponse;
+import org.example.youth_be.common.jwt.TokenClaim;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,10 +21,9 @@ public class ArtworkController implements ArtworkSpec {
 
     private final ArtworkService artworkService;
 
-    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createArtwork(@ModelAttribute ArtworkCreateRequest request) {
-        return artworkService.createArtwork(request);
+    public Long createArtwork(@CurrentUser TokenClaim tokenClaim, @ModelAttribute ArtworkCreateRequest request) {
+        return artworkService.createArtwork(tokenClaim, request);
     }
 
     @GetMapping
