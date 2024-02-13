@@ -71,7 +71,6 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(PathRequest.toH2Console()).permitAll()
                         .requestMatchers(Stream.of(PATTERNS).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new)).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/artworks/**")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}")).permitAll()
