@@ -76,12 +76,14 @@ public class UserController implements UserSpec {
     }
 
     @PutMapping("/sign-up")
+    @ResponseStatus(HttpStatus.OK)
     public UserSignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody UserAdditionSignupRequest request) {
         return userService.signUp(tokenClaim, request);
+    }
 
-      @GetMapping("/mypage")
+    @GetMapping("/mypage")
+    @ResponseStatus(HttpStatus.OK)
     public UserMyPage getMyPage(@CurrentUser TokenClaim tokenClaim) {
         return userService.getMyPage(tokenClaim);
-
     }
 }

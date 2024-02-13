@@ -1,6 +1,5 @@
 package org.example.youth_be.user.service;
 
-import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
@@ -8,6 +7,7 @@ import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
+import org.example.youth_be.common.jwt.MainAccessTokenProvider;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.common.jwt.TokenProvider;
 import org.example.youth_be.user.domain.UserEntity;
@@ -24,7 +24,7 @@ import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
 import org.example.youth_be.user.service.response.UserSignUpResponse;
-import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,13 +32,19 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserLinkRepository userLinkRepository;
     private final ArtworkRepository artworkRepository;
-    @Qualifier("accessTokenProvider")
     private final TokenProvider tokenProvider;
+
+    @Autowired
+    public UserService(UserRepository userRepository, UserLinkRepository userLinkRepository, ArtworkRepository artworkRepository, @MainAccessTokenProvider TokenProvider tokenProvider) {
+        this.userRepository = userRepository;
+        this.userLinkRepository = userLinkRepository;
+        this.artworkRepository = artworkRepository;
+        this.tokenProvider = tokenProvider;
+    }
 
     @Transactional
     public Long signup(UserSignupRequest request) {
@@ -129,6 +135,7 @@ public class UserService {
 
         // user role 업데이트 및 request 기반 업데이트/ 중복 닉네임 확인
         return UserSignUpResponse.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).accessToken(accessToken).build();
+    }
 
     @Transactional(readOnly = true)
     public UserMyPage getMyPage(TokenClaim tokenClaim) {
