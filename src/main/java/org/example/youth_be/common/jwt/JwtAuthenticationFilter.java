@@ -50,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		String accessToken = request.getHeader(AUTHORIZATION_HEADER);
 
 		// 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
-		if (!StringUtils.hasText(accessToken) && !shouldNotFilter(request)) {
+		if (!StringUtils.hasText(accessToken) && shouldNotFilter(request)) {
 			log.info("검사 통과");
 			doFilter(request, response, filterChain);
 			return;
