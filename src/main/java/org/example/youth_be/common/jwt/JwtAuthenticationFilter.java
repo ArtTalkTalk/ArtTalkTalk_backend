@@ -37,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	// 토큰 검사 생략
 	@Override
 	protected boolean shouldNotFilter(HttpServletRequest request) {
-		return request.getRequestURI().contains("/h2-console/"); // 재발급 앤드포인트
+		return request.getRequestURI().contains("/h2-console/") || request.getRequestURI().contains("/v1/health-check"); // 재발급 앤드포인트
 	}
 
 	@Override
