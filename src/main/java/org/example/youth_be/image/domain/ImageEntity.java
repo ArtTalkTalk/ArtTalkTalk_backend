@@ -33,4 +33,8 @@ public class ImageEntity extends BaseEntity {
         this.imageUploadName = imageUploadName;
         this.artworkId = artworkId;
     }
+
+    public void setArtworkId(Long artworkId) {
+        this.artworkId = artworkId;
+    }
 }
