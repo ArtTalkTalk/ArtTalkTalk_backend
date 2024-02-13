@@ -29,13 +29,13 @@ public interface UserSpec {
     void updateUserProfile(Long userId, UserProfileUpdateRequest request);
 
     @Operation(description = "유저 링크 생성 API")
-    Long createUserLink(Long userId, LinkRequest request);
+    Long createUserLink(Long userId, LinkRequest request, TokenClaim claim);
 
     @Operation(description = "유저 링크 삭제 API")
-    void deleteUserLink(Long userId, Long linkId);
+    void deleteUserLink(Long userId, Long linkId, TokenClaim claim);
 
     @Operation(description = "유저 링크 수정 API \n\nNote: 수정된 링크 ID를 반환합니다")
-    Long updateUserLink(Long userId, Long linkId, UserLinkUpdateRequest request);
+    Long updateUserLink(Long userId, Long linkId, UserLinkUpdateRequest request, TokenClaim claim);
 
     @Operation(description = "유저의 작품 조회 API")
     PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request);

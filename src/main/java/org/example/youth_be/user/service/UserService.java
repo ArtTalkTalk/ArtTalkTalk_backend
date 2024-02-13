@@ -5,6 +5,7 @@ import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
+import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.MainAccessTokenProvider;
@@ -74,7 +75,12 @@ public class UserService {
     }
 
     @Transactional
-    public Long createUserLink(Long userId, LinkRequest request) {
+    public Long createUserLink(Long userId, LinkRequest request, TokenClaim claim) {
+        if (claim.isNotAuthorized(userId)) {
+            throw new YouthBadRequestException("권한이 없는 사용자입니다.", """
+                    권한이 없는 사용자입니다. userId: %d, tokenUserId: %d
+                    """.formatted(userId, claim.getUserId()));
+        }
         userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         UserLinkEntity newUserLinkEntity = UserLinkEntity.builder()
                 .userId(userId)
@@ -87,7 +93,12 @@ public class UserService {
 
     // 링크 수정
     @Transactional
-    public Long updateUserLink(Long userId, Long linkId, UserLinkUpdateRequest request) {
+    public Long updateUserLink(Long userId, Long linkId, UserLinkUpdateRequest request, TokenClaim claim) {
+        if (claim.isNotAuthorized(userId)) {
+            throw new YouthBadRequestException("권한이 없는 사용자입니다.", """
+                    권한이 없는 사용자입니다. userId: %d, tokenUserId: %d
+                    """.formatted(userId, claim.getUserId()));
+        }
         UserLinkEntity userLinkEntity = userLinkRepository.findByIdAndUserId(linkId, userId).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
         userLinkEntity.updateLink(request.getTitle(), request.getUrl());
         return userLinkEntity.getId();
@@ -96,8 +107,13 @@ public class UserService {
     // 이미지 삭제
 
     @Transactional
-    public void deleteUserLink(Long userId, Long linkId) {
-        userLinkRepository.findByIdAndUserId(linkId, userId).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
+    public void deleteUserLink(Long userId, Long linkId, TokenClaim claim) {
+        if (claim.isNotAuthorized(userId)) {
+            throw new YouthBadRequestException("권한이 없는 사용자입니다.", """
+                    권한이 없는 사용자입니다. userId: %d, tokenUserId: %d
+                    """.formatted(userId, claim.getUserId()));
+        }
+        userLinkRepository.findByIdAndUserId(linkId, claim.getUserId()).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
         userLinkRepository.deleteById(linkId);
     }
 

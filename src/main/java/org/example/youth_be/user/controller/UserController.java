@@ -24,67 +24,77 @@ import org.springframework.web.bind.annotation.*;
 public class UserController implements UserSpec {
     private final UserService userService;
 
+    @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Long signup(@Valid @RequestBody UserSignupRequest request) {
         return userService.signup(request);
     }
 
+    @Override
     @GetMapping("/check")
     @ResponseStatus(HttpStatus.OK)
     public void checkNicknameDuplicate(@RequestParam String nickname) {
         userService.checkNicknameDuplicate(nickname);
     }
 
+    @Override
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public UserProfileResponse getUserProfile(@PathVariable Long userId) {
         return userService.getUserProfile(userId);
     }
 
+    @Override
     @PutMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
     public void updateUserProfile(@PathVariable Long userId, @RequestBody UserProfileUpdateRequest request) {
         userService.updateUserProfile(userId, request);
     }
 
+    @Override
     @PostMapping("/{userId}/links")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createUserLink(@PathVariable Long userId, @RequestBody LinkRequest request) {
-        return userService.createUserLink(userId, request);
+    public Long createUserLink(@PathVariable Long userId, @RequestBody LinkRequest request, @CurrentUser TokenClaim claim) {
+        return userService.createUserLink(userId, request, claim);
     }
 
+    @Override
     @DeleteMapping("/{userId}/links/{linkId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteUserLink(@PathVariable Long userId, @PathVariable Long linkId) {
-        userService.deleteUserLink(userId, linkId);
+    public void deleteUserLink(@PathVariable Long userId, @PathVariable Long linkId, @CurrentUser TokenClaim claim) {
+        userService.deleteUserLink(userId, linkId, claim);
     }
 
     @Override
     @PutMapping("/{userId}/links/{linkId}")
     @ResponseStatus(HttpStatus.OK)
-    public Long updateUserLink(@PathVariable Long userId, @PathVariable Long linkId, @RequestBody UserLinkUpdateRequest request) {
-        return userService.updateUserLink(userId, linkId, request);
+    public Long updateUserLink(@PathVariable Long userId, @PathVariable Long linkId, @RequestBody UserLinkUpdateRequest request, @CurrentUser TokenClaim claim) {
+        return userService.updateUserLink(userId, linkId, request, claim);
     }
 
+    @Override
     @GetMapping("/{userId}/artworks")
     @ResponseStatus(HttpStatus.OK)
     public PageResponse<ArtworkResponse> getUserArtworks(@PathVariable Long userId, @RequestParam ArtworkMyPageType type, @ModelAttribute ArtworkPaginationRequest request) {
         return userService.getUserArtworks(userId, type, request);
     }
 
+    @Override
     @GetMapping("/me")
     @ResponseStatus(HttpStatus.OK)
     public UserMyInformation getMyInformation(@CurrentUser TokenClaim tokenClaim) {
         return userService.getMyInformation(tokenClaim);
     }
 
+    @Override
     @PutMapping("/sign-up")
     @ResponseStatus(HttpStatus.OK)
     public UserSignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody UserAdditionSignupRequest request) {
         return userService.signUp(tokenClaim, request);
     }
 
+    @Override
     @GetMapping("/mypage")
     @ResponseStatus(HttpStatus.OK)
     public UserMyPage getMyPage(@CurrentUser TokenClaim tokenClaim) {

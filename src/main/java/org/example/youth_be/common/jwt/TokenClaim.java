@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.example.youth_be.user.enums.UserRoleEnum;
 
+import java.util.Objects;
+
 import static org.example.youth_be.common.jwt.TokenProvider.KEY_USER_ID;
 import static org.example.youth_be.common.jwt.TokenProvider.KEY_USER_ROLE;
 
@@ -26,5 +28,9 @@ public class TokenClaim {
                 claims.getIssuedAt().toInstant().getEpochSecond(),
                 claims.getExpiration().getTime(),
                 UserRoleEnum.fromValue((String) claims.get(KEY_USER_ROLE)));
+    }
+
+    public boolean isNotAuthorized(Long userId) {
+        return !Objects.equals(this.userId, userId);
     }
 }
