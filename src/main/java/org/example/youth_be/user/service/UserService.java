@@ -104,8 +104,6 @@ public class UserService {
         return userLinkEntity.getId();
     }
 
-    // 이미지 삭제
-
     @Transactional
     public void deleteUserLink(Long userId, Long linkId, TokenClaim claim) {
         if (claim.isNotAuthorized(userId)) {
