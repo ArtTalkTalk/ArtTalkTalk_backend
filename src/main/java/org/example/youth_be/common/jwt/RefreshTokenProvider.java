@@ -52,4 +52,19 @@ public class RefreshTokenProvider implements TokenProvider {
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
+
+    @Override
+    public String generateTokenForDev(Long userId, UserRoleEnum userRole, Long validityInSeconds) {
+        ZoneId KST = ZoneId.of("Asia/Seoul");
+        ZonedDateTime issuedAt = ZonedDateTime.now(KST).truncatedTo(ChronoUnit.SECONDS);
+        ZonedDateTime expiration = issuedAt.plusSeconds(validityInSeconds);
+        return Jwts.builder()
+                .claim(KEY_USER_ID, userId)
+                .claim(KEY_USER_ROLE, userRole)
+                .setSubject(SUBJECT_REFRESH_TOKEN)
+                .setIssuedAt(Date.from(issuedAt.toInstant()))
+                .setExpiration(Date.from(expiration.toInstant()))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
 }

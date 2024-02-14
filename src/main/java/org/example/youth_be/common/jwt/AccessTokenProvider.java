@@ -1,14 +1,13 @@
 package org.example.youth_be.common.jwt;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.apache.commons.lang3.StringUtils;
-import org.example.youth_be.common.exceptions.YouthBadRequestException;
-import org.example.youth_be.common.exceptions.YouthNotFoundException;
-import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.enums.UserRoleEnum;
-import org.example.youth_be.user.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
@@ -45,6 +44,21 @@ public class AccessTokenProvider implements TokenProvider {
         ZoneId KST = ZoneId.of("Asia/Seoul");
         ZonedDateTime issuedAt = ZonedDateTime.now(KST).truncatedTo(ChronoUnit.SECONDS);
         ZonedDateTime expiration = issuedAt.plusDays(jwtProperties.getAccessValidityInDays());
+        return Jwts.builder()
+                .claim(KEY_USER_ID, userId)
+                .claim(KEY_USER_ROLE, userRole)
+                .setSubject(SUBJECT_ACCESS_TOKEN)
+                .setIssuedAt(Date.from(issuedAt.toInstant()))
+                .setExpiration(Date.from(expiration.toInstant()))
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    @Override
+    public String generateTokenForDev(Long userId, UserRoleEnum userRole, Long validityInSeconds) {
+        ZoneId KST = ZoneId.of("Asia/Seoul");
+        ZonedDateTime issuedAt = ZonedDateTime.now(KST).truncatedTo(ChronoUnit.SECONDS);
+        ZonedDateTime expiration = issuedAt.plusSeconds(validityInSeconds);
         return Jwts.builder()
                 .claim(KEY_USER_ID, userId)
                 .claim(KEY_USER_ROLE, userRole)
