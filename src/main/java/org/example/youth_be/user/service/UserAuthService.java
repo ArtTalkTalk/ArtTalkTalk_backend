@@ -13,6 +13,7 @@ import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevTokenGenerateRequest;
 import org.example.youth_be.user.service.request.LoginRequest;
 import org.example.youth_be.user.service.request.TokenReissueRequest;
+import org.example.youth_be.user.service.response.GenerateTokensForDev;
 import org.example.youth_be.user.service.response.LoginResponse;
 import org.example.youth_be.user.service.response.TokenReissueResponse;
 import org.springframework.stereotype.Service;
@@ -55,15 +56,14 @@ public class UserAuthService {
         UserEntity userEntity = userRepository.findById(accessTokenInfo.getTokenClaim().getUserId())
                 .orElseThrow(() -> new YouthNotFoundException("유저를 찾을 수 없습니다.", null));
         String generatedAccessToken = accessTokenProvider.generateToken(userEntity.getUserId(), userEntity.getUserRole());
-        String generatedRefreshToken = refreshTokenProvider.generateToken(userEntity.getUserId(), userEntity.getUserRole());
-        return new TokenReissueResponse(generatedAccessToken, generatedRefreshToken);
+        return new TokenReissueResponse(generatedAccessToken);
     }
 
     @Transactional(readOnly = true)
-    public TokenReissueResponse generateForDev(DevTokenGenerateRequest request) {
+    public GenerateTokensForDev generateForDev(DevTokenGenerateRequest request) {
         String generatedAccessToken = accessTokenProvider.generateTokenForDev(request.getUserId(), request.getUserRole(), request.getAccessValidityInSeconds());
         String generatedRefreshToken = refreshTokenProvider.generateTokenForDev(request.getUserId(), request.getUserRole(), request.getRefreshValidityInSeconds());
-        return new TokenReissueResponse(generatedAccessToken, generatedRefreshToken);
+        return new GenerateTokensForDev(generatedAccessToken, generatedRefreshToken);
     }
 
     private void validateRefreshToken(ParsedTokenInfo refreshTokenInfo) {
