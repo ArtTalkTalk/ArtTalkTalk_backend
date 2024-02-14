@@ -29,7 +29,7 @@ public class UserAuthService {
     private final TokenProvider accessTokenProvider;
     private final TokenProvider refreshTokenProvider;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public LoginResponse login(LoginRequest request) {
         Optional<UserEntity> userEntityOptional = userRepository.findBySocialIdAndSocialType(request.getSocialId(), request.getSocialType());
         UserEntity userEntity = userEntityOptional.orElseGet(() -> userRepository.save(UserEntity.builder()
