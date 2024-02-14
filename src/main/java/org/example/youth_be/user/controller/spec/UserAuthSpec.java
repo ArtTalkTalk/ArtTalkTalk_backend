@@ -6,6 +6,7 @@ import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.user.service.request.DevTokenGenerateRequest;
 import org.example.youth_be.user.service.request.LoginRequest;
 import org.example.youth_be.user.service.request.TokenReissueRequest;
+import org.example.youth_be.user.service.response.GenerateTokensForDev;
 import org.example.youth_be.user.service.response.LoginResponse;
 import org.example.youth_be.user.service.response.TokenReissueResponse;
 
@@ -16,5 +17,5 @@ public interface UserAuthSpec {
     @Operation(description = "토큰 재발급 API")
     TokenReissueResponse reissue(TokenReissueRequest request);
     @Operation(description = "개발용 토큰 재발급 API\n\n만료시간은 초 단위입니다.")
-    TokenReissueResponse generatedTokensForDev(DevTokenGenerateRequest request);
+    GenerateTokensForDev generatedTokensForDev(DevTokenGenerateRequest request);
 }

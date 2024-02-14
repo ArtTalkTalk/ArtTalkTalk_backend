@@ -6,6 +6,7 @@ import org.example.youth_be.user.service.UserAuthService;
 import org.example.youth_be.user.service.request.DevTokenGenerateRequest;
 import org.example.youth_be.user.service.request.LoginRequest;
 import org.example.youth_be.user.service.request.TokenReissueRequest;
+import org.example.youth_be.user.service.response.GenerateTokensForDev;
 import org.example.youth_be.user.service.response.LoginResponse;
 import org.example.youth_be.user.service.response.TokenReissueResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,7 @@ public class UserAuthController implements UserAuthSpec {
 
     @Override
     @PostMapping("/dev-tokens")
-    public TokenReissueResponse generatedTokensForDev(@RequestBody DevTokenGenerateRequest request) {
+    public GenerateTokensForDev generatedTokensForDev(@RequestBody DevTokenGenerateRequest request) {
         return userAuthService.generateForDev(request);
     }
 }
