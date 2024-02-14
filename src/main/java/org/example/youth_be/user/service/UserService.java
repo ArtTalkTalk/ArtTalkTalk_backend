@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.example.youth_be.common.util.DebuggingTemplate.NotAuthorized;
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -77,9 +79,7 @@ public class UserService {
     @Transactional
     public Long createUserLink(Long userId, LinkRequest request, TokenClaim claim) {
         if (claim.isNotAuthorized(userId)) {
-            throw new YouthBadRequestException("권한이 없는 사용자입니다.", """
-                    권한이 없는 사용자입니다. userId: %d, tokenUserId: %d
-                    """.formatted(userId, claim.getUserId()));
+            throw new YouthBadRequestException("권한이 없는 사용자입니다.", NotAuthorized(userId, claim));
         }
         userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         UserLinkEntity newUserLinkEntity = UserLinkEntity.builder()
@@ -95,9 +95,7 @@ public class UserService {
     @Transactional
     public Long updateUserLink(Long userId, Long linkId, UserLinkUpdateRequest request, TokenClaim claim) {
         if (claim.isNotAuthorized(userId)) {
-            throw new YouthBadRequestException("권한이 없는 사용자입니다.", """
-                    권한이 없는 사용자입니다. userId: %d, tokenUserId: %d
-                    """.formatted(userId, claim.getUserId()));
+            throw new YouthBadRequestException("권한이 없는 사용자입니다.", NotAuthorized(userId, claim));
         }
         UserLinkEntity userLinkEntity = userLinkRepository.findByIdAndUserId(linkId, userId).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
         userLinkEntity.updateLink(request.getTitle(), request.getUrl());
@@ -107,9 +105,7 @@ public class UserService {
     @Transactional
     public void deleteUserLink(Long userId, Long linkId, TokenClaim claim) {
         if (claim.isNotAuthorized(userId)) {
-            throw new YouthBadRequestException("권한이 없는 사용자입니다.", """
-                    권한이 없는 사용자입니다. userId: %d, tokenUserId: %d
-                    """.formatted(userId, claim.getUserId()));
+            throw new YouthBadRequestException("권한이 없는 사용자입니다.", NotAuthorized(userId, claim));
         }
         userLinkRepository.findByIdAndUserId(linkId, claim.getUserId()).orElseThrow(() -> new YouthNotFoundException("링크를 찾을 수 없습니다", null));
         userLinkRepository.deleteById(linkId);
