@@ -21,6 +21,7 @@ public class ArtworkController implements ArtworkSpec {
 
     private final ArtworkService artworkService;
 
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Long createArtwork(@CurrentUser TokenClaim tokenClaim, @ModelAttribute ArtworkCreateRequest request) {
         return artworkService.createArtwork(tokenClaim, request);
