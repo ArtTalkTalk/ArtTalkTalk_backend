@@ -96,7 +96,7 @@ public class ArtworkService {
 
     @Transactional
     public void updateArtwork(TokenClaim tokenClaim, Long artworkId, ArtworkUpdateRequest request) {
-        // 작품 수정 권한 확인(유저가 동일한지 확인)
+        // 작품 수정 권한 확인(작품 작성 유저와 수정 요청 유저가 동일한지 확인)
         Long userId = tokenClaim.getUserId();
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 작품을 찾을 수 없습니다.", null));
         if (!artworkEntity.getUserId().equals(userId)) {
