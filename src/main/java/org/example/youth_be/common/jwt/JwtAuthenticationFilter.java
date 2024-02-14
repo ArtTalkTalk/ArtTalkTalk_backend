@@ -27,6 +27,7 @@ import java.util.List;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final String AUTHORIZATION_HEADER = HttpHeaders.AUTHORIZATION;
+	private static final List<String> WHITE_LIST = List.of("/h2-console/", "/v1/health-check", "/swagger-ui/", "/login", "/reissue", "/dev-tokens");
 	private TokenProvider tokenProvider;
 
 	@Autowired
@@ -35,10 +36,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	}
 
 	// 토큰 검사 생략
-	@Override
-	protected boolean shouldNotFilter(HttpServletRequest request) {
-		return request.getRequestURI().contains("/h2-console/") || request.getRequestURI().contains("/v1/health-check")
-				|| request.getRequestURI().contains("/swagger-ui/"); // 재발급 앤드포인트
+	public boolean hasWhiteList(HttpServletRequest request) {
+		return WHITE_LIST.stream().anyMatch(url -> url.equals(request.getRequestURI()));
 	}
 
 	@Override
@@ -48,36 +47,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 		// request Header에서 AccessToken을 가져온다.
 		String accessToken = request.getHeader(AUTHORIZATION_HEADER);
-
-		// 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
-		if (!StringUtils.hasText(accessToken) && shouldNotFilter(request)) {
-			log.info("검사 통과");
-			doFilter(request, response, filterChain);
-			return;
-		}
-
-		ParsedTokenInfo result = tokenProvider.parseToken(accessToken);
-		log.info("result.getThrowableType() : {}", result.getThrowableType());
+		ParsedTokenInfo tokenInfo = tokenProvider.parseToken(accessToken);
 		try {
-			switch (result.getThrowableType()) {
-				case EXPIRED:
-					throw new YouthUnAuthorizationException(result.getThrowableType().getDescription(), null);
-
-				case SIGNATURE_INVALID:
-				case UNSUPPORTED:
-				case MALFORMED:
-				case NULL_OR_EMPTY:
-					throw new YouthBadRequestException(result.getThrowableType().getDescription(), null);
-
-				case UNHANDLED_EXCEPTION:
-					throw new YouthInternalException(result.getThrowableType().getDescription(), null);
-
-				default:
-					break;
+			// 토큰 검사 생략(모두 허용 URL의 경우 토큰 검사 통과)
+			if (hasWhiteList(request)) {
+				log.info("검사 통과");
+				doFilter(request, response, filterChain);
+				return;
 			}
 
+			validateAccessToken(tokenInfo);
+
 			// SecurityContext에 등록할 객체
-			TokenClaim tokenClaim = result.getTokenClaim();
+			TokenClaim tokenClaim = tokenInfo.getTokenClaim();
 
 			// SecurityContext에 인증 객체를 등록해준다.
 			Authentication auth = getAuthentication(tokenClaim);
@@ -87,6 +69,30 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		}
 
 		filterChain.doFilter(request, response);
+	}
+
+	private void validateAccessToken(ParsedTokenInfo tokenInfo) {
+		if (tokenInfo.isNormalToken()) {
+			return;
+		}
+		JwtThrowableType throwableType = tokenInfo.getThrowableType();
+		log.info("throwableType : {}", tokenInfo.getThrowableType());
+		switch (throwableType) {
+			case EXPIRED:
+				throw new YouthUnAuthorizationException(throwableType.getDescription(), null);
+
+			case SIGNATURE_INVALID:
+			case UNSUPPORTED:
+			case MALFORMED:
+			case NULL_OR_EMPTY:
+				throw new YouthBadRequestException(throwableType.getDescription(), null);
+
+			case UNHANDLED_EXCEPTION:
+				throw new YouthInternalException(throwableType.getDescription(), null);
+
+			default:
+				break;
+		}
 	}
 
 	public Authentication getAuthentication(TokenClaim tokenClaim) {

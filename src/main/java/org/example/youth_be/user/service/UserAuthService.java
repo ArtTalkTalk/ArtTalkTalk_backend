@@ -8,6 +8,7 @@ import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.ParsedTokenInfo;
 import org.example.youth_be.common.jwt.TokenProvider;
 import org.example.youth_be.user.domain.UserEntity;
+import org.example.youth_be.user.enums.UserRoleEnum;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevTokenGenerateRequest;
 import org.example.youth_be.user.service.request.LoginRequest;
@@ -16,6 +17,8 @@ import org.example.youth_be.user.service.response.LoginResponse;
 import org.example.youth_be.user.service.response.TokenReissueResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -27,8 +30,12 @@ public class UserAuthService {
 
     @Transactional(readOnly = true)
     public LoginResponse login(LoginRequest request) {
-        UserEntity userEntity = userRepository.findBySocialIdAndSocialType(request.getSocialId(), request.getSocialType())
-                .orElseThrow(() -> new YouthNotFoundException("가입되지 않은 회원입니다. 회원가입을 해주세요", null));
+        Optional<UserEntity> userEntityOptional = userRepository.findBySocialIdAndSocialType(request.getSocialId(), request.getSocialType());
+        UserEntity userEntity = userEntityOptional.orElseGet(() -> userRepository.save(UserEntity.builder()
+                .socialId(request.getSocialId())
+                .socialType(request.getSocialType())
+                .userRole(UserRoleEnum.ASSOCIATE)
+                .build()));
         String accessToken = accessTokenProvider.generateToken(userEntity.getUserId(), userEntity.getUserRole());
         String refreshToken = refreshTokenProvider.generateToken(userEntity.getUserId(), userEntity.getUserRole());
         return new LoginResponse(accessToken, refreshToken, userEntity.getUserRole());
@@ -70,8 +77,7 @@ public class UserAuthService {
 
     private void validateAccessToken(ParsedTokenInfo accessTokenInfo) {
         if (!accessTokenInfo.isExpired()) {
-            throw new YouthBadRequestException("만료되지 않았거나 올바르지 않은 토큰입니다.", """
-                    만료되지 않았거나 올바르지 않은 토큰입니다. userId: %d""".formatted(accessTokenInfo.getTokenClaim().getUserId()));
+            throw new YouthBadRequestException("만료되지 않았거나 올바르지 않은 액세스 토큰입니다.", null);
         }
     }
 }
