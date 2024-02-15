@@ -1,17 +1,20 @@
 package org.example.youth_be.user.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.example.youth_be.common.CurrentUser;
+import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.controller.spec.UserAuthSpec;
 import org.example.youth_be.user.service.UserAuthService;
 import org.example.youth_be.user.service.request.DevTokenGenerateRequest;
 import org.example.youth_be.user.service.request.LoginRequest;
+import org.example.youth_be.user.service.request.SignupRequest;
 import org.example.youth_be.user.service.request.TokenReissueRequest;
 import org.example.youth_be.user.service.response.GenerateTokensForDev;
 import org.example.youth_be.user.service.response.LoginResponse;
+import org.example.youth_be.user.service.response.SignUpResponse;
 import org.example.youth_be.user.service.response.TokenReissueResponse;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +25,13 @@ public class UserAuthController implements UserAuthSpec {
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
         return userAuthService.login(request);
+    }
+
+    @Override
+    @PutMapping("/sign-up")
+    @ResponseStatus(HttpStatus.OK)
+    public SignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody SignupRequest request) {
+        return userAuthService.signUp(tokenClaim, request);
     }
 
     @Override

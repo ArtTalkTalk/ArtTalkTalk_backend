@@ -8,12 +8,9 @@ import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
-import org.example.youth_be.common.jwt.MainAccessTokenProvider;
 import org.example.youth_be.common.jwt.TokenClaim;
-import org.example.youth_be.common.jwt.TokenProvider;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
-import org.example.youth_be.user.enums.UserRoleEnum;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.*;
@@ -21,7 +18,6 @@ import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
-import org.example.youth_be.user.service.response.UserSignUpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -36,30 +32,12 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserLinkRepository userLinkRepository;
     private final ArtworkRepository artworkRepository;
-    private final TokenProvider tokenProvider;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserLinkRepository userLinkRepository, ArtworkRepository artworkRepository, @MainAccessTokenProvider TokenProvider tokenProvider) {
+    public UserService(UserRepository userRepository, UserLinkRepository userLinkRepository, ArtworkRepository artworkRepository) {
         this.userRepository = userRepository;
         this.userLinkRepository = userLinkRepository;
         this.artworkRepository = artworkRepository;
-        this.tokenProvider = tokenProvider;
-    }
-
-    @Transactional
-    public Long signup(UserSignupRequest request) {
-        UserEntity userEntity = UserEntity.builder()
-                .userRole(request.getUserRole())
-                .profileImageUrl(request.getProfileImageUrl())
-                .activityField(request.getActivityField())
-                .activityArea(request.getActivityArea())
-                .description(request.getDescription())
-                .socialId(request.getSocialId())
-                .socialType(request.getSocialType())
-                .nickname(request.getNickname())
-                .build();
-        userRepository.save(userEntity);
-        return userEntity.getUserId();
     }
 
     @Transactional(readOnly = true)
@@ -131,24 +109,6 @@ public class UserService {
 
     public UserMyInformation getMyInformation(TokenClaim tokenClaim) {
         return UserMyInformation.builder().userId(tokenClaim.getUserId()).role(tokenClaim.getUserRole()).build();
-    }
-
-
-    @Transactional
-    public UserSignUpResponse signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request) {
-        Long userId = tokenClaim.getUserId();
-
-        // 기존 토큰 무효화
-
-        // 정회원 토큰 생성
-        String accessToken = tokenProvider.generateToken(userId, UserRoleEnum.REGULAR);
-
-        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
-        userEntity.signUp(request.getProfileImageUrl(), request.getNickname(),
-                request.getActivityField(), request.getActivityArea(), request.getDescription());
-
-        // user role 업데이트 및 request 기반 업데이트/ 중복 닉네임 확인
-        return UserSignUpResponse.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).accessToken(accessToken).build();
     }
 
     @Transactional(readOnly = true)

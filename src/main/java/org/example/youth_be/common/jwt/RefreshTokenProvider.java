@@ -9,6 +9,7 @@ import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.enums.UserRoleEnum;
 import org.example.youth_be.user.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -18,6 +19,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 @Component
+@Qualifier("refreshTokenProvider")
 public class RefreshTokenProvider implements TokenProvider {
     private final JwtProperties jwtProperties;
     private final SecretKey key;
