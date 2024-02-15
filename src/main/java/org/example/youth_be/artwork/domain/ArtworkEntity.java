@@ -65,4 +65,12 @@ public class ArtworkEntity extends BaseEntity {
     public void setThumbnailImageUrl(String thumbnailImageUrl){
         this.thumbnailImageUrl = thumbnailImageUrl;
     }
+
+    public void updateArtwork(String title, String description, ArtworkStatus artworkStatus, List<Long> imageIdList, String thumbnailImageUrl){
+        this.title = title;
+        this.description = description;
+        this.artworkStatus = artworkStatus;
+        this.imageIdList = imageIdList;
+        this.thumbnailImageUrl = thumbnailImageUrl;
+    }
 }

@@ -6,6 +6,7 @@ import org.example.youth_be.artwork.enums.ArtworkFeedType;
 import org.example.youth_be.artwork.service.ArtworkService;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
+import org.example.youth_be.artwork.service.request.ArtworkUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.CurrentUser;
@@ -37,5 +38,11 @@ public class ArtworkController implements ArtworkSpec {
     @ResponseStatus(HttpStatus.OK)
     public ArtworkDetailResponse getArtwork(@PathVariable Long artworkId) {
         return artworkService.getArtwork(artworkId);
+    }
+
+    @PutMapping("/{artworkId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateArtwork(@CurrentUser TokenClaim tokenClaim, @PathVariable Long artworkId, @ModelAttribute ArtworkUpdateRequest request) {
+        artworkService.updateArtwork(tokenClaim, artworkId, request);
     }
 }
