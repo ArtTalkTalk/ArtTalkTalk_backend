@@ -28,6 +28,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static org.example.youth_be.common.s3.FileNameExtractor.getFileName;
+
 @Service
 @RequiredArgsConstructor
 public class ArtworkService {
@@ -110,10 +112,7 @@ public class ArtworkService {
             if (!request.getImageIds().contains(image.getImageId())) {
 
                 // fileName 추출
-                String url = image.getImageUrl();
-                int lastIndex = url.lastIndexOf('/');
-                int secondLastIndex = url.lastIndexOf('/', lastIndex - 1);
-                String fileName = url.substring(secondLastIndex + 1);
+                String fileName = getFileName(image);
                 deleteImageFileName.add(fileName);
 
                 // 이미지 삭제
