@@ -55,6 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				doFilter(request, response, filterChain);
 				return;
 			}
+			log.info("tokenInfo : {}", tokenInfo.getTokenClaim().getUserRole());
 
 			validateAccessToken(tokenInfo);
 
@@ -97,7 +98,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
 	public Authentication getAuthentication(TokenClaim tokenClaim) {
 		return new UsernamePasswordAuthenticationToken(tokenClaim, "",
-				List.of(new SimpleGrantedAuthority(tokenClaim.getUserRole().toString())));
+				List.of(new SimpleGrantedAuthority(String.valueOf(tokenClaim.getUserRole()))));
 	}
 }
 
