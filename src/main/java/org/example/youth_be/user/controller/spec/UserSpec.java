@@ -12,13 +12,9 @@ import org.example.youth_be.user.service.request.*;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
-import org.example.youth_be.user.service.response.UserSignUpResponse;
 
 @Tag(name = ApiTags.USER)
 public interface UserSpec {
-    @Operation(description = "회원가입 API [값을 넣지 않으면 서버에서 임의로 넣습니다.]")
-    Long signup(UserSignupRequest request);
-
     @Operation(description = "닉네임 중복 체크 API")
     void checkNicknameDuplicate(String nickname);
 
@@ -39,9 +35,6 @@ public interface UserSpec {
 
     @Operation(description = "유저의 작품 조회 API")
     PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request);
-
-    @Operation(description = "유저 추가 회원 가입 api")
-    UserSignUpResponse signUp(TokenClaim tokenClaim, UserAdditionSignupRequest request);
 
     @Operation(description = "유저 Id, Role API")
     UserMyInformation getMyInformation(TokenClaim tokenClaim);

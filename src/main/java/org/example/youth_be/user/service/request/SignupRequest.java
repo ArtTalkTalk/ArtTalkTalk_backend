@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UserAdditionSignupRequest {
+public class SignupRequest {
     @Schema(description = "프로필 이미지 URL")
     private String profileImageUrl;
     @Schema(description = "닉네임")

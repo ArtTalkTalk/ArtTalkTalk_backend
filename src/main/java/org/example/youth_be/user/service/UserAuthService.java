@@ -6,15 +6,18 @@ import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthForbiddenException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.ParsedTokenInfo;
+import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.common.jwt.TokenProvider;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.enums.UserRoleEnum;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.DevTokenGenerateRequest;
 import org.example.youth_be.user.service.request.LoginRequest;
+import org.example.youth_be.user.service.request.SignupRequest;
 import org.example.youth_be.user.service.request.TokenReissueRequest;
 import org.example.youth_be.user.service.response.GenerateTokensForDev;
 import org.example.youth_be.user.service.response.LoginResponse;
+import org.example.youth_be.user.service.response.SignUpResponse;
 import org.example.youth_be.user.service.response.TokenReissueResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +43,25 @@ public class UserAuthService {
         String accessToken = accessTokenProvider.generateToken(userEntity.getUserId(), userEntity.getUserRole());
         String refreshToken = refreshTokenProvider.generateToken(userEntity.getUserId(), userEntity.getUserRole());
         return new LoginResponse(accessToken, refreshToken, userEntity.getUserRole());
+    }
+
+    @Transactional
+    public SignUpResponse signUp(TokenClaim tokenClaim, SignupRequest request) {
+        Long userId = tokenClaim.getUserId();
+
+        // 기존 토큰 무효화
+
+        // 정회원 토큰 생성
+        String accessToken = accessTokenProvider.generateToken(userId, UserRoleEnum.REGULAR);
+        String refreshToken = refreshTokenProvider.generateToken(userId, UserRoleEnum.REGULAR);
+
+
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+        userEntity.signUp(request.getProfileImageUrl(), request.getNickname(),
+                request.getActivityField(), request.getActivityArea(), request.getDescription());
+
+        // user role 업데이트 및 request 기반 업데이트/ 중복 닉네임 확인
+        return SignUpResponse.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).accessToken(accessToken).refreshToken(refreshToken).build();
     }
 
     @Transactional(readOnly = true)

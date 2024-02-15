@@ -14,7 +14,6 @@ import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
-import org.example.youth_be.user.service.response.UserSignUpResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 public class UserController implements UserSpec {
     private final UserService userService;
-
-    @Override
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public Long signup(@Valid @RequestBody UserSignupRequest request) {
-        return userService.signup(request);
-    }
 
     @Override
     @GetMapping("/check")
@@ -85,13 +77,6 @@ public class UserController implements UserSpec {
     @ResponseStatus(HttpStatus.OK)
     public UserMyInformation getMyInformation(@CurrentUser TokenClaim tokenClaim) {
         return userService.getMyInformation(tokenClaim);
-    }
-
-    @Override
-    @PutMapping("/sign-up")
-    @ResponseStatus(HttpStatus.OK)
-    public UserSignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody UserAdditionSignupRequest request) {
-        return userService.signUp(tokenClaim, request);
     }
 
     @Override

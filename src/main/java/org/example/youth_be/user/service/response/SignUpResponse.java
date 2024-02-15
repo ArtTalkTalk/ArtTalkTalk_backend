@@ -6,8 +6,9 @@ import org.example.youth_be.user.enums.UserRoleEnum;
 
 @Getter
 @Builder
-public class UserSignUpResponse {
+public class SignUpResponse {
     private Long userId;
     private UserRoleEnum role;
     private String accessToken;
+    private String refreshToken;
 }
