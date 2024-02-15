@@ -77,8 +77,9 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}/")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}/artworks/")).permitAll() // 회원이 아니어도 접근 가능
                         .requestMatchers(antMatcher(HttpMethod.GET, "/error")).permitAll()
-                        .requestMatchers(antMatcher(HttpMethod.PUT, "/sign-up/")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE)) // 준회원은 추가 회원가입 가능
-                        .requestMatchers(antMatcher(HttpMethod.GET, "/users/check/")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE))
+                        .requestMatchers(antMatcher(HttpMethod.PUT, "/sign-up")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE)) // 준회원은 추가 회원가입 가능
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/users/check")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE))
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/users/me")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE))
                         .requestMatchers(antMatcher("/**")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                 )
                 .exceptionHandling(exceptionHandling ->
