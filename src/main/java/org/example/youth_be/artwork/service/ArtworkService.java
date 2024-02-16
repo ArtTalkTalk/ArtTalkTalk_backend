@@ -122,7 +122,8 @@ public class ArtworkService {
             if (!request.getImageIds().contains(image.getImageId())) {
 
                 // fileName 추출
-                String fileName = getFileName(image);
+                String imageUrl = image.getImageUrl();
+                String fileName = getFileName(imageUrl);
                 deleteImageFileName.add(fileName);
 
                 // 이미지 삭제

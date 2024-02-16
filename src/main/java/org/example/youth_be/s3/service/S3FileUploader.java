@@ -48,8 +48,10 @@ public class S3FileUploader implements FileUploader {
 
         try {
             log.info("[S3 File Upload] 시작 :{}", fileName);
+            logger.info("[S3 File Upload] 시작 :{}", fileName);
             amazonS3Client.putObject(s3Properties.getS3().getBucket(), fileName, file.getInputStream(), getObjectMetadata(file));
             log.info("[S3 File Upload] 완료 :{}", fileName);
+            logger.info("[S3 File Upload] 시작 :{}", fileName);
 
             URL fileUrl = amazonS3Client.getUrl(s3Properties.getS3().getBucket(), fileName);
             return fileUrl.toString();
