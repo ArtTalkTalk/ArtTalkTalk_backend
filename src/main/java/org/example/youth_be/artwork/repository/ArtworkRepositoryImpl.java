@@ -1,20 +1,20 @@
 package org.example.youth_be.artwork.repository;
 
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.artwork.domain.QArtworkEntity;
-import org.example.youth_be.artwork.enums.ArtworkFeedType;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.enums.ArtworkOtherPageType;
 import org.example.youth_be.artwork.enums.ArtworkStatus;
+import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.follow.domain.QFollowEntity;
 import org.example.youth_be.like.domain.QLikeEntity;
 import org.example.youth_be.user.domain.QUserEntity;
 import org.example.youth_be.user.domain.UserEntity;
-import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -66,6 +66,13 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
         return findFollowingByCondition(userId, cursorId, size);
     }
 
+    private BooleanExpression ltLastIdxId(Long cursorId) {
+        if (cursorId == null) {
+            return null;
+        }
+        return artwork.artworkId.lt(cursorId);
+    }
+
     private List<ArtworkResponse> findAllByCondition(Long userId, Long cursorId, Integer size) {
 
         UserEntity artist = getUserEntity(userId);
@@ -74,7 +81,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
         List<ArtworkEntity> artworks = jpaQueryFactory
                 .selectFrom(artwork)
                 .where(artwork.userId.eq(userId)
-                        .and(artwork.artworkId.lt(cursorId))) // 사용자 ID와 커서 ID로 필터링
+                        .and(ltLastIdxId(cursorId))) // 사용자 ID와 커서 ID로 필터링
                 .orderBy(artwork.artworkId.desc())
                 .limit(size + 1) // hasNext 판단을 위해 size + 1개 조회
                 .fetch();
@@ -96,7 +103,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
         List<ArtworkEntity> artworks = jpaQueryFactory
                 .selectFrom(artwork)
                 .where(artwork.userId.eq(userId)
-                        .and(artwork.artworkId.lt(cursorId)) // 커서 ID 조건
+                        .and(ltLastIdxId(cursorId)) // 커서 ID 조건
                         .and(artwork.artworkStatus.eq(ArtworkStatus.SELLING))) // ArtworkStatus가 SELLING인 경우만 필터링
                 .orderBy(artwork.artworkId.desc())
                 .limit(size + 1) // 다음 페이지 존재 여부 확인을 위해 size + 1개 조회
@@ -111,7 +118,6 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
 
         return responses;
     }
-
 
     private List<ArtworkResponse> findCollectionByCondition(Long userId, Long cursorId, Integer size) {
 
@@ -140,7 +146,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                 .from(artwork)
                 .join(user).on(user.userId.eq(artwork.userId))
                 .where(artwork.artworkId.in(likedArtworkIds)
-                        .and(artwork.artworkId.lt(cursorId)))
+                        .and(ltLastIdxId(cursorId)))
                 .orderBy(artwork.artworkId.desc())
                 .limit(size + 1)
                 .fetch();
@@ -167,7 +173,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                         artwork.updatedAt))
                 .from(artwork)
                 .join(user).on(user.userId.eq(artwork.userId))
-                .where(artwork.artworkId.lt(cursorId))
+                .where(ltLastIdxId(cursorId))
                 .orderBy(artwork.artworkId.desc())
                 .limit(size + 1)
                 .fetch();
@@ -200,8 +206,10 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                         artwork.updatedAt))
                 .from(artwork)
                 .join(user).on(user.userId.eq(artwork.userId))
-                .where(artwork.artworkId.in(followingUserIds)
-                        .and(artwork.artworkId.lt(cursorId)))
+                .where(
+                        artwork.artworkId.in(followingUserIds)
+                                .and(ltLastIdxId(cursorId))
+                )
                 .orderBy(artwork.artworkId.desc())
                 .limit(size + 1)
                 .fetch();
