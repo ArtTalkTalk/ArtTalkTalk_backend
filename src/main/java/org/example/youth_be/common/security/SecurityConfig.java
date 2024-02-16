@@ -84,6 +84,7 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.DELETE, "/image/profile")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/mypage")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/check")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/users/artworks")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(antMatcher("/**")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                 )
                 .exceptionHandling(exceptionHandling ->
