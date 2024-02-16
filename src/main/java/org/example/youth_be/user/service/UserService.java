@@ -1,6 +1,7 @@
 package org.example.youth_be.user.service;
 
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
+import org.example.youth_be.artwork.enums.ArtworkOtherPageType;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.CursorPagingCommon;
@@ -90,7 +91,8 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request) {
+    public PageResponse<ArtworkResponse> getUserArtworks(TokenClaim tokenClaim, ArtworkMyPageType type, ArtworkPaginationRequest request) {
+        Long userId = tokenClaim.getUserId();
         Integer size = request.getSize();
         Long cursorId = request.getLastIdxId();
 
@@ -134,5 +136,15 @@ public class UserService {
 
         return UserMyPage.builder().userProfileResponse(userProfileResponse).artworkResponsePageResponse(artworkResponse).build();
 
+    }
+
+    public PageResponse<ArtworkResponse> getOtherUserArtworks(Long userId, ArtworkOtherPageType type, ArtworkPaginationRequest request) {
+        Integer size = request.getSize();
+        Long cursorId = request.getLastIdxId();
+
+        List<ArtworkResponse> responses = artworkRepository.findByOtherUserAndArtworkType(userId, cursorId, size, type);
+
+        Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
+        return PageResponse.of(artworkResponses);
     }
 }

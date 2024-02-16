@@ -3,6 +3,7 @@ package org.example.youth_be.user.controller.spec;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
+import org.example.youth_be.artwork.enums.ArtworkOtherPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.ApiTags;
@@ -33,8 +34,11 @@ public interface UserSpec {
     @Operation(description = "유저 링크 수정 API \n\nNote: 수정된 링크 ID를 반환합니다")
     Long updateUserLink(Long userId, Long linkId, UserLinkUpdateRequest request, TokenClaim claim);
 
-    @Operation(description = "유저의 작품 조회 API")
-    PageResponse<ArtworkResponse> getUserArtworks(Long userId, ArtworkMyPageType type, ArtworkPaginationRequest request);
+    @Operation(description = "유저 자신의 작품 조회 API")
+    PageResponse<ArtworkResponse> getUserArtworks(TokenClaim tokenClaim, ArtworkMyPageType type, ArtworkPaginationRequest request);
+
+    @Operation(description = "다른 유저의 작품 조회 API")
+    PageResponse<ArtworkResponse> getOtherUserArtworks(Long userId, ArtworkOtherPageType type, ArtworkPaginationRequest request);
 
     @Operation(description = "유저 Id, Role API")
     UserMyInformation getMyInformation(TokenClaim tokenClaim);

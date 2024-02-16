@@ -7,6 +7,7 @@ import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.artwork.domain.QArtworkEntity;
 import org.example.youth_be.artwork.enums.ArtworkFeedType;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
+import org.example.youth_be.artwork.enums.ArtworkOtherPageType;
 import org.example.youth_be.artwork.enums.ArtworkStatus;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.follow.domain.QFollowEntity;
@@ -38,6 +39,18 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                 return findSellingByCondition(userId, cursorId, size);
             case COLLECTION:
                 return findCollectionByCondition(userId, cursorId, size);
+            default:
+                throw new YouthBadRequestException("지원하지 않는 파라미터 type 입니다.", null);
+        }
+    }
+
+    @Override
+    public List<ArtworkResponse> findByOtherUserAndArtworkType(Long userId, Long cursorId, Integer size, ArtworkOtherPageType type) {
+        switch (type) {
+            case ALL:
+                return findAllByCondition(userId, cursorId, size);
+            case SELLING:
+                return findSellingByCondition(userId, cursorId, size);
             default:
                 throw new YouthBadRequestException("지원하지 않는 파라미터 type 입니다.", null);
         }

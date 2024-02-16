@@ -1,8 +1,8 @@
 package org.example.youth_be.user.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
+import org.example.youth_be.artwork.enums.ArtworkOtherPageType;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
 import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.PageResponse;
@@ -66,10 +66,17 @@ public class UserController implements UserSpec {
     }
 
     @Override
+    @GetMapping("/artworks")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<ArtworkResponse> getUserArtworks(@CurrentUser TokenClaim tokenClaim, @RequestParam ArtworkMyPageType type, @ModelAttribute ArtworkPaginationRequest request) {
+        return userService.getUserArtworks(tokenClaim, type, request);
+    }
+
+    @Override
     @GetMapping("/{userId}/artworks")
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<ArtworkResponse> getUserArtworks(@PathVariable Long userId, @RequestParam ArtworkMyPageType type, @ModelAttribute ArtworkPaginationRequest request) {
-        return userService.getUserArtworks(userId, type, request);
+    public PageResponse<ArtworkResponse> getOtherUserArtworks(@PathVariable Long userId, @RequestParam ArtworkOtherPageType type, @ModelAttribute ArtworkPaginationRequest request) {
+        return userService.getOtherUserArtworks(userId, type, request);
     }
 
     @Override
