@@ -1,6 +1,7 @@
 package org.example.youth_be.artwork.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
@@ -31,6 +32,7 @@ import static org.example.youth_be.common.s3.FileNameExtractor.getFileName;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ArtworkService {
 
     private final ArtworkRepository artworkRepository;
