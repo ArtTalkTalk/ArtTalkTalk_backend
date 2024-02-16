@@ -14,5 +14,9 @@ public interface ArtworkRepositoryCustom {
 
     List<ArtworkResponse> findByOtherUserAndArtworkType(Long userId, Long cursorId, Integer size, ArtworkOtherPageType type);
 
-    List<ArtworkResponse> findByFeedType(Long userId, Long cursorId, Integer size, ArtworkFeedType type);
+    List<ArtworkResponse> findAllFeed(Long cursorId, Integer size);
+
+    List<ArtworkResponse> findByFollowingFeed(Long userId, Long cursorId, Integer size);
+
+
 }

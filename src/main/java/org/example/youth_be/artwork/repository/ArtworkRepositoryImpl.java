@@ -57,15 +57,13 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
     }
 
     @Override
-    public List<ArtworkResponse> findByFeedType(Long userId, Long cursorId, Integer size, ArtworkFeedType type) {
-        switch (type) {
-            case ALL:
-                return findAllByCondition(cursorId, size);
-            case FOLLOW:
-                return findFollowingByCondition(userId, cursorId, size);
-            default:
-                throw new YouthBadRequestException("지원하지 않는 파라미터 type 입니다.", null);
-        }
+    public List<ArtworkResponse> findAllFeed(Long cursorId, Integer size) {
+        return findAllByCondition(cursorId, size);
+    }
+
+    @Override
+    public List<ArtworkResponse> findByFollowingFeed(Long userId, Long cursorId, Integer size) {
+        return findFollowingByCondition(userId, cursorId, size);
     }
 
     private List<ArtworkResponse> findAllByCondition(Long userId, Long cursorId, Integer size) {

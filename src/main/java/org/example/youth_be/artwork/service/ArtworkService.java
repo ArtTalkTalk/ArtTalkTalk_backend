@@ -2,7 +2,6 @@ package org.example.youth_be.artwork.service;
 
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.domain.ArtworkEntity;
-import org.example.youth_be.artwork.enums.ArtworkFeedType;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
@@ -66,11 +65,22 @@ public class ArtworkService {
     }
 
     @Transactional(readOnly = true)
-    public PageResponse<ArtworkResponse> getArtworks(Long userId, ArtworkFeedType type, ArtworkPaginationRequest request) {
+    public PageResponse<ArtworkResponse> getArtworks(ArtworkPaginationRequest request) {
         Integer size = request.getSize();
         Long cursorId = request.getLastIdxId();
 
-        List<ArtworkResponse> responses = artworkRepository.findByFeedType(userId, cursorId, size, type);
+        List<ArtworkResponse> responses = artworkRepository.findAllFeed(cursorId, size);
+        Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
+        return PageResponse.of(artworkResponses);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<ArtworkResponse> getArtworksFollowing(TokenClaim tokenClaim, ArtworkPaginationRequest request) {
+        Integer size = request.getSize();
+        Long cursorId = request.getLastIdxId();
+        Long userId = tokenClaim.getUserId();
+
+        List<ArtworkResponse> responses = artworkRepository.findByFollowingFeed(userId, cursorId, size);
         Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
         return PageResponse.of(artworkResponses);
     }
