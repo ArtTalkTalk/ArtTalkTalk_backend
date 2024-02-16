@@ -73,15 +73,18 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(Stream.of(PATTERNS).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new)).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/users/me")).hasAnyRole(UserRoleEnum.REGULAR.name(), UserRoleEnum.ASSOCIATE.name())
+                        .requestMatchers(
+                                antMatcher(HttpMethod.POST, "/image/profile"),
+                                antMatcher(HttpMethod.DELETE, "/image/profile"))
+                                .hasAnyRole(UserRoleEnum.REGULAR.name(), UserRoleEnum.ASSOCIATE.name()
+                        )
                         .requestMatchers(antMatcher(HttpMethod.GET, "/artworks")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}/artworks")).permitAll() // 회원이 아니어도 접근 가능
                         .requestMatchers(antMatcher(HttpMethod.GET, "/error")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.PUT, "/sign-up")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE)) // 준회원은 추가 회원가입 가능
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/check")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE))
-                        .requestMatchers(antMatcher(HttpMethod.GET, "/users/me")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE))
-                        .requestMatchers(antMatcher(HttpMethod.POST, "/image/profile")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE))
-                        .requestMatchers(antMatcher(HttpMethod.DELETE, "/image/profile")).hasRole(String.valueOf(UserRoleEnum.ASSOCIATE))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/mypage")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/check")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/artworks")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
