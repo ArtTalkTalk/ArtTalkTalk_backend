@@ -73,7 +73,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(Stream.of(PATTERNS).map(AntPathRequestMatcher::antMatcher).toArray(AntPathRequestMatcher[]::new)).permitAll()
-                        .requestMatchers(antMatcher(HttpMethod.GET, "/artworks/**")).permitAll()
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/artworks")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}/artworks")).permitAll() // 회원이 아니어도 접근 가능
                         .requestMatchers(antMatcher(HttpMethod.GET, "/error")).permitAll()
@@ -85,6 +85,7 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/mypage")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/check")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/artworks")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/artworks/following")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(antMatcher("/**")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                 )
                 .exceptionHandling(exceptionHandling ->

@@ -21,8 +21,12 @@ public interface ArtworkSpec {
     @Operation(description = "작품 업로드 API입니다.")
     Long createArtwork(TokenClaim tokenClaim, ArtworkCreateRequest request);
 
-    @Operation(description = "홈화면 피드 조회 API입니다.")
-    PageResponse<ArtworkResponse> getArtworks(Long userId, ArtworkFeedType type, ArtworkPaginationRequest request);
+    @Operation(description = "홈화면 전체 피드 조회 API입니다.")
+    PageResponse<ArtworkResponse> getArtworks(ArtworkPaginationRequest request);
+
+    @Operation(description = "유저가 팔로잉한 유저들의 피드 조회 API입니다.")
+    PageResponse<ArtworkResponse> getArtworksFollowing(TokenClaim tokenClaim, ArtworkPaginationRequest request);
+
 
     @Operation(description = "작품 상세 조회 API입니다.")
     ArtworkDetailResponse getArtwork(Long artworkId);

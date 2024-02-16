@@ -2,7 +2,6 @@ package org.example.youth_be.artwork.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.controller.spec.ArtworkSpec;
-import org.example.youth_be.artwork.enums.ArtworkFeedType;
 import org.example.youth_be.artwork.service.ArtworkService;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
@@ -28,10 +27,19 @@ public class ArtworkController implements ArtworkSpec {
         return artworkService.createArtwork(tokenClaim, request);
     }
 
+    // 전체 artwork 조회
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public PageResponse<ArtworkResponse> getArtworks(@RequestParam Long userId, @RequestParam ArtworkFeedType type, @ModelAttribute ArtworkPaginationRequest request) {
-        return artworkService.getArtworks(userId, type, request);
+    public PageResponse<ArtworkResponse> getArtworks(@ModelAttribute ArtworkPaginationRequest request) {
+        return artworkService.getArtworks(request);
+    }
+
+    // 팔로잉한 유저들의 artwork 조회
+    @GetMapping("/following")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<ArtworkResponse> getArtworksFollowing(@CurrentUser TokenClaim tokenClaim, @ModelAttribute ArtworkPaginationRequest request) {
+        return artworkService.getArtworksFollowing(tokenClaim, request);
+
     }
 
     @GetMapping("/{artworkId}")
