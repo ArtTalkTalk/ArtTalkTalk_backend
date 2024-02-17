@@ -80,8 +80,12 @@ public class SecurityConfig {
                         .requestMatchers(
                                 antMatcher(HttpMethod.POST, "/image/profile"),
                                 antMatcher(HttpMethod.DELETE, "/image/profile"))
-                                .hasAnyRole(UserRoleEnum.REGULAR.name(), UserRoleEnum.ASSOCIATE.name()
-                        )
+                                .hasAnyRole(UserRoleEnum.REGULAR.name(), UserRoleEnum.ASSOCIATE.name())
+                        .requestMatchers(
+                                antMatcher(HttpMethod.POST, "/artworks/{artworksId}/comments"),
+                                antMatcher(HttpMethod.DELETE, "/artworks/{artworksId}/comments/{commentId}"))
+                                .hasRole(UserRoleEnum.REGULAR.name())
+                        .requestMatchers(antMatcher(HttpMethod.GET, "/artworks/{artworksId}/comments")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/artworks")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}")).permitAll()
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/{userId}/artworks")).permitAll()
