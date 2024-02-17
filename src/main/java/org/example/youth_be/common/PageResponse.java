@@ -15,4 +15,8 @@ public class PageResponse<T> {
     public static <T> PageResponse<T> of(Slice<T> slice) {
         return new PageResponse<>(slice.getContent(), slice.hasNext());
     }
+
+    public static <T> PageResponse<T> of(List<T> contents, boolean hasNext) {
+        return new PageResponse<>(contents, hasNext);
+    }
 }

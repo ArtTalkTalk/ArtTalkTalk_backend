@@ -73,4 +73,12 @@ public class ArtworkEntity extends BaseEntity {
         this.imageIdList = imageIdList;
         this.thumbnailImageUrl = thumbnailImageUrl;
     }
+
+    public void increaseCommentCount() {
+        this.commentCount++;
+    }
+
+    public void decreaseCommentCount() {
+        this.commentCount--;
+    }
 }

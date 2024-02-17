@@ -17,8 +17,8 @@ public class CommentEntity extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long commentId;
 
-    @Column(nullable = false)
-    private String content;
+    @Column(nullable = false, columnDefinition = "TEXT")
+    private String contents;
 
     @Column(nullable = false)
     private Long userId;
@@ -27,10 +27,14 @@ public class CommentEntity extends BaseEntity {
     private Long artworkId;
 
     @Builder
-    public CommentEntity(Long commentId, String content, Long userId, Long artworkId) {
+    public CommentEntity(Long commentId, String contents, Long userId, Long artworkId) {
         this.commentId = commentId;
-        this.content = content;
+        this.contents = contents;
         this.userId = userId;
         this.artworkId = artworkId;
+    }
+
+    public boolean isOwner(Long userId) {
+        return this.userId.equals(userId);
     }
 }
