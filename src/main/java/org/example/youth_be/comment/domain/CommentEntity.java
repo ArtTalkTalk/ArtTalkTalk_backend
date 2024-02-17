@@ -1,6 +1,7 @@
 package org.example.youth_be.comment.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,12 +19,15 @@ public class CommentEntity extends BaseEntity {
     private Long commentId;
 
     @Column(nullable = false, columnDefinition = "TEXT")
+    @NotNull
     private String contents;
 
     @Column(nullable = false)
+    @NotNull
     private Long userId;
 
     @Column(nullable = false)
+    @NotNull
     private Long artworkId;
 
     @Builder
