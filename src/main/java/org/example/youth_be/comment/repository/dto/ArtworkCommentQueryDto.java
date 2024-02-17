@@ -7,13 +7,15 @@ import java.time.LocalDateTime;
 
 @Getter
 public class ArtworkCommentQueryDto {
+    private Long commentId;
     private String profileImage;
     private String nickname;
     private LocalDateTime createdAt;
     private String contents;
 
     @QueryProjection
-    public ArtworkCommentQueryDto(String profileImage, String nickname, LocalDateTime createdAt, String contents) {
+    public ArtworkCommentQueryDto(Long commentId, String profileImage, String nickname, LocalDateTime createdAt, String contents) {
+        this.commentId = commentId;
         this.profileImage = profileImage;
         this.nickname = nickname;
         this.createdAt = createdAt;

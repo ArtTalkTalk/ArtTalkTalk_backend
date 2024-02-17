@@ -14,12 +14,13 @@ import static org.example.youth_be.comment.domain.QCommentEntity.commentEntity;
 import static org.example.youth_be.user.domain.QUserEntity.userEntity;
 
 @RequiredArgsConstructor
-public class CommentCustomRepositoryImpl implements CommentCustomRepository{
+public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public Slice<ArtworkCommentQueryDto> findAllArtworkComments(Long artworkId, Long cursorId, Integer size) {
         List<ArtworkCommentQueryDto> contents = jpaQueryFactory.select(new QArtworkCommentQueryDto(
+                                commentEntity.commentId,
                                 userEntity.profileImageUrl,
                                 userEntity.nickname,
                                 commentEntity.createdAt,
@@ -33,7 +34,9 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository{
                         commentEntity.artworkId.eq(artworkId)
                 )
                 .orderBy(commentEntity.commentId.desc())
+                .limit(size + 1)
                 .fetch();
+
         return CursorPagingCommon.getSlice(contents, size);
     }
 

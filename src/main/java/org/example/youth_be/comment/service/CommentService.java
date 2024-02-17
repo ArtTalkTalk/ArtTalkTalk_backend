@@ -51,10 +51,10 @@ public class CommentService {
 
     @Transactional
     public void deleteArtworkComment(TokenClaim claim, Long artworkId, Long commentId) {
-        ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("작품을 찾을 수 없습니다.", null));
         CommentEntity commentEntity = commentRepository.findById(commentId).orElseThrow(() -> new YouthNotFoundException("댓글을 찾을 수 없습니다.", null));
-
         validateCommentOwner(commentEntity, claim.getUserId());
+
+        ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("작품을 찾을 수 없습니다.", null));
         commentRepository.delete(commentEntity);
         artworkEntity.decreaseCommentCount();
         logger.info("delete comment ok - userId: {}, artworkId: {}, commentId: {}", claim.getUserId(), artworkId, commentId);

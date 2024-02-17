@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 public class CommentResponse {
+    @Schema(description = "댓글 ID")
+    private Long commentId;
     @Schema(description = "프로필 이미지 url")
     private String profileUrl;
     @Schema(description = "닉네임")
@@ -25,6 +27,7 @@ public class CommentResponse {
 
     public static CommentResponse of (ArtworkCommentQueryDto queryDto) {
         return new CommentResponse(
+                queryDto.getCommentId(),
                 queryDto.getProfileImage(),
                 queryDto.getNickname(),
                 queryDto.getCreatedAt(),
