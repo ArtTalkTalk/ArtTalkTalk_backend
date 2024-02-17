@@ -6,7 +6,7 @@ import org.example.youth_be.artwork.domain.ArtworkEntity;
 
 import static com.navercorp.fixturemonkey.api.experimental.JavaGetterMethodPropertySelector.javaGetter;
 
-public class ArtworkFixture {
+public class ArtworkEntityFixture {
     private static final FixtureMonkey monkey = FixtureMonkey.builder()
             .objectIntrospector(JacksonObjectArbitraryIntrospector.INSTANCE)
             .build();
