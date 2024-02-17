@@ -14,7 +14,7 @@ public interface CommentSpec {
     @Operation(description = "작품 댓글 조회 API")
     PageResponse<CommentResponse> getAllArtworkComments(Long artworkId, PageParam pageParam);
     @Operation(description = "작품 댓글 작성 API")
-    Long createArtworkComment(TokenClaim claim, Long artworkId, CreateArtworkCommentRequest request);
+    void createArtworkComment(TokenClaim claim, Long artworkId, CreateArtworkCommentRequest request);
     @Operation(description = "작품 댓글 삭제 API")
     void deleteArtworkComment(TokenClaim claim, Long artworkId, Long commentId);
 }

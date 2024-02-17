@@ -24,8 +24,8 @@ public class CommentController implements CommentSpec {
     }
     @Override
     @PostMapping("/{artworkId}/comments")
-    public Long createArtworkComment(@CurrentUser TokenClaim claim, @PathVariable Long artworkId, CreateArtworkCommentRequest request) {
-        return commentService.createArtworkComment(claim, artworkId, request);
+    public void createArtworkComment(@CurrentUser TokenClaim claim, @PathVariable Long artworkId, CreateArtworkCommentRequest request) {
+        commentService.createArtworkComment(claim, artworkId, request);
     }
 
     @Override
