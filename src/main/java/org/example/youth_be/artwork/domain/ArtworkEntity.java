@@ -81,4 +81,12 @@ public class ArtworkEntity extends BaseEntity {
     public void decreaseCommentCount() {
         this.commentCount--;
     }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void decreaseLikeCount() {
+        this.likeCount--;
+    }
 }
