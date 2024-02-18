@@ -16,6 +16,7 @@ import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
 import org.example.youth_be.user.service.request.*;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.user.service.response.CreateLinkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
@@ -56,7 +57,7 @@ public class UserService {
     }
 
     @Transactional
-    public Long createUserLink(Long userId, LinkRequest request, TokenClaim claim) {
+    public CreateLinkResponse createUserLink(Long userId, LinkRequest request, TokenClaim claim) {
         if (claim.isNotAuthorized(userId)) {
             throw new YouthBadRequestException("권한이 없는 사용자입니다.", NotAuthorized(userId, claim));
         }
@@ -66,8 +67,8 @@ public class UserService {
                 .title(request.getTitle())
                 .linkUrl(request.getUrl())
                 .build();
-        userLinkRepository.save(newUserLinkEntity);
-        return newUserLinkEntity.getUserId();
+        UserLinkEntity userLinkEntity = userLinkRepository.save(newUserLinkEntity);
+        return new CreateLinkResponse(userId, userLinkEntity.getId());
     }
 
     // 링크 수정

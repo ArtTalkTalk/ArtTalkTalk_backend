@@ -10,6 +10,7 @@ import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.user.service.request.*;
+import org.example.youth_be.user.service.response.CreateLinkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
@@ -26,7 +27,7 @@ public interface UserSpec {
     void updateUserProfile(Long userId, UserProfileUpdateRequest request);
 
     @Operation(description = "유저 링크 생성 API")
-    Long createUserLink(Long userId, LinkRequest request, TokenClaim claim);
+    CreateLinkResponse createUserLink(Long userId, LinkRequest request, TokenClaim claim);
 
     @Operation(description = "유저 링크 삭제 API")
     void deleteUserLink(Long userId, Long linkId, TokenClaim claim);

@@ -11,6 +11,7 @@ import org.example.youth_be.user.controller.spec.UserSpec;
 import org.example.youth_be.user.service.UserService;
 import org.example.youth_be.user.service.request.*;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.user.service.response.CreateLinkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
@@ -47,7 +48,7 @@ public class UserController implements UserSpec {
     @Override
     @PostMapping("/{userId}/links")
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createUserLink(@PathVariable Long userId, @RequestBody LinkRequest request, @CurrentUser TokenClaim claim) {
+    public CreateLinkResponse createUserLink(@PathVariable Long userId, @RequestBody LinkRequest request, @CurrentUser TokenClaim claim) {
         return userService.createUserLink(userId, request, claim);
     }
 
