@@ -50,7 +50,6 @@ public class RedisUtils {
         values.putAll(key, data);
     }
 
-    @Transactional(readOnly = true)
     public String getHashOps(String key, String hashKey) {
         HashOperations<String, Object, Object> values = redisTemplate.opsForHash();
         return Boolean.TRUE.equals(values.hasKey(key, hashKey)) ? (String) redisTemplate.opsForHash().get(key, hashKey) : "";

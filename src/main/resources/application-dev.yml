@@ -6,5 +6,6 @@ spring:
       - application-secret-aws.yml
       - application-secret-datasource.yml
       - application-secret-jwt.yml
+      - application-secret-redis.yml
 logging:
   config: classpath:logback-spring.xml
