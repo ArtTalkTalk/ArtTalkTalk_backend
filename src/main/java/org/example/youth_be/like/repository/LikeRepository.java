@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface LikeRepository extends JpaRepository<LikeEntity, Long> {
 
-    Optional<Long> findByArtworkIdAndUserId(Long artworkId, Long userId);
+    Optional<LikeEntity> findByArtworkIdAndUserId(Long artworkId, Long userId);
 }

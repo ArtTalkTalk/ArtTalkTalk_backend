@@ -17,6 +17,7 @@ import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.image.domain.ImageEntity;
 import org.example.youth_be.image.repository.ImageRepository;
+import org.example.youth_be.like.domain.LikeEntity;
 import org.example.youth_be.like.repository.LikeRepository;
 import org.example.youth_be.s3.service.FileUploader;
 import org.example.youth_be.user.domain.UserEntity;
@@ -104,7 +105,10 @@ public class ArtworkService {
 
         Long likeId = null;
         if (userId != null) {
-            likeId = likeRepository.findByArtworkIdAndUserId(artworkId, userEntity.getUserId()).orElse(null);
+            LikeEntity likeEntity = likeRepository.findByArtworkIdAndUserId(artworkId, userId).orElse(null);
+            if (likeEntity != null) {
+                likeId = likeEntity.getLikeId();
+            }
         }
 
         List<Long> ids = artworkEntity.getImageIdList();
