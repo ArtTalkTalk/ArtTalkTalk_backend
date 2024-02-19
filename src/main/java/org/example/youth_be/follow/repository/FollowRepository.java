@@ -9,4 +9,5 @@ import java.util.Optional;
 @Repository
 public interface FollowRepository extends JpaRepository<FollowEntity, Long> {
     Optional<FollowEntity> findBySenderIdAndReceiverId(Long senderId, Long receiverId);
+    Optional<FollowEntity> findByFollowIdAndSenderIdAndReceiverId(Long followId, Long senderId, Long receiverId);
 }

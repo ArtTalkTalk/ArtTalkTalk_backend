@@ -5,9 +5,11 @@ import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.follow.controller.spec.FollowSpec;
 import org.example.youth_be.follow.service.FollowService;
-import org.example.youth_be.follow.service.request.CreateFollowRequest;
 import org.example.youth_be.follow.service.response.CreateFollowResponse;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,8 +20,9 @@ public class FollowController implements FollowSpec {
     @PostMapping("/users/{userId}/follows")
     public CreateFollowResponse createFollow(
             @CurrentUser TokenClaim claim,
-            @RequestBody CreateFollowRequest request) {
-        return followService.createFollow(claim.getUserId(), request);
+            @PathVariable Long userId
+    ) {
+        return followService.createFollow(claim.getUserId(), userId);
     }
 
     @Override

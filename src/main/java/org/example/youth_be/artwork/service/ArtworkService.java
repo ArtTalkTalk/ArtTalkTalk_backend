@@ -15,6 +15,8 @@ import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
+import org.example.youth_be.follow.domain.FollowEntity;
+import org.example.youth_be.follow.repository.FollowRepository;
 import org.example.youth_be.image.domain.ImageEntity;
 import org.example.youth_be.image.repository.ImageRepository;
 import org.example.youth_be.s3.service.FileUploader;
@@ -38,6 +40,7 @@ public class ArtworkService {
     private final ArtworkRepository artworkRepository;
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
+    private final FollowRepository followRepository;
     private final FileUploader fileUploader;
 
     @Transactional
@@ -88,7 +91,7 @@ public class ArtworkService {
     }
 
     @Transactional(readOnly = true)
-    public ArtworkDetailResponse getArtwork(Long artworkId) {
+    public ArtworkDetailResponse getArtwork(TokenClaim claim, Long artworkId) {
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 작품를 찾을 수 없습니다.", null));
         UserEntity userEntity = userRepository.findById(artworkEntity.getUserId()).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
 
@@ -105,7 +108,8 @@ public class ArtworkService {
                 .map(image -> ArtworkImageResponse.of(image.getImageId(), image.getImageUrl()))
                 .collect(Collectors.toList());
 
-        return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses);
+        Long followId = getFollowId(claim, artworkEntity.getUserId());
+        return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses, followId);
     }
 
     @Transactional
@@ -150,5 +154,16 @@ public class ArtworkService {
         for (String fileName : deleteImageFileName) {
             fileUploader.delete(fileName);
         }
+    }
+
+    private Long getFollowId(TokenClaim claim, Long receiverId) {
+        if (claim == null) {
+            return null;
+        }
+        FollowEntity followEntity = followRepository.findBySenderIdAndReceiverId(claim.getUserId(), receiverId).orElse(null);
+        if (followEntity == null) {
+            return null;
+        }
+        return followEntity.getFollowId();
     }
 }
