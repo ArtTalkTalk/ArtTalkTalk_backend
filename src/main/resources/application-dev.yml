@@ -8,3 +8,8 @@ spring:
       - application-secret-jwt.yml
 logging:
   config: classpath:logback-spring.xml
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
