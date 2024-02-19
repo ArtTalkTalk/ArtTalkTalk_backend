@@ -34,8 +34,8 @@ public class UserController implements UserSpec {
     @Override
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public UserProfileResponse getUserProfile(@PathVariable Long userId) {
-        return userService.getUserProfile(userId);
+    public UserProfileResponse getUserProfile(@PathVariable Long userId, @CurrentUser TokenClaim claim) {
+        return userService.getUserProfile(userId, claim);
     }
 
     @Override

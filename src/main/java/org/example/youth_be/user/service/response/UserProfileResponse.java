@@ -33,8 +33,10 @@ public class UserProfileResponse {
     private Long followerCount;
     @Schema(description = "유저의 외부 링크 리스트")
     private List<LinkResponse> links;
+    @Schema(description = "유저의 팔로우 ID\n\nnote: 유저가 팔로우를 누르지 않았다면 null입니다")
+    private Long followId;
 
-    static public UserProfileResponse of(UserEntity user, List<UserLinkEntity> userLinkEntities) {
+    static public UserProfileResponse of(UserEntity user, List<UserLinkEntity> userLinkEntities, Long followId) {
         return new UserProfileResponse(
                 user.getUserId(),
                 user.getUserRole(),
@@ -45,7 +47,8 @@ public class UserProfileResponse {
                 user.getProfileImageUrl(),
                 user.getTotalLikeCount(),
                 user.getFollowerCount(),
-                userLinkEntities.stream().map(LinkResponse::of).collect(Collectors.toList())
+                userLinkEntities.stream().map(LinkResponse::of).collect(Collectors.toList()),
+                followId
         );
     }
 }

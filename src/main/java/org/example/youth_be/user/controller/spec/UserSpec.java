@@ -21,7 +21,7 @@ public interface UserSpec {
     void checkNicknameDuplicate(String nickname);
 
     @Operation(description = "유저 프로필 조회 API")
-    UserProfileResponse getUserProfile(Long userId);
+    UserProfileResponse getUserProfile(Long userId, TokenClaim claim);
 
     @Operation(description = "유저 프로필 수정 API")
     void updateUserProfile(Long userId, UserProfileUpdateRequest request);

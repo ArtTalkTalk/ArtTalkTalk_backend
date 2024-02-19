@@ -1,26 +1,30 @@
 package org.example.youth_be.user.service;
 
+import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.enums.ArtworkMyPageType;
 import org.example.youth_be.artwork.enums.ArtworkOtherPageType;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
+import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthDuplicateException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
+import org.example.youth_be.follow.domain.FollowEntity;
+import org.example.youth_be.follow.repository.FollowRepository;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.domain.UserLinkEntity;
 import org.example.youth_be.user.repository.UserLinkRepository;
 import org.example.youth_be.user.repository.UserRepository;
-import org.example.youth_be.user.service.request.*;
-import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.user.service.request.LinkRequest;
+import org.example.youth_be.user.service.request.UserLinkUpdateRequest;
+import org.example.youth_be.user.service.request.UserProfileUpdateRequest;
 import org.example.youth_be.user.service.response.CreateLinkResponse;
 import org.example.youth_be.user.service.response.UserMyInformation;
 import org.example.youth_be.user.service.response.UserMyPage;
 import org.example.youth_be.user.service.response.UserProfileResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,23 +34,19 @@ import java.util.List;
 import static org.example.youth_be.common.util.DebuggingTemplate.NotAuthorized;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserLinkRepository userLinkRepository;
     private final ArtworkRepository artworkRepository;
-
-    @Autowired
-    public UserService(UserRepository userRepository, UserLinkRepository userLinkRepository, ArtworkRepository artworkRepository) {
-        this.userRepository = userRepository;
-        this.userLinkRepository = userLinkRepository;
-        this.artworkRepository = artworkRepository;
-    }
+    private final FollowRepository followRepository;
 
     @Transactional(readOnly = true)
-    public UserProfileResponse getUserProfile(Long userId) {
+    public UserProfileResponse getUserProfile(Long userId, TokenClaim claim) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         List<UserLinkEntity> userLinkEntities = userLinkRepository.findAllByUserId(userId);
-        return UserProfileResponse.of(userEntity, userLinkEntities);
+        Long followId = getFollowId(claim.getUserId(), userId);
+        return UserProfileResponse.of(userEntity, userLinkEntities, followId);
     }
 
     @Transactional
@@ -120,7 +120,7 @@ public class UserService {
         Long userId = tokenClaim.getUserId();
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         List<UserLinkEntity> userLinkEntities = userLinkRepository.findAllByUserId(userId);
-        UserProfileResponse userProfileResponse = UserProfileResponse.of(userEntity, userLinkEntities);
+        UserProfileResponse userProfileResponse = UserProfileResponse.of(userEntity, userLinkEntities, null);
 
         Long artworkSize = artworkRepository.countByUserId(userId);
 
@@ -147,5 +147,16 @@ public class UserService {
 
         Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
         return PageResponse.of(artworkResponses);
+    }
+
+    private Long getFollowId(Long senderId, Long receiverId) {
+        if (senderId == null) {
+            return null;
+        }
+        FollowEntity followEntity = followRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElse(null);
+        if (followEntity == null) {
+            return null;
+        }
+        return followEntity.getFollowId();
     }
 }
