@@ -60,8 +60,8 @@ public class UserEntity extends BaseEntity {
         this.activityArea = activityArea;
         this.description = description;
         this.userRole = userRole;
-        this.totalLikeCount = totalLikeCount;
-        this.followerCount = followerCount;
+        this.totalLikeCount = 0L;
+        this.followerCount = 0L;
     }
 
     public void updateProfile(String profileImageUrl, String nickname, String activityField, String activityArea, String description) {
