@@ -29,7 +29,7 @@ public interface ArtworkSpec {
 
 
     @Operation(description = "작품 상세 조회 API입니다.")
-    ArtworkDetailResponse getArtwork(Long artworkId);
+    ArtworkDetailResponse getArtwork(Long artworkId, TokenClaim tokenClaim);
 
     @Operation(description = "작품 수정 API입니다.")
     void updateArtwork(TokenClaim tokenClaim, Long artworkId, ArtworkUpdateRequest request);

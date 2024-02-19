@@ -26,8 +26,9 @@ public class ArtworkDetailResponse {
     private String artistProfileImageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long likeId;
 
-    public static ArtworkDetailResponse of(UserEntity userEntity, ArtworkEntity artworkEntity, List<ArtworkImageResponse> artworkImageResponse) {
+    public static ArtworkDetailResponse of(UserEntity userEntity, ArtworkEntity artworkEntity, List<ArtworkImageResponse> artworkImageResponse, Long likeId) {
         return ArtworkDetailResponse.builder()
                 .artworkId(artworkEntity.getArtworkId())
                 .title(artworkEntity.getTitle())
@@ -43,6 +44,7 @@ public class ArtworkDetailResponse {
                 .artistProfileImageUrl(userEntity.getProfileImageUrl())
                 .createdAt(artworkEntity.getCreatedAt())
                 .updatedAt(artworkEntity.getUpdatedAt())
+                .likeId(likeId)
                 .build();
     }
 }

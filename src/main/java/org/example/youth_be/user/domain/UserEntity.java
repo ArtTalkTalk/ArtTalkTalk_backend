@@ -84,4 +84,12 @@ public class UserEntity extends BaseEntity {
     public void deleteUserProfileImageUrl(){
         this.profileImageUrl = null;
     }
+
+    public void increaseTotalLikeCount() {
+        this.totalLikeCount++;
+    }
+
+    public void decreaseTotalLikeCount() {
+        this.totalLikeCount--;
+    }
 }

@@ -17,6 +17,7 @@ import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.image.domain.ImageEntity;
 import org.example.youth_be.image.repository.ImageRepository;
+import org.example.youth_be.like.repository.LikeRepository;
 import org.example.youth_be.s3.service.FileUploader;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.repository.UserRepository;
@@ -26,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.example.youth_be.common.s3.FileNameExtractor.getFileName;
@@ -39,6 +41,7 @@ public class ArtworkService {
     private final UserRepository userRepository;
     private final ImageRepository imageRepository;
     private final FileUploader fileUploader;
+    private final LikeRepository likeRepository;
 
     @Transactional
     public Long createArtwork(TokenClaim tokenClaim, ArtworkCreateRequest request) {
@@ -88,9 +91,21 @@ public class ArtworkService {
     }
 
     @Transactional(readOnly = true)
-    public ArtworkDetailResponse getArtwork(Long artworkId) {
+    public ArtworkDetailResponse getArtwork(TokenClaim tokenClaim, Long artworkId) {
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 작품를 찾을 수 없습니다.", null));
+
+        // 작가 entity 조회
         UserEntity userEntity = userRepository.findById(artworkEntity.getUserId()).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+
+        // tokenClaim이 없을 경우 null 반환
+        Long userId = Optional.ofNullable(tokenClaim)
+                .map(TokenClaim::getUserId)
+                .orElse(null);
+
+        Long likeId = null;
+        if (userId != null) {
+            likeId = likeRepository.findByArtworkIdAndUserId(artworkId, userEntity.getUserId()).orElse(null);
+        }
 
         List<Long> ids = artworkEntity.getImageIdList();
         List<ImageEntity> images = imageRepository.findAllById(ids);
@@ -105,7 +120,7 @@ public class ArtworkService {
                 .map(image -> ArtworkImageResponse.of(image.getImageId(), image.getImageUrl()))
                 .collect(Collectors.toList());
 
-        return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses);
+        return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses, likeId);
     }
 
     @Transactional
