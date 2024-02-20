@@ -6,8 +6,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.comment.repository.dto.ArtworkCommentQueryDto;
+import org.example.youth_be.common.jwt.TokenClaim;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Getter
 @RequiredArgsConstructor
@@ -24,14 +26,18 @@ public class CommentResponse {
     private LocalDateTime createdAt;
     @Schema(description = "댓글 내용")
     private String contents;
+    @Schema(description = "댓글 작성자 여부")
+    private boolean isAuthor;
 
-    public static CommentResponse of (ArtworkCommentQueryDto queryDto) {
+    public static CommentResponse of (ArtworkCommentQueryDto queryDto, TokenClaim claim) {
+        boolean isAuthor = Objects.nonNull(claim) && Objects.equals(claim.getUserId(), queryDto.getUserId());
         return new CommentResponse(
                 queryDto.getCommentId(),
                 queryDto.getProfileImage(),
                 queryDto.getNickname(),
                 queryDto.getCreatedAt(),
-                queryDto.getContents()
+                queryDto.getContents(),
+                isAuthor
         );
     }
 }
