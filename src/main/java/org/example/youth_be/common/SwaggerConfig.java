@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(servers = {
-        @Server(url = "https://www.art-talktalk.store", description = "서버 도메인"),
+        @Server(url = "https://art-talktalk.store", description = "서버 도메인"),
         @Server(url = "http://localhost:8080", description = "로컬 서버 도메인")},
         info = @Info(title = "청춘예찬 App",
                 description = "청춘예찬 api명세",
