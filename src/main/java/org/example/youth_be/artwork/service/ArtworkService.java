@@ -98,18 +98,7 @@ public class ArtworkService {
         // 작가 entity 조회
         UserEntity userEntity = userRepository.findById(artworkEntity.getUserId()).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
 
-        // tokenClaim이 없을 경우 null 반환
-        Long userId = Optional.ofNullable(tokenClaim)
-                .map(TokenClaim::getUserId)
-                .orElse(null);
-
-        Long likeId = null;
-        if (userId != null) {
-            LikeEntity likeEntity = likeRepository.findByArtworkIdAndUserId(artworkId, userId).orElse(null);
-            if (likeEntity != null) {
-                likeId = likeEntity.getLikeId();
-            }
-        }
+        Long likeId = getLikeId(tokenClaim, artworkId);
 
         List<Long> ids = artworkEntity.getImageIdList();
         List<ImageEntity> images = imageRepository.findAllById(ids);
@@ -125,6 +114,22 @@ public class ArtworkService {
                 .collect(Collectors.toList());
 
         return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses, likeId);
+    }
+
+    private Long getLikeId(TokenClaim tokenClaim, Long artworkId) {
+        // tokenClaim이 없을 경우 null 반환
+        Long userId = Optional.ofNullable(tokenClaim)
+                .map(TokenClaim::getUserId)
+                .orElse(null);
+
+        Long likeId = null;
+        if (userId != null) {
+            LikeEntity likeEntity = likeRepository.findByArtworkIdAndUserId(artworkId, userId).orElse(null);
+            if (likeEntity != null) {
+                likeId = likeEntity.getLikeId();
+            }
+        }
+        return likeId;
     }
 
     @Transactional
