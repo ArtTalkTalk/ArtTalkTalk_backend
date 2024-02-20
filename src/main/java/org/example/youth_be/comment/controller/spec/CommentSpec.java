@@ -12,7 +12,7 @@ import org.example.youth_be.common.jwt.TokenClaim;
 @Tag(name = ApiTags.USER)
 public interface CommentSpec {
     @Operation(description = "작품 댓글 조회 API")
-    PageResponse<CommentResponse> getAllArtworkComments(Long artworkId, PageParam pageParam);
+    PageResponse<CommentResponse> getAllArtworkComments(TokenClaim claim, Long artworkId, PageParam pageParam);
     @Operation(description = "작품 댓글 작성 API")
     void createArtworkComment(TokenClaim claim, Long artworkId, CreateArtworkCommentRequest request);
     @Operation(description = "작품 댓글 삭제 API")
