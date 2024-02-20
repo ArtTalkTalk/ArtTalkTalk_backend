@@ -9,7 +9,7 @@ import org.example.youth_be.user.domain.UserLinkEntity;
 public class LinkResponse {
     private Long linkId;
     private String title;
-    private String address;
+    private String url;
 
     static public LinkResponse of(UserLinkEntity userLinkEntity) {
         return new LinkResponse(
