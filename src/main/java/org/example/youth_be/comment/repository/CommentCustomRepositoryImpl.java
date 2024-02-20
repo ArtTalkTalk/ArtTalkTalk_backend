@@ -21,6 +21,7 @@ public class CommentCustomRepositoryImpl implements CommentCustomRepository {
     public Slice<ArtworkCommentQueryDto> findAllArtworkComments(Long artworkId, Long cursorId, Integer size) {
         List<ArtworkCommentQueryDto> contents = jpaQueryFactory.select(new QArtworkCommentQueryDto(
                                 commentEntity.commentId,
+                                userEntity.userId,
                                 userEntity.profileImageUrl,
                                 userEntity.nickname,
                                 commentEntity.createdAt,

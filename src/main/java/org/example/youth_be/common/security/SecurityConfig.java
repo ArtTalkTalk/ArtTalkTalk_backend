@@ -37,7 +37,7 @@ public class SecurityConfig {
     private final AuthenticationEntryPoint entryPoint;
     private static final String[] PATTERNS = {
             "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**", "/v1/health-check", "/swagger-ui/**",
-            "/swagger-resources/**", "/v3/api-docs/**"
+            "/swagger-resources/**", "/v3/api-docs/**", "/login"
     };
 
 

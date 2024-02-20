@@ -19,8 +19,8 @@ public class CommentController implements CommentSpec {
 
     @Override
     @GetMapping("/{artworkId}/comments")
-    public PageResponse<CommentResponse> getAllArtworkComments(@PathVariable Long artworkId, @ModelAttribute PageParam pageParam) {
-        return commentService.getArtworkComments(artworkId, pageParam);
+    public PageResponse<CommentResponse> getAllArtworkComments(@CurrentUser TokenClaim claim, @PathVariable Long artworkId, @ModelAttribute PageParam pageParam) {
+        return commentService.getArtworkComments(claim, artworkId, pageParam);
     }
     @Override
     @PostMapping("/{artworkId}/comments")

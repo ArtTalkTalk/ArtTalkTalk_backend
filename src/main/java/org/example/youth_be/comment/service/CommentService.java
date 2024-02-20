@@ -29,9 +29,13 @@ public class CommentService {
     private final CommentRepository commentRepository;
 
     @Transactional(readOnly = true)
-    public PageResponse<CommentResponse> getArtworkComments(Long artworkId, PageParam pageParam) {
+    public PageResponse<CommentResponse> getArtworkComments(TokenClaim claim, Long artworkId, PageParam pageParam) {
         Slice<ArtworkCommentQueryDto> allArtworkComments = commentRepository.findAllArtworkComments(artworkId, pageParam.getLastIdxId(), pageParam.getSize());
-        return PageResponse.of(allArtworkComments.getContent().stream().map(CommentResponse::of).collect(Collectors.toList()),
+        return PageResponse.of(allArtworkComments
+                        .getContent()
+                        .stream()
+                        .map(dto -> CommentResponse.of(dto, claim))
+                        .collect(Collectors.toList()),
                 allArtworkComments.hasNext());
     }
 
