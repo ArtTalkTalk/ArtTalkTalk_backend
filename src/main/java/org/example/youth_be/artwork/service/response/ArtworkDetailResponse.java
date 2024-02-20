@@ -1,5 +1,6 @@
 package org.example.youth_be.artwork.service.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
 import org.example.youth_be.artwork.domain.ArtworkEntity;
@@ -26,8 +27,10 @@ public class ArtworkDetailResponse {
     private String artistProfileImageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    @Schema(description = "작가 follow Id, 팔로우하지 않았다면 null입니다")
+    private Long followId;
 
-    public static ArtworkDetailResponse of(UserEntity userEntity, ArtworkEntity artworkEntity, List<ArtworkImageResponse> artworkImageResponse) {
+    public static ArtworkDetailResponse of(UserEntity userEntity, ArtworkEntity artworkEntity, List<ArtworkImageResponse> artworkImageResponse, Long followId) {
         return ArtworkDetailResponse.builder()
                 .artworkId(artworkEntity.getArtworkId())
                 .title(artworkEntity.getTitle())
@@ -43,6 +46,7 @@ public class ArtworkDetailResponse {
                 .artistProfileImageUrl(userEntity.getProfileImageUrl())
                 .createdAt(artworkEntity.getCreatedAt())
                 .updatedAt(artworkEntity.getUpdatedAt())
+                .followId(followId)
                 .build();
     }
 }

@@ -44,8 +44,8 @@ public class ArtworkController implements ArtworkSpec {
 
     @GetMapping("/{artworkId}")
     @ResponseStatus(HttpStatus.OK)
-    public ArtworkDetailResponse getArtwork(@PathVariable Long artworkId) {
-        return artworkService.getArtwork(artworkId);
+    public ArtworkDetailResponse getArtwork(@PathVariable Long artworkId, @CurrentUser TokenClaim claim) {
+        return artworkService.getArtwork(claim, artworkId);
     }
 
     @PutMapping("/{artworkId}")
