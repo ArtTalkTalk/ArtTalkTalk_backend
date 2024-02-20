@@ -27,10 +27,11 @@ public class ArtworkDetailResponse {
     private String artistProfileImageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long likeId;
     @Schema(description = "작가 follow Id, 팔로우하지 않았다면 null입니다")
     private Long followId;
 
-    public static ArtworkDetailResponse of(UserEntity userEntity, ArtworkEntity artworkEntity, List<ArtworkImageResponse> artworkImageResponse, Long followId) {
+    public static ArtworkDetailResponse of(UserEntity userEntity, ArtworkEntity artworkEntity, List<ArtworkImageResponse> artworkImageResponse, Long likeId, Long followId) {
         return ArtworkDetailResponse.builder()
                 .artworkId(artworkEntity.getArtworkId())
                 .title(artworkEntity.getTitle())
@@ -46,6 +47,7 @@ public class ArtworkDetailResponse {
                 .artistProfileImageUrl(userEntity.getProfileImageUrl())
                 .createdAt(artworkEntity.getCreatedAt())
                 .updatedAt(artworkEntity.getUpdatedAt())
+                .likeId(likeId)
                 .followId(followId)
                 .build();
     }

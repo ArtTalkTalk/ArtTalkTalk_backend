@@ -7,5 +7,6 @@ public class ApiTags {
 
     public static final String ARTWORK = "작품 API";
     public static final String COMMENT = "댓글 API";
+    public static final String LIKE = "좋아요 API";
     public static final String FOLLOW = "팔로우 API";
 }

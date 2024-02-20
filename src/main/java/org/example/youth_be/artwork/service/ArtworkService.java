@@ -19,6 +19,8 @@ import org.example.youth_be.follow.domain.FollowEntity;
 import org.example.youth_be.follow.repository.FollowRepository;
 import org.example.youth_be.image.domain.ImageEntity;
 import org.example.youth_be.image.repository.ImageRepository;
+import org.example.youth_be.like.domain.LikeEntity;
+import org.example.youth_be.like.repository.LikeRepository;
 import org.example.youth_be.s3.service.FileUploader;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.repository.UserRepository;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.example.youth_be.common.s3.FileNameExtractor.getFileName;
@@ -42,6 +45,7 @@ public class ArtworkService {
     private final ImageRepository imageRepository;
     private final FollowRepository followRepository;
     private final FileUploader fileUploader;
+    private final LikeRepository likeRepository;
 
     @Transactional
     public Long createArtwork(TokenClaim tokenClaim, ArtworkCreateRequest request) {
@@ -93,7 +97,11 @@ public class ArtworkService {
     @Transactional(readOnly = true)
     public ArtworkDetailResponse getArtwork(TokenClaim claim, Long artworkId) {
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 작품를 찾을 수 없습니다.", null));
+
+        // 작가 entity 조회
         UserEntity userEntity = userRepository.findById(artworkEntity.getUserId()).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+
+        Long likeId = getLikeId(claim, artworkId);
 
         List<Long> ids = artworkEntity.getImageIdList();
         List<ImageEntity> images = imageRepository.findAllById(ids);
@@ -109,7 +117,7 @@ public class ArtworkService {
                 .collect(Collectors.toList());
 
         Long followId = getFollowId(claim, artworkEntity.getUserId());
-        return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses, followId);
+        return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses, likeId, followId);
     }
 
     @Transactional
@@ -165,5 +173,21 @@ public class ArtworkService {
             return null;
         }
         return followEntity.getFollowId();
+    }
+    
+    private Long getLikeId(TokenClaim claim, Long artworkId) {
+        // tokenClaim이 없을 경우 null 반환
+        Long userId = Optional.ofNullable(claim)
+                .map(TokenClaim::getUserId)
+                .orElse(null);
+
+        Long likeId = null;
+        if (userId != null) {
+            LikeEntity likeEntity = likeRepository.findByArtworkIdAndUserId(artworkId, userId).orElse(null);
+            if (likeEntity != null) {
+                likeId = likeEntity.getLikeId();
+            }
+        }
+        return likeId;
     }
 }

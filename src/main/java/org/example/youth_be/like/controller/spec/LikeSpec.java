@@ -1,8 +1,11 @@
 package org.example.youth_be.like.controller.spec;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import org.example.youth_be.common.ApiTags;
 import org.example.youth_be.common.jwt.TokenClaim;
 
+@Tag(name = ApiTags.LIKE)
 public interface LikeSpec {
 
     @Operation(description = "작품 좋아요 생성 API입니다.")
