@@ -45,7 +45,7 @@ public class UserService {
     public UserProfileResponse getUserProfile(Long userId, TokenClaim claim) {
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         List<UserLinkEntity> userLinkEntities = userLinkRepository.findAllByUserId(userId);
-        Long followId = getFollowId(claim.getUserId(), userId);
+        Long followId = getFollowId(claim, userId);
         return UserProfileResponse.of(userEntity, userLinkEntities, followId);
     }
 
@@ -149,11 +149,11 @@ public class UserService {
         return PageResponse.of(artworkResponses);
     }
 
-    private Long getFollowId(Long senderId, Long receiverId) {
-        if (senderId == null) {
+    private Long getFollowId(TokenClaim claim, Long receiverId) {
+        if (claim == null) {
             return null;
         }
-        FollowEntity followEntity = followRepository.findBySenderIdAndReceiverId(senderId, receiverId).orElse(null);
+        FollowEntity followEntity = followRepository.findBySenderIdAndReceiverId(claim.getUserId(), receiverId).orElse(null);
         if (followEntity == null) {
             return null;
         }
