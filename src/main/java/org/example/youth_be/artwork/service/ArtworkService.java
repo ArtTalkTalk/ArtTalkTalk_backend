@@ -195,6 +195,7 @@ public class ArtworkService {
         return likeId;
     }
 
+    @Transactional
     public void deleteArtwork(TokenClaim tokenClaim, Long artworkId) {
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 작품을 찾을 수 없습니다.", null));
         Long userId = artworkEntity.getUserId();
