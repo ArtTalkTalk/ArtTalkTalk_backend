@@ -33,9 +33,9 @@ public class GlobalExceptionHandler{
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleExceptionHandler(HttpServletRequest request, Exception e) {
+    public ResponseEntity<ErrorResponse> handleExceptionHandler(HttpServletRequest request, Exception e) {
         log.error("defaultExceptionHandler", e);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("fail");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getMessage()));
     }
 
     @ResponseBody
@@ -46,7 +46,7 @@ public class GlobalExceptionHandler{
         log.error("url {}, message: {}",
                 request.getRequestURI(), e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getBindingResult().getAllErrors().get(0).getDefaultMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getBindingResult().getAllErrors().get(0).getDefaultMessage()));
     }
 
     @ResponseBody
@@ -58,7 +58,7 @@ public class GlobalExceptionHandler{
         log.error("url {}, message: {}",
                 request.getRequestURI(), e.getParameterName() + " 값이 등록되지 않았습니다.");
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getParameterName() + " 값이 등록되지 않았습니다.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getParameterName() + " 값이 등록되지 않았습니다."));
     }
 
     @ResponseBody
@@ -69,7 +69,7 @@ public class GlobalExceptionHandler{
         log.error("url {}, message: {}",
                 request.getRequestURI(), e.getRequestPartName() + " 값을 요청받지 못했습니다.");
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getRequestPartName() + " 값을 요청받지 못했습니다.");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(e.getRequestPartName() + " 값을 요청받지 못했습니다."));
     }
 
     @ResponseBody
@@ -80,7 +80,7 @@ public class GlobalExceptionHandler{
         log.error("url {}, message: {}",
                 request.getRequestURI(), "파일 크기가 너무 큽니다.");
 
-        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("파일 크기가 너무 큽니다.");
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body(new ErrorResponse("파일 크기가 너무 큽니다."));
     }
 }
 
