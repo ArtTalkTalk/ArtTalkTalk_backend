@@ -1,5 +1,6 @@
 package org.example.youth_be.follow.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.jwt.TokenClaim;
@@ -19,7 +20,7 @@ public class FollowController implements FollowSpec {
     public CreateFollowResponse createFollow(
             @CurrentUser TokenClaim claim,
             @PathVariable Long userId,
-            @RequestBody CreateFollowRequest request
+            @RequestBody @Valid CreateFollowRequest request
     ) {
         return followService.createFollow(claim, userId, request.getReceiverId());
     }

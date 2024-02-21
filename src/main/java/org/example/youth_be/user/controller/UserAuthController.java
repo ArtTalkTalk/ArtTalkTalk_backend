@@ -1,5 +1,6 @@
 package org.example.youth_be.user.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.jwt.TokenClaim;
@@ -23,20 +24,20 @@ public class UserAuthController implements UserAuthSpec {
 
     @Override
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public LoginResponse login(@RequestBody @Valid LoginRequest request) {
         return userAuthService.login(request);
     }
 
     @Override
     @PutMapping("/sign-up")
     @ResponseStatus(HttpStatus.OK)
-    public SignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody SignupRequest request) {
+    public SignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody @Valid SignupRequest request) {
         return userAuthService.signUp(tokenClaim, request);
     }
 
     @Override
     @PostMapping("/reissue")
-    public TokenReissueResponse reissue(@RequestBody TokenReissueRequest request) {
+    public TokenReissueResponse reissue(@RequestBody @Valid TokenReissueRequest request) {
         return userAuthService.reissue(request);
     }
 

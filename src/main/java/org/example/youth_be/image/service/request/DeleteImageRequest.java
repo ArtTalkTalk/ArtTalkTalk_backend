@@ -6,8 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class DeleteImageRequest {
-
-
     private Long userId;
     private String imageUrl;
 }
