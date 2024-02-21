@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 
 @RestControllerAdvice
@@ -69,6 +70,17 @@ public class GlobalExceptionHandler{
                 request.getRequestURI(), e.getRequestPartName() + " 값을 요청받지 못했습니다.");
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getRequestPartName() + " 값을 요청받지 못했습니다.");
+    }
+
+    @ResponseBody
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<Object> handleMultipartExceptionPayloadTooLarge(
+            MaxUploadSizeExceededException e, HttpServletRequest request) {
+        log.error("url {}, message: {}",
+                request.getRequestURI(), "파일 크기가 너무 큽니다.");
+
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE).body("파일 크기가 너무 큽니다.");
     }
 }
 
