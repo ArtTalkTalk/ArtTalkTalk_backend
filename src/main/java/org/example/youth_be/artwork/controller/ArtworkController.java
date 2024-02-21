@@ -1,5 +1,6 @@
 package org.example.youth_be.artwork.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.artwork.controller.spec.ArtworkSpec;
 import org.example.youth_be.artwork.service.ArtworkService;
@@ -23,7 +24,7 @@ public class ArtworkController implements ArtworkSpec {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public Long createArtwork(@CurrentUser TokenClaim tokenClaim, @RequestBody ArtworkCreateRequest request) {
+    public Long createArtwork(@CurrentUser TokenClaim tokenClaim, @RequestBody @Valid ArtworkCreateRequest request) {
         return artworkService.createArtwork(tokenClaim, request);
     }
 
@@ -51,7 +52,7 @@ public class ArtworkController implements ArtworkSpec {
 
     @PutMapping("/{artworkId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateArtwork(@CurrentUser TokenClaim tokenClaim, @PathVariable Long artworkId, @ModelAttribute ArtworkUpdateRequest request) {
+    public void updateArtwork(@CurrentUser TokenClaim tokenClaim, @PathVariable Long artworkId, @RequestBody @Valid ArtworkUpdateRequest request) {
         artworkService.updateArtwork(tokenClaim, artworkId, request);
     }
 

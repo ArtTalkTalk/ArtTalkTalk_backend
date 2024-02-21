@@ -1,5 +1,6 @@
 package org.example.youth_be.comment.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.example.youth_be.comment.controller.spec.CommentSpec;
 import org.example.youth_be.comment.service.CommentService;
@@ -19,12 +20,12 @@ public class CommentController implements CommentSpec {
 
     @Override
     @GetMapping("/{artworkId}/comments")
-    public PageResponse<CommentResponse> getAllArtworkComments(@CurrentUser TokenClaim claim, @PathVariable Long artworkId, @ModelAttribute PageParam pageParam) {
+    public PageResponse<CommentResponse> getAllArtworkComments(@CurrentUser TokenClaim claim, @PathVariable Long artworkId, @ModelAttribute @Valid PageParam pageParam) {
         return commentService.getArtworkComments(claim, artworkId, pageParam);
     }
     @Override
     @PostMapping("/{artworkId}/comments")
-    public void createArtworkComment(@CurrentUser TokenClaim claim, @PathVariable Long artworkId, CreateArtworkCommentRequest request) {
+    public void createArtworkComment(@CurrentUser TokenClaim claim, @PathVariable Long artworkId, @RequestBody @Valid CreateArtworkCommentRequest request) {
         commentService.createArtworkComment(claim, artworkId, request);
     }
 

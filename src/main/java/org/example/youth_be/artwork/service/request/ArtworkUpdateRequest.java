@@ -1,6 +1,7 @@
 package org.example.youth_be.artwork.service.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ArtworkUpdateRequest {
     @Schema(description = "작품 이미지 ID 리스트")
+    @NotNull
     private List<Long> imageIds;
     @Schema(description = "작품 제목")
     private String title;
