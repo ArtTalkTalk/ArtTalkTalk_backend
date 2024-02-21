@@ -9,7 +9,7 @@ import org.example.youth_be.common.PageParam;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
 
-@Tag(name = ApiTags.USER)
+@Tag(name = ApiTags.COMMENT)
 public interface CommentSpec {
     @Operation(description = "작품 댓글 조회 API")
     PageResponse<CommentResponse> getAllArtworkComments(TokenClaim claim, Long artworkId, PageParam pageParam);

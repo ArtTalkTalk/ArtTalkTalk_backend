@@ -54,4 +54,10 @@ public class ArtworkController implements ArtworkSpec {
     public void updateArtwork(@CurrentUser TokenClaim tokenClaim, @PathVariable Long artworkId, @ModelAttribute ArtworkUpdateRequest request) {
         artworkService.updateArtwork(tokenClaim, artworkId, request);
     }
+
+    @DeleteMapping("/{artworkId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteArtwork(@CurrentUser TokenClaim tokenClaim, @PathVariable Long artworkId) {
+        artworkService.deleteArtwork(tokenClaim, artworkId);
+    }
 }

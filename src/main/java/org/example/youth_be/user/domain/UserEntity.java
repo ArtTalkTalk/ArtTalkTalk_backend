@@ -99,4 +99,8 @@ public class UserEntity extends BaseEntity {
     public void decreaseFollowCount() {
         this.followerCount--;
     }
+
+    public void updateTotalLikeCount(Long likeCount){
+        this.totalLikeCount -= likeCount;
+    }
 }
