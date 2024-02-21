@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.example.youth_be.common.entity.BaseEntity;
 
+import java.util.List;
+
 @Entity
 @Table(name = "image")
 @Getter
@@ -36,5 +38,9 @@ public class ImageEntity extends BaseEntity {
 
     public void setArtworkId(Long artworkId) {
         this.artworkId = artworkId;
+    }
+
+    public void deleteArtwork(List<Long> imageIdList) {
+        this.artworkId = null;
     }
 }

@@ -10,6 +10,8 @@ import org.example.youth_be.artwork.service.request.ArtworkUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkImageResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
+import org.example.youth_be.comment.domain.CommentEntity;
+import org.example.youth_be.comment.repository.CommentRepository;
 import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
@@ -34,6 +36,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.example.youth_be.common.s3.FileNameExtractor.getFileName;
+import static org.example.youth_be.common.util.DebuggingTemplate.NotAuthorized;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +49,7 @@ public class ArtworkService {
     private final FollowRepository followRepository;
     private final FileUploader fileUploader;
     private final LikeRepository likeRepository;
+    private final CommentRepository commentRepository;
 
     @Transactional
     public Long createArtwork(TokenClaim tokenClaim, ArtworkCreateRequest request) {
@@ -189,5 +193,29 @@ public class ArtworkService {
             }
         }
         return likeId;
+    }
+
+    public void deleteArtwork(TokenClaim tokenClaim, Long artworkId) {
+        ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 작품을 찾을 수 없습니다.", null));
+        Long userId = artworkEntity.getUserId();
+
+        if (tokenClaim.isNotAuthorized(userId)) {
+            throw new YouthBadRequestException("권한이 없는 사용자입니다.", NotAuthorized(userId, tokenClaim));
+        }
+
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+
+        List<Long> imageIdList = artworkEntity.getImageIdList();
+        List<ImageEntity> images = imageRepository.findAllById(imageIdList);
+        List<CommentEntity> comments = commentRepository.findByArtworkId(artworkId);
+
+        // 유저 좋아요 개수 업데이트
+        userEntity.updateTotalLikeCount(artworkEntity.getLikeCount());
+        // 댓글 삭제
+        commentRepository.deleteAllInBatch(comments);
+        // 이미지 삭제
+        imageRepository.deleteAllInBatch(images);
+        // 작품 삭제
+        artworkRepository.delete(artworkEntity);
     }
 }
