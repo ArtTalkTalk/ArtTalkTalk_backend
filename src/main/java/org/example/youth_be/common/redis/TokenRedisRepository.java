@@ -14,7 +14,7 @@ public class TokenRedisRepository implements TokenRepository {
     private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
-    public Boolean isInBlackList(@NotNull String key) {
+    public Boolean hasBlackList(@NotNull String key) {
         ValueOperations<String, Object> values = redisTemplate.opsForValue();
         if (values.get(key) != null) { // 블랙리스트로 되어 있는 경우 true
             return true;

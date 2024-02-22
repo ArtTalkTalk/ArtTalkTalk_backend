@@ -71,8 +71,8 @@ public class UserAuthService {
     @Transactional(readOnly = true)
     public TokenReissueResponse reissue(TokenReissueRequest request) {
 
-        if(tokenRepository.isInBlackList(request.getRefreshToken())){
-            throw new YouthBadRequestException("리프레시 토큰이 올바르지 않습니다.", null);
+        if(tokenRepository.hasBlackList(request.getRefreshToken())){
+            throw new YouthBadRequestException("사용할 수 없는 토큰입니다.", null);
         }
 
         ParsedTokenInfo accessTokenInfo = accessTokenProvider.parseToken(request.getAccessToken());

@@ -4,7 +4,7 @@ public interface TokenRepository {
 
     void setBlackList(String key, String data);
 
-    Boolean isInBlackList(String key);
+    Boolean hasBlackList(String key);
 
 
 }

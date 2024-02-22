@@ -59,8 +59,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 			}
 
 			// 블랙리스트 검사
-			if(tokenRepository.isInBlackList(accessToken)){
-				throw new YouthBadRequestException("올바르지 않은 토큰입니다.", null);
+			if(tokenRepository.hasBlackList(accessToken)){
+				throw new YouthBadRequestException("사용할 수 없는 토큰입니다.", null);
 			}
 
 			validateAccessToken(tokenInfo);
