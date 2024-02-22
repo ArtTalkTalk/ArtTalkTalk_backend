@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.like.controller.spec.LikeSpec;
+import org.example.youth_be.like.service.CreateLikeResponse;
 import org.example.youth_be.like.service.LikeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +18,8 @@ public class LikeController implements LikeSpec {
     @Override
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{artworkId}/likes")
-    public void createArtworkLike(@PathVariable Long artworkId, @CurrentUser TokenClaim tokenClaim) {
-        likeService.createArtworkLike(artworkId, tokenClaim);
+    public CreateLikeResponse createArtworkLike(@PathVariable Long artworkId, @CurrentUser TokenClaim tokenClaim) {
+        return likeService.createArtworkLike(artworkId, tokenClaim);
     }
 
     @Override

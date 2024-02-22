@@ -21,7 +21,7 @@ public class LikeService {
     private final UserRepository userRepository;
     
     @Transactional
-    public Long createArtworkLike(Long artworkId, TokenClaim tokenClaim) {
+    public CreateLikeResponse createArtworkLike(Long artworkId, TokenClaim tokenClaim) {
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("작품을 찾을 수 없습니다.", null));
         UserEntity userEntity = userRepository.findById(artworkEntity.getUserId()).orElseThrow(() -> new YouthNotFoundException("작품의 유저를 찾을 수 없습니다.", null));
 
@@ -33,7 +33,8 @@ public class LikeService {
 
         userEntity.increaseTotalLikeCount();
         artworkEntity.increaseLikeCount();
-        return likeEntity.getLikeId();
+        CreateLikeResponse createLikeResponse = CreateLikeResponse.builder().likeId(likeEntity.getLikeId()).build();
+        return createLikeResponse;
     }
     
     @Transactional
