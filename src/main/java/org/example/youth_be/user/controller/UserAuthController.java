@@ -31,8 +31,11 @@ public class UserAuthController implements UserAuthSpec {
     @Override
     @PutMapping("/sign-up")
     @ResponseStatus(HttpStatus.OK)
-    public SignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody @Valid SignupRequest request) {
-        return userAuthService.signUp(tokenClaim, request);
+    public SignUpResponse signUp(@CurrentUser TokenClaim tokenClaim,
+                                 @RequestHeader("Authorization") String accessToken,
+                                 @RequestHeader("Authorization-refresh") String refreshToken,
+                                 @RequestBody @Valid SignupRequest request) {
+        return userAuthService.signUp(tokenClaim, accessToken, refreshToken, request);
     }
 
     @Override

@@ -19,7 +19,7 @@ public interface UserAuthSpec {
     LoginResponse login(LoginRequest request);
 
     @Operation(description = "추가 회원가입 API")
-    SignUpResponse signUp(TokenClaim tokenClaim, SignupRequest request);
+    SignUpResponse signUp(TokenClaim tokenClaim, String accessToken, String refreshToken, SignupRequest request);
 
     @Operation(description = "토큰 재발급 API")
     TokenReissueResponse reissue(TokenReissueRequest request);

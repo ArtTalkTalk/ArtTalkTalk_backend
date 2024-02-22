@@ -8,6 +8,7 @@ import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.ParsedTokenInfo;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.common.jwt.TokenProvider;
+import org.example.youth_be.common.redis.TokenRepository;
 import org.example.youth_be.user.domain.UserEntity;
 import org.example.youth_be.user.enums.UserRoleEnum;
 import org.example.youth_be.user.repository.UserRepository;
@@ -31,6 +32,7 @@ public class UserAuthService {
     private final UserRepository userRepository;
     private final TokenProvider accessTokenProvider;
     private final TokenProvider refreshTokenProvider;
+    private final TokenRepository tokenRepository;
 
     @Transactional
     public LoginResponse login(LoginRequest request) {
@@ -46,26 +48,33 @@ public class UserAuthService {
     }
 
     @Transactional
-    public SignUpResponse signUp(TokenClaim tokenClaim, SignupRequest request) {
+    public SignUpResponse signUp(TokenClaim tokenClaim, String accessToken, String refreshToken, SignupRequest request) {
         Long userId = tokenClaim.getUserId();
 
-        // 기존 토큰 무효화
-
         // 정회원 토큰 생성
-        String accessToken = accessTokenProvider.generateToken(userId, UserRoleEnum.REGULAR);
-        String refreshToken = refreshTokenProvider.generateToken(userId, UserRoleEnum.REGULAR);
+        String newAccessToken = accessTokenProvider.generateToken(userId, UserRoleEnum.REGULAR);
+        String newRefreshToken = refreshTokenProvider.generateToken(userId, UserRoleEnum.REGULAR);
 
 
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
         userEntity.signUp(request.getProfileImageUrl(), request.getNickname(),
                 request.getActivityField(), request.getActivityArea(), request.getDescription());
 
+        // 기존 토큰 무효화
+        tokenRepository.setBlackList(accessToken, String.valueOf(userId));
+        tokenRepository.setBlackList(refreshToken, String.valueOf(userId));
+
         // user role 업데이트 및 request 기반 업데이트/ 중복 닉네임 확인
-        return SignUpResponse.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).accessToken(accessToken).refreshToken(refreshToken).build();
+        return SignUpResponse.builder().userId(userEntity.getUserId()).role(userEntity.getUserRole()).accessToken(newAccessToken).refreshToken(newRefreshToken).build();
     }
 
     @Transactional(readOnly = true)
     public TokenReissueResponse reissue(TokenReissueRequest request) {
+
+        if(tokenRepository.isInBlackList(request.getRefreshToken())){
+            throw new YouthBadRequestException("리프레시 토큰이 올바르지 않습니다.", null);
+        }
+
         ParsedTokenInfo accessTokenInfo = accessTokenProvider.parseToken(request.getAccessToken());
         ParsedTokenInfo refreshTokenInfo = refreshTokenProvider.parseToken(request.getRefreshToken());
 
