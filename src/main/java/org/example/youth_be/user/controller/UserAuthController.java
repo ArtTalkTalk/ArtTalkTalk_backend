@@ -44,8 +44,6 @@ public class UserAuthController implements UserAuthSpec {
         return userAuthService.reissue(request);
     }
 
-
-
     @Override
     @PostMapping("/dev-tokens")
     public GenerateTokensForDev generatedTokensForDev(@RequestBody DevTokenGenerateRequest request) {
@@ -53,7 +51,8 @@ public class UserAuthController implements UserAuthSpec {
     }
 
     @Override
-    @DeleteMapping("/logout")
+    @PostMapping("/log-out")
+    @ResponseStatus(HttpStatus.OK)
     public void logout(@CurrentUser TokenClaim tokenClaim,
                        @RequestHeader("Authorization") String accessToken,
                        @RequestHeader("Authorization-refresh") String refreshToken) {
