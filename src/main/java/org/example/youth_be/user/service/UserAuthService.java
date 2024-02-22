@@ -97,6 +97,17 @@ public class UserAuthService {
         return new GenerateTokensForDev(generatedAccessToken, generatedRefreshToken);
     }
 
+    @Transactional(readOnly = true)
+    public void logout(TokenClaim tokenClaim, String accessToken, String refreshToken) {
+
+        Long userId = tokenClaim.getUserId();
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
+
+
+        tokenRepository.setBlackList(accessToken, String.valueOf(userEntity.getUserId()));
+        tokenRepository.setBlackList(refreshToken, String.valueOf(userEntity.getUserId()));
+    }
+
     private void validateRefreshToken(ParsedTokenInfo refreshTokenInfo) {
         if (refreshTokenInfo.isExpired()) {
             throw new YouthForbiddenException("리프레시 토큰이 만료되었습니다.", "리프레시 토큰이 만료되었습니다.");
