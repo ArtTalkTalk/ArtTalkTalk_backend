@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthInternalException;
 import org.example.youth_be.common.exceptions.YouthUnAuthorizationException;
+import org.example.youth_be.common.redis.TokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,10 +29,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 	private static final String AUTHORIZATION_HEADER = HttpHeaders.AUTHORIZATION;
 	private static final List<String> WHITE_LIST = List.of("/h2-console/", "/v1/health-check", "/swagger-ui/", "/login", "/reissue", "/dev-tokens");
 	private TokenProvider tokenProvider;
+	private TokenRepository tokenRepository;
 
 	@Autowired
-	public JwtAuthenticationFilter(@MainAccessTokenProvider TokenProvider tokenProvider) {
+	public JwtAuthenticationFilter(@MainAccessTokenProvider TokenProvider tokenProvider, TokenRepository tokenRepository) {
 		this.tokenProvider = tokenProvider;
+		this.tokenRepository = tokenRepository;
 	}
 
 	// 토큰 검사 생략
@@ -54,6 +57,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				doFilter(request, response, filterChain);
 				return;
 			}
+
+			// 블랙리스트 검사
+			if(tokenRepository.hasBlackList(accessToken)){
+				throw new YouthBadRequestException("사용할 수 없는 토큰입니다.", null);
+			}
+
 			validateAccessToken(tokenInfo);
 
 			// SecurityContext에 등록할 객체

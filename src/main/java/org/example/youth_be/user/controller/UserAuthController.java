@@ -31,8 +31,11 @@ public class UserAuthController implements UserAuthSpec {
     @Override
     @PutMapping("/sign-up")
     @ResponseStatus(HttpStatus.OK)
-    public SignUpResponse signUp(@CurrentUser TokenClaim tokenClaim, @RequestBody @Valid SignupRequest request) {
-        return userAuthService.signUp(tokenClaim, request);
+    public SignUpResponse signUp(@CurrentUser TokenClaim tokenClaim,
+                                 @RequestHeader("Authorization") String accessToken,
+                                 @RequestHeader("Authorization-refresh") String refreshToken,
+                                 @RequestBody @Valid SignupRequest request) {
+        return userAuthService.signUp(tokenClaim, accessToken, refreshToken, request);
     }
 
     @Override
@@ -45,5 +48,14 @@ public class UserAuthController implements UserAuthSpec {
     @PostMapping("/dev-tokens")
     public GenerateTokensForDev generatedTokensForDev(@RequestBody DevTokenGenerateRequest request) {
         return userAuthService.generateForDev(request);
+    }
+
+    @Override
+    @PostMapping("/log-out")
+    @ResponseStatus(HttpStatus.OK)
+    public void logout(@CurrentUser TokenClaim tokenClaim,
+                       @RequestHeader("Authorization") String accessToken,
+                       @RequestHeader("Authorization-refresh") String refreshToken) {
+        userAuthService.logout(tokenClaim, accessToken, refreshToken);
     }
 }
