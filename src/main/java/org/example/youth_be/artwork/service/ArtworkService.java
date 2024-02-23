@@ -6,6 +6,7 @@ import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
+import org.example.youth_be.artwork.service.request.ArtworkSearchRequest;
 import org.example.youth_be.artwork.service.request.ArtworkUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkImageResponse;
@@ -218,5 +219,16 @@ public class ArtworkService {
         imageRepository.deleteAllInBatch(images);
         // 작품 삭제
         artworkRepository.delete(artworkEntity);
+    }
+
+    @Transactional
+    public PageResponse<ArtworkResponse> searchArtwork(ArtworkSearchRequest request) {
+        Integer size = request.getSize();
+        Long cursorId = request.getLastIdxId();
+        String keyword = request.getKeyword();
+
+        List<ArtworkResponse> responses = artworkRepository.findBySearchFeed(cursorId, size, keyword);
+        Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
+        return PageResponse.of(artworkResponses);
     }
 }

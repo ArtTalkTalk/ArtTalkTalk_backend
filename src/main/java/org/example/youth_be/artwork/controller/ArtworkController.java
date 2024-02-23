@@ -6,6 +6,7 @@ import org.example.youth_be.artwork.controller.spec.ArtworkSpec;
 import org.example.youth_be.artwork.service.ArtworkService;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
+import org.example.youth_be.artwork.service.request.ArtworkSearchRequest;
 import org.example.youth_be.artwork.service.request.ArtworkUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
@@ -60,5 +61,11 @@ public class ArtworkController implements ArtworkSpec {
     @ResponseStatus(HttpStatus.OK)
     public void deleteArtwork(@CurrentUser TokenClaim tokenClaim, @PathVariable Long artworkId) {
         artworkService.deleteArtwork(tokenClaim, artworkId);
+    }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<ArtworkResponse> searchArtwork(@ModelAttribute ArtworkSearchRequest request) {
+        return artworkService.searchArtwork(request);
     }
 }
