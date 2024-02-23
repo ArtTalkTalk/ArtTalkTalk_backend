@@ -5,6 +5,7 @@ import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.comment.domain.CommentEntity;
 import org.example.youth_be.comment.repository.CommentRepository;
 import org.example.youth_be.comment.service.request.CreateArtworkCommentRequest;
+import org.example.youth_be.comment.service.request.UpdateArtworkCommentRequest;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.fixture.ArtworkEntityFixture;
@@ -84,6 +85,39 @@ public class CommentServiceTest {
             // then
             assertThat(artworkEntity.getCommentCount()).isEqualTo(expectCommentCount);
             verify(commentRepository, times(1)).delete(any());
+        }
+    }
+
+    @DisplayName("updateArtworkComment 메서드는")
+    static class UpdateArtworkCommentTest {
+        @Test
+        void 댓글의_userId와_토큰의_userId가_다르면_YouthBadRequestException을_던진다() {
+            // given
+            Long userId = 99L;
+            CommentEntity commentEntity = CommentEntityFixture.validUserIdAny(userId - 10);
+            given(commentRepository.findById(any())).willReturn(Optional.of(commentEntity));
+            TokenClaim claim = new TokenClaim(userId, null, null, null, null);
+
+            // when, then
+            assertThrows(YouthBadRequestException.class, () -> {
+                commentService.updateArtworkComment(claim, 10L, commentEntity.getCommentId(), new UpdateArtworkCommentRequest("update contents"));
+            });
+        }
+        @Test
+        void 댓글을_수정하면_댓글_내용이_수정_내용으로_변경된다() {
+            // given
+            Long userId = 99L;
+            String expect = "update contents";
+            CommentEntity commentEntity = CommentEntityFixture.validUserIdAny(userId);
+            given(commentRepository.findById(any())).willReturn(Optional.of(commentEntity));
+            TokenClaim claim = new TokenClaim(userId, null, null, null, null);
+
+            // when
+            commentService.updateArtworkComment(claim, 10L, commentEntity.getCommentId(), new UpdateArtworkCommentRequest(expect));
+
+            // then
+            String result = commentEntity.getContents();
+            assertThat(expect).isEqualTo(result);
         }
     }
 }

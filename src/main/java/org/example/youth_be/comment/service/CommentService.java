@@ -7,6 +7,7 @@ import org.example.youth_be.comment.domain.CommentEntity;
 import org.example.youth_be.comment.repository.CommentRepository;
 import org.example.youth_be.comment.repository.dto.ArtworkCommentQueryDto;
 import org.example.youth_be.comment.service.request.CreateArtworkCommentRequest;
+import org.example.youth_be.comment.service.request.UpdateArtworkCommentRequest;
 import org.example.youth_be.comment.service.response.CommentResponse;
 import org.example.youth_be.common.PageParam;
 import org.example.youth_be.common.PageResponse;
@@ -62,6 +63,15 @@ public class CommentService {
         commentRepository.delete(commentEntity);
         artworkEntity.decreaseCommentCount();
         logger.info("delete comment ok - userId: {}, artworkId: {}, commentId: {}", claim.getUserId(), artworkId, commentId);
+    }
+
+    @Transactional
+    public void updateArtworkComment(TokenClaim claim, Long artworkId, Long commentId, UpdateArtworkCommentRequest request) {
+        CommentEntity commentEntity = commentRepository.findById(commentId).orElseThrow(() -> new YouthNotFoundException("댓글을 찾을 수 없습니다.", null));
+        validateCommentOwner(commentEntity, claim.getUserId());
+
+        commentEntity.updateContents(request.getContents());
+        logger.info("update comment ok - userId: {}, artworkId: {}, contents: {}", claim.getUserId(), artworkId, request.getContents());
     }
 
     private void validateCommentOwner(CommentEntity commentEntity, Long userId) {
