@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.youth_be.comment.controller.spec.CommentSpec;
 import org.example.youth_be.comment.service.CommentService;
 import org.example.youth_be.comment.service.request.CreateArtworkCommentRequest;
+import org.example.youth_be.comment.service.request.UpdateArtworkCommentRequest;
 import org.example.youth_be.comment.service.response.CommentResponse;
 import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.PageParam;
@@ -33,5 +34,14 @@ public class CommentController implements CommentSpec {
     @DeleteMapping("/{artworkId}/comments/{commentId}")
     public void deleteArtworkComment(@CurrentUser TokenClaim claim, @PathVariable Long artworkId, @PathVariable Long commentId) {
         commentService.deleteArtworkComment(claim, artworkId, commentId);
+    }
+
+    @Override
+    @PutMapping("/{artworkId}/comments/{commentId}")
+    public void updateArtworkComment(@CurrentUser TokenClaim claim,
+                                     @PathVariable Long artworkId,
+                                     @PathVariable Long commentId,
+                                     @RequestBody UpdateArtworkCommentRequest request) {
+        commentService.updateArtworkComment(claim, artworkId, commentId, request);
     }
 }
