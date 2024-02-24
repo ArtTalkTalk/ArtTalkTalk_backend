@@ -66,6 +66,11 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
         return findFollowingByCondition(userId, cursorId, size);
     }
 
+    @Override
+    public List<ArtworkResponse> findBySearchFeed(Long cursorId, Integer size, String keyword) {
+        return findByKeyword(cursorId, size, keyword);
+    }
+
     private BooleanExpression ltLastIdxId(Long cursorId) {
         if (cursorId == null) {
             return null;
@@ -210,6 +215,34 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                         artwork.artworkId.in(followingUserIds)
                                 .and(ltLastIdxId(cursorId))
                 )
+                .orderBy(artwork.artworkId.desc())
+                .limit(size + 1)
+                .fetch();
+
+        return responses;
+    }
+
+    private List<ArtworkResponse> findByKeyword(Long cursorId, Integer size, String keyword) {
+        List<ArtworkResponse> responses = jpaQueryFactory
+                .select(Projections.constructor(ArtworkResponse.class,
+                        artwork.artworkId,
+                        artwork.title,
+                        artwork.description,
+                        artwork.artworkStatus,
+                        artwork.viewCount,
+                        artwork.likeCount,
+                        artwork.commentCount,
+                        artwork.thumbnailImageUrl,
+                        user.userId.as("artistId"),
+                        user.nickname.as("artistName"),
+                        user.profileImageUrl.as("artistProfileImageUrl"),
+                        artwork.createdAt,
+                        artwork.updatedAt))
+                .from(artwork)
+                .join(user).on(user.userId.eq(artwork.userId))
+                .where(artwork.title.contains(keyword)
+                        .or(artwork.description.contains(keyword))
+                        .and(ltLastIdxId(cursorId)))
                 .orderBy(artwork.artworkId.desc())
                 .limit(size + 1)
                 .fetch();

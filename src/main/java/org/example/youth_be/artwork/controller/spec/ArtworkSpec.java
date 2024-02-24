@@ -8,10 +8,8 @@ import org.example.youth_be.artwork.service.request.ArtworkUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.ApiTags;
-import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = ApiTags.ARTWORK)
 public interface ArtworkSpec {
@@ -33,4 +31,7 @@ public interface ArtworkSpec {
 
     @Operation(description = "작품 삭제 API입니다.")
     void deleteArtwork(TokenClaim tokenClaim, Long artworkId);
+
+    @Operation(description = "작품 검색 API입니다.")
+    PageResponse<ArtworkResponse> searchArtwork(String keyword, ArtworkPaginationRequest request);
 }

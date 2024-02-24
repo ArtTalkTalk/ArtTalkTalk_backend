@@ -219,4 +219,14 @@ public class ArtworkService {
         // 작품 삭제
         artworkRepository.delete(artworkEntity);
     }
+
+    @Transactional
+    public PageResponse<ArtworkResponse> searchArtwork(String keyword, ArtworkPaginationRequest request) {
+        Integer size = request.getSize();
+        Long cursorId = request.getLastIdxId();
+
+        List<ArtworkResponse> responses = artworkRepository.findBySearchFeed(cursorId, size, keyword);
+        Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);
+        return PageResponse.of(artworkResponses);
+    }
 }

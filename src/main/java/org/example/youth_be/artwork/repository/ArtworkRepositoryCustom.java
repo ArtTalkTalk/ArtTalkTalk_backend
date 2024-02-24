@@ -18,5 +18,6 @@ public interface ArtworkRepositoryCustom {
 
     List<ArtworkResponse> findByFollowingFeed(Long userId, Long cursorId, Integer size);
 
+    List<ArtworkResponse> findBySearchFeed(Long cursorId, Integer size, String keyword);
 
 }

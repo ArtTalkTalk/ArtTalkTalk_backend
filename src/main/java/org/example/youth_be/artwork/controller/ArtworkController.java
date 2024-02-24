@@ -61,4 +61,10 @@ public class ArtworkController implements ArtworkSpec {
     public void deleteArtwork(@CurrentUser TokenClaim tokenClaim, @PathVariable Long artworkId) {
         artworkService.deleteArtwork(tokenClaim, artworkId);
     }
+
+    @GetMapping("/search")
+    @ResponseStatus(HttpStatus.OK)
+    public PageResponse<ArtworkResponse> searchArtwork(@RequestParam String keyword, @ModelAttribute ArtworkPaginationRequest request) {
+        return artworkService.searchArtwork(keyword, request);
+    }
 }
