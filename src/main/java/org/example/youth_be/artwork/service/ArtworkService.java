@@ -6,7 +6,6 @@ import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
-import org.example.youth_be.artwork.service.request.ArtworkSearchRequest;
 import org.example.youth_be.artwork.service.request.ArtworkUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkImageResponse;
@@ -222,10 +221,9 @@ public class ArtworkService {
     }
 
     @Transactional
-    public PageResponse<ArtworkResponse> searchArtwork(ArtworkSearchRequest request) {
+    public PageResponse<ArtworkResponse> searchArtwork(String keyword, ArtworkPaginationRequest request) {
         Integer size = request.getSize();
         Long cursorId = request.getLastIdxId();
-        String keyword = request.getKeyword();
 
         List<ArtworkResponse> responses = artworkRepository.findBySearchFeed(cursorId, size, keyword);
         Slice<ArtworkResponse> artworkResponses = CursorPagingCommon.getSlice(responses, size);

@@ -4,16 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.youth_be.artwork.service.request.ArtworkCreateRequest;
 import org.example.youth_be.artwork.service.request.ArtworkPaginationRequest;
-import org.example.youth_be.artwork.service.request.ArtworkSearchRequest;
 import org.example.youth_be.artwork.service.request.ArtworkUpdateRequest;
 import org.example.youth_be.artwork.service.response.ArtworkDetailResponse;
 import org.example.youth_be.artwork.service.response.ArtworkResponse;
 import org.example.youth_be.common.ApiTags;
-import org.example.youth_be.common.CurrentUser;
 import org.example.youth_be.common.PageResponse;
 import org.example.youth_be.common.jwt.TokenClaim;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Tag(name = ApiTags.ARTWORK)
 public interface ArtworkSpec {
@@ -37,5 +33,5 @@ public interface ArtworkSpec {
     void deleteArtwork(TokenClaim tokenClaim, Long artworkId);
 
     @Operation(description = "작품 검색 API입니다.")
-    PageResponse<ArtworkResponse> searchArtwork(ArtworkSearchRequest request);
+    PageResponse<ArtworkResponse> searchArtwork(String keyword, ArtworkPaginationRequest request);
 }
