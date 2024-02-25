@@ -121,6 +121,7 @@ public class ArtworkService {
                 .collect(Collectors.toList());
 
         Long followId = getFollowId(claim, artworkEntity.getUserId());
+        artworkEntity.increaseViewCount();
         return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses, likeId, followId);
     }
 
