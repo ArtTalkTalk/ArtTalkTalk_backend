@@ -2,6 +2,8 @@ package org.example.youth_be.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.youth_be.common.aop.TransactionalDistributedLock;
+import org.example.youth_be.common.enums.LockUsageType;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthForbiddenException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
@@ -34,7 +36,7 @@ public class UserAuthService {
     private final TokenProvider refreshTokenProvider;
     private final TokenRepository tokenRepository;
 
-    @Transactional
+    @TransactionalDistributedLock(key = "#request.getSocialId()", usage = LockUsageType.USER)
     public LoginResponse login(LoginRequest request) {
         Optional<UserEntity> userEntityOptional = userRepository.findBySocialIdAndSocialType(request.getSocialId(), request.getSocialType());
         UserEntity userEntity = userEntityOptional.orElseGet(() -> userRepository.save(UserEntity.builder()

@@ -16,7 +16,7 @@ import org.example.youth_be.user.service.response.TokenReissueResponse;
 @Tag(name = ApiTags.USER_AUTH)
 public interface UserAuthSpec {
     @Operation(description = "로그인 API")
-    LoginResponse login(LoginRequest request);
+    LoginResponse login(LoginRequest request) throws InterruptedException;
 
     @Operation(description = "추가 회원가입 API")
     SignUpResponse signUp(TokenClaim tokenClaim, String accessToken, String refreshToken, SignupRequest request);
