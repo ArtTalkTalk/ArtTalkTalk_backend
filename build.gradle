@@ -31,7 +31,7 @@ dependencies {
 
     // Redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-    implementation 'org.redisson:redisson-spring-boot-starter:3.17.4'
+    implementation 'org.redisson:redisson-spring-boot-starter:3.18.0'
 
     // QueryDSL Implementation
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
