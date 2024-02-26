@@ -212,7 +212,7 @@ public class ArtworkRepositoryImpl implements ArtworkRepositoryCustom {
                 .from(artwork)
                 .join(user).on(user.userId.eq(artwork.userId))
                 .where(
-                        artwork.artworkId.in(followingUserIds)
+                        artwork.userId.in(followingUserIds)
                                 .and(ltLastIdxId(cursorId))
                 )
                 .orderBy(artwork.artworkId.desc())
