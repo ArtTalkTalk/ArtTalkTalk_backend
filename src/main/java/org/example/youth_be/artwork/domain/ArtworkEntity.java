@@ -23,6 +23,7 @@ public class ArtworkEntity extends BaseEntity {
     @Column(nullable = false)
     private String title;
 
+    @Column(length = 1000)
     private String description;
 
     @Enumerated(EnumType.STRING)
