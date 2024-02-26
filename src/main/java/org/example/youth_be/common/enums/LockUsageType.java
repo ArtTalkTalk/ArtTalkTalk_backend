@@ -8,7 +8,8 @@ public enum LockUsageType {
     COMMENT("COMMENT::"),
     USER("USER::"),
     FOLLOW("FOLLOW::"),
-    LIKE("LIKE::");
+    LIKE("LIKE::"),
+    VIEW_COUNT("VIEW_COUNT::");
     private final String usagePrefix;
 
     LockUsageType(String usagePrefix) {
