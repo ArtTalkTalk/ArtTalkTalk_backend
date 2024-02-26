@@ -30,5 +30,5 @@ public @interface TransactionalDistributedLock {
     /**
      * 락 종류
      */
-    LockUsageType usage = null;
+    LockUsageType usage();
 }

@@ -2,6 +2,8 @@ package org.example.youth_be.follow.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.example.youth_be.common.aop.TransactionalDistributedLock;
+import org.example.youth_be.common.enums.LockUsageType;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
@@ -25,7 +27,7 @@ public class FollowService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
 
-    @Transactional
+    @TransactionalDistributedLock(key = "#tokenClaim.getUserId()", usage = LockUsageType.COMMENT)
     public CreateFollowResponse createFollow(TokenClaim claim, Long senderId, Long receiverId) {
         if (claim.getUserId() != senderId) {
             throw new YouthBadRequestException("유저의 토큰이 일치하지 않습니다.", null);

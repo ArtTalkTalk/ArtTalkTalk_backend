@@ -31,7 +31,7 @@ public class DistributedLockAop {
         Method method = signature.getMethod();
         TransactionalDistributedLock distributedLock = method.getAnnotation(TransactionalDistributedLock.class);
 
-        String key = REDISSON_LOCK_PREFIX + distributedLock.usage.getUsagePrefix() + CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), distributedLock.key());
+        String key = REDISSON_LOCK_PREFIX + distributedLock.usage() + CustomSpringELParser.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), distributedLock.key());
         RLock rLock = redissonClient.getLock(key);
 
         try {

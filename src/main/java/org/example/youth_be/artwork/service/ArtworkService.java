@@ -14,6 +14,8 @@ import org.example.youth_be.comment.domain.CommentEntity;
 import org.example.youth_be.comment.repository.CommentRepository;
 import org.example.youth_be.common.CursorPagingCommon;
 import org.example.youth_be.common.PageResponse;
+import org.example.youth_be.common.aop.TransactionalDistributedLock;
+import org.example.youth_be.common.enums.LockUsageType;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
@@ -51,7 +53,7 @@ public class ArtworkService {
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
 
-    @Transactional
+    @TransactionalDistributedLock(key = "#tokenClaim.getUserId()", usage = LockUsageType.ARTWORK)
     public Long createArtwork(TokenClaim tokenClaim, ArtworkCreateRequest request) {
 
         ArtworkEntity artworkEntity = ArtworkEntity.builder()
