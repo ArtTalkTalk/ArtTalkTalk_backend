@@ -27,7 +27,7 @@ public class FollowService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
 
-    @TransactionalDistributedLock(key = "#tokenClaim.getUserId()", usage = LockUsageType.COMMENT)
+    @TransactionalDistributedLock(key = "#claim.getUserId()", usage = LockUsageType.FOLLOW)
     public CreateFollowResponse createFollow(TokenClaim claim, Long senderId, Long receiverId) {
         if (claim.getUserId() != senderId) {
             throw new YouthBadRequestException("유저의 토큰이 일치하지 않습니다.", null);

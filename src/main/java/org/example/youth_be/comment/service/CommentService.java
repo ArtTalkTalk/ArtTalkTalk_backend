@@ -11,6 +11,8 @@ import org.example.youth_be.comment.service.request.UpdateArtworkCommentRequest;
 import org.example.youth_be.comment.service.response.CommentResponse;
 import org.example.youth_be.common.PageParam;
 import org.example.youth_be.common.PageResponse;
+import org.example.youth_be.common.aop.TransactionalDistributedLock;
+import org.example.youth_be.common.enums.LockUsageType;
 import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
@@ -40,7 +42,7 @@ public class CommentService {
                 allArtworkComments.hasNext());
     }
 
-    @Transactional
+    @TransactionalDistributedLock(key = "#claim.getUserId()", usage = LockUsageType.COMMENT)
     public Long createArtworkComment(TokenClaim claim, Long artworkId, CreateArtworkCommentRequest request) {
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("작품을 찾을 수 없습니다.", null));
         CommentEntity newCommentEntity = CommentEntity.builder()
