@@ -177,7 +177,7 @@ public class ArtworkService {
                 request.getDescription(),
                 request.getArtworkStatus(),
                 request.getImageIds(),
-                images.get(0).getImageUrl());
+                sortedImages.get(0).getImageUrl());
 
         // s3 상의 이미지 삭제
         for (String fileName : deleteImageFileName) {
