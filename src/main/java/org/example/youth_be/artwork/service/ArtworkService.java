@@ -34,7 +34,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.example.youth_be.common.s3.FileNameExtractor.getFileName;
@@ -152,9 +154,21 @@ public class ArtworkService {
             }
         }
 
+        List<Long> imageIds = request.getImageIds(); // 요청에서 이미지 ID 목록을 가져옵니다.
+        List<ImageEntity> images = imageRepository.findAllById(imageIds); // ID 목록에 해당하는 ImageEntity 객체들을 조회합니다.
+
+        // 조회된 ImageEntity 객체들을 원래 ID 목록의 순서대로 정렬합니다.
+        Map<Long, ImageEntity> imageMap = images.stream()
+                .collect(Collectors.toMap(ImageEntity::getImageId, Function.identity()));
+
+        List<ImageEntity> sortedImages = imageIds.stream()
+                .map(imageMap::get)
+                .collect(Collectors.toList());
+
+        log.info(String.valueOf(sortedImages.get(0).getArtworkId()));
+
         // 이미지에 artworkId update
-        List<ImageEntity> images = imageRepository.findAllById(request.getImageIds());
-        for (ImageEntity image : images) {
+        for (ImageEntity image : sortedImages) {
             image.setArtworkId(artworkId);
         }
 
