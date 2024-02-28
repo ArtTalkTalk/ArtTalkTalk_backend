@@ -109,7 +109,8 @@ public class ArtworkService {
         // 작가 entity 조회
         UserEntity userEntity = userRepository.findById(artworkEntity.getUserId()).orElseThrow(() -> new YouthNotFoundException("해당 ID의 유저를 찾을 수 없습니다.", null));
 
-        Long likeId = getLikeId(claim, artworkId);
+        // TokenClaim이 null이 아닐 때만 getLikeId 호출
+        Long likeId = (claim != null) ? getLikeId(claim, artworkId) : null;
 
         List<Long> ids = artworkEntity.getImageIdList();
         List<ImageEntity> images = imageRepository.findAllById(ids);
@@ -124,7 +125,9 @@ public class ArtworkService {
                 .map(image -> ArtworkImageResponse.of(image.getImageId(), image.getImageUrl()))
                 .collect(Collectors.toList());
 
-        Long followId = getFollowId(claim, artworkEntity.getUserId());
+        // TokenClaim이 null이 아닐 때만 getFollowId 호출
+        Long followId = (claim != null) ? getFollowId(claim, userEntity.getUserId()) : null;
+
         artworkEntity.increaseViewCount();
         return ArtworkDetailResponse.of(userEntity, artworkEntity, artworkImageResponses, likeId, followId);
     }
