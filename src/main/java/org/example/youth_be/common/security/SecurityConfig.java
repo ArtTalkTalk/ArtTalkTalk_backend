@@ -77,6 +77,9 @@ public class SecurityConfig {
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/me")).hasAnyRole(String.valueOf(UserRoleEnum.REGULAR), String.valueOf(UserRoleEnum.ASSOCIATE))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/mypage")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/artworks")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
+                        .requestMatchers(antMatcher(HttpMethod.POST, "/users/{userId}/links")).hasAnyRole(String.valueOf(UserRoleEnum.REGULAR), String.valueOf(UserRoleEnum.ASSOCIATE))
+                        .requestMatchers(antMatcher(HttpMethod.DELETE, "/users/{userId}/links/{linkId}")).hasAnyRole(String.valueOf(UserRoleEnum.REGULAR), String.valueOf(UserRoleEnum.ASSOCIATE))
+                        .requestMatchers(antMatcher(HttpMethod.PUT, "/users/{userId}/links/{linkId}")).hasAnyRole(String.valueOf(UserRoleEnum.REGULAR), String.valueOf(UserRoleEnum.ASSOCIATE))
                         .requestMatchers(antMatcher(HttpMethod.GET, "/users/check")).hasAnyRole(String.valueOf(UserRoleEnum.REGULAR), String.valueOf(UserRoleEnum.ASSOCIATE))
                         .requestMatchers(antMatcher(HttpMethod.POST, "/logout")).hasRole(String.valueOf(UserRoleEnum.REGULAR))
                         .requestMatchers(
