@@ -25,7 +25,7 @@ public class LikeService {
 
     @TransactionalDistributedLock(key = "#tokenClaim.getUserId()", usage = LockUsageType.LIKE)
     public CreateLikeResponse createArtworkLike(Long artworkId, TokenClaim tokenClaim) {
-        if (likeRepository.findByArtworkIdAndUserId(artworkId, tokenClaim.getUserId()).isEmpty()) {
+        if (likeRepository.findByArtworkIdAndUserId(artworkId, tokenClaim.getUserId()).isPresent()) {
             throw new YouthBadRequestException("이미 좋아요를 한 작품입니다.", null);
         }
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("작품을 찾을 수 없습니다.", null));
