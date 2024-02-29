@@ -102,7 +102,7 @@ public class ArtworkService {
         return PageResponse.of(artworkResponses);
     }
 
-    @TransactionalDistributedLock(key = "#claim.getUserId()", usage = LockUsageType.VIEW_COUNT)
+    @Transactional
     public ArtworkDetailResponse getArtwork(TokenClaim claim, Long artworkId) {
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("해당 ID의 작품를 찾을 수 없습니다.", null));
 
