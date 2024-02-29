@@ -5,6 +5,7 @@ import org.example.youth_be.artwork.domain.ArtworkEntity;
 import org.example.youth_be.artwork.repository.ArtworkRepository;
 import org.example.youth_be.common.aop.TransactionalDistributedLock;
 import org.example.youth_be.common.enums.LockUsageType;
+import org.example.youth_be.common.exceptions.YouthBadRequestException;
 import org.example.youth_be.common.exceptions.YouthNotFoundException;
 import org.example.youth_be.common.jwt.TokenClaim;
 import org.example.youth_be.like.domain.LikeEntity;
@@ -24,6 +25,9 @@ public class LikeService {
 
     @TransactionalDistributedLock(key = "#tokenClaim.getUserId()", usage = LockUsageType.LIKE)
     public CreateLikeResponse createArtworkLike(Long artworkId, TokenClaim tokenClaim) {
+        if (likeRepository.findByArtworkIdAndUserId(artworkId, tokenClaim.getUserId()).isEmpty()) {
+            throw new YouthBadRequestException("이미 좋아요를 한 작품입니다.", null);
+        }
         ArtworkEntity artworkEntity = artworkRepository.findById(artworkId).orElseThrow(() -> new YouthNotFoundException("작품을 찾을 수 없습니다.", null));
         UserEntity userEntity = userRepository.findById(artworkEntity.getUserId()).orElseThrow(() -> new YouthNotFoundException("작품의 유저를 찾을 수 없습니다.", null));
 
